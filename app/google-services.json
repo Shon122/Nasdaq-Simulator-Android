@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "625784526785",
+    "project_id": "bank-rehovot",
+    "storage_bucket": "bank-rehovot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625784526785:android:1b3fe129e06e99cbeec140",
+        "android_client_info": {
+          "package_name": "com.gtappdevelopers.bankrehovot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "625784526785-1rv9vtlqe55rm9l8fi6q814d1hq1nf4c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaEw9BZ5aGDVQvitJbJFz-MUXvXu0_Jbg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "625784526785-1rv9vtlqe55rm9l8fi6q814d1hq1nf4c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
