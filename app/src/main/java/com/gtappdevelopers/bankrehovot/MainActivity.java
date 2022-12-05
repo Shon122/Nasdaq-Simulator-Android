@@ -13,8 +13,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+
 import org.json.JSONObject;
+
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +43,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        //create a trade
+//        Date date = new Date();
+//        Timestamp timestamp = (Timestamp) date;
+//        Trade trade1 = new Trade(timestamp, "MSFT", 3561, 3561,
+//                100, 3000, 4000, true);
+//        String test = trade1.limitProfit;
+//
+
+
         //this sets data
         //  setData();
 
@@ -54,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         //load();
 
     }
-
 
 
     public void showGraph() {
