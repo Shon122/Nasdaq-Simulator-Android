@@ -3,6 +3,12 @@ package com.gtappdevelopers.bankrehovot;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -16,129 +22,147 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.lang.annotation.Documented;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-//    private DocumentReference mDocRef = FirebaseFirestore.getInstance().collection("Trades").document("TradesID");
-//    private Map<String, Object> dataToSave;
-//    private Map<String, Object> dataFetch;
-//    private String fetchData;
 
-    private FirebaseFirestore db;
+    public static final String BPI_ENDPOINT = "https://api.coindesk.com/v1/bpi/currentprice.json";
+    private OkHttpClient okHttpClient = new OkHttpClient();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    Map<String, Object> docData = new HashMap<>();
+    String dataTaker = "s";
+    String priceTaker = "price307";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        db = FirebaseFirestore.getInstance();
-//       CollectionReference Trades = db.collection("Trades");
-//        Trades.document("Prices").collection()
-
 
         //this sets data
-        Map<String, Object> docData = new HashMap<>();
-        docData.put("price", "1234");
-        db.collection("Trades").add(docData); // this line creates a new document
+        //  setData();
 
         //this gets data
+        //getData(); // got in in 'dataTaker' string
+
+
+        //show it in chart
+        //showGraph();
+
+
+        //get price of btc
+       //load();
+
+    }
+
+
+    public void showPrice() {
+
+
+    }
+
+
+    public void showGraph() {
+        GraphView graph = (GraphView) findViewById(R.id.graph1);
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[]{
+                new DataPoint(0, 1),
+                new DataPoint(1, 5),
+                new DataPoint(2, 3),
+                new DataPoint(3, 2),
+                new DataPoint(4, 6)
+        });
+        graph.addSeries(series);
+    }
+
+    public void setData() {
+        docData.put("price", "1234");
+        db.collection("Trades").add(docData); // this line creates a new document
+//
+//
+    }
+
+    public void getData() {
         db.collection("Trades").document("Prices").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
+
                     TextView textView = findViewById(R.id.txt1);
                     textView.setText(document.getData() + "s");
+                    //now taking it back to string type
+                    dataTaker = textView.getText().toString(); //got it in string form
+                    //and now reset the text view so it doesnt bother anything
+                    textView.setText("");
                 }
             }
         });
 
 
-//        TextView textView = findViewById(R.id.txt1);
-//        textView.setText(docData + "s");
-//        db.collection("Trades").document("Prices")
-//                .set(docData)
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                    }
-//                });
-        //.addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//            @Override
-//            public void onSuccess(DocumentReference documentReference) {
-//                // after the data addition is successful
-//                // we are displaying a success toast message.
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                // this method is called when the data addition process is failed.
-//                // displaying a toast message when data addition is failed.
-//            }
-//        });
-
-
-        //save data
-//        dataToSave = new HashMap<String, Object>();
-//        saveDataFirebase();
-
-        //get data and show on screen
-        // fetchDataFirebase();
-//        dataFetch= mDocRef.get().addOnSuccessListener.getResult().getData();
-
-
-//        TextView textView = findViewById(R.id.txt1);
-//        textView.setText(dataFetch + "s");
-        //end of onCreate
     }
 
+    private void load() {
+        Request request = new Request.Builder()
+                .url(BPI_ENDPOINT)
+                .build();
 
-//
-//    public void saveDataFirebase() {
-//
-//        dataToSave.put("price", "" + 5555);
-//        mDocRef.set(dataToSave).addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void unused) {
-//                ;
-//            }
-//
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                ;
-//            }
-//        });
-//
-//    }
-//
-//
-//    public void fetchDataFirebase() {
-//
-//        mDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//            @Override
-//            public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                if (documentSnapshot.exists()) {
-//                    fetchData = documentSnapshot.getString("price");
-//
-//                }
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                ;
-//            }
-//        });
-//    }
 
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                final String body = response.body().string();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        parseBpiResponse(body);
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void parseBpiResponse(String body) {
+        try {
+            StringBuilder builder = new StringBuilder();
+
+            JSONObject jsonObject = new JSONObject(body);
+            JSONObject timeObject = jsonObject.getJSONObject("time");
+            builder.append(timeObject.getString("updated")).append("\n\n");
+
+            JSONObject bpiObject = jsonObject.getJSONObject("bpi");
+            JSONObject usdObject = bpiObject.getJSONObject("USD");
+            builder.append(usdObject.getString("rate")).append("$").append("\n");
+
+            JSONObject gbpObject = bpiObject.getJSONObject("GBP");
+            builder.append(gbpObject.getString("rate")).append("£").append("\n");
+
+            JSONObject euroObject = bpiObject.getJSONObject("EUR");
+            builder.append(euroObject.getString("rate")).append("€").append("\n");
+            TextView textView = findViewById(R.id.txt2);
+            textView.setText(builder.toString());
+
+
+        } catch (Exception e) {
+
+        }
+    }
 
     //end of main
 }
