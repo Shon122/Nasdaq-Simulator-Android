@@ -14,6 +14,36 @@
         android:theme="@style/Theme.BankRehovot"
         tools:targetApi="31">
         <activity
+            android:name=".RegisterAccount"
+            android:exported="false" />
+        <activity
+            android:name=".CurrencyPage"
+            android:exported="false" />
+        <activity
+            android:name=".MarketAnalysis"
+            android:exported="false" />
+        <activity
+            android:name=".OngoingTrades"
+            android:exported="false" />
+        <activity
+            android:name=".ClosedTrades"
+            android:exported="false" />
+        <activity
+            android:name=".MessagesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TransactionsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".FundsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InvestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

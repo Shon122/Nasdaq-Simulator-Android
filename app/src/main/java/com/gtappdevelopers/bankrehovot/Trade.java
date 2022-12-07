@@ -12,6 +12,7 @@ public class Trade {
     public double stopLoss;
     public double limitProfit;
     public double totalProfitLoss;
+    public double percentProfitLoss;
 
     public Trade(Timestamp date1, String stockName1, double startPrice1, double currentPrice1,
                  double amountInvested1, double stopLoss1, double limitProfit1, boolean longShort1) {
@@ -22,10 +23,16 @@ public class Trade {
         amountInvested = amountInvested1;
         stopLoss = stopLoss1;
         limitProfit = limitProfit1;
-        longShort=longShort1;
-        totalProfitLoss=0;
+        longShort = longShort1;
+        totalProfitLoss = 0;
+        percentProfitLoss=0;
     }
 
+    public void profitLossCalculator() {
+//need to show percent and the normal one
 
+
+
+    }
 
 }
