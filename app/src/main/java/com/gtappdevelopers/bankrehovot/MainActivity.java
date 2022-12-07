@@ -2,6 +2,9 @@ package com.gtappdevelopers.bankrehovot;
 
 import android.os.Bundle;
 import android.widget.TextView;
+import java.util.Calendar;
+import java.util.Date;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,7 +34,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
 
-    public static final String BPI_ENDPOINT = "https://api.coindesk.com/v1/bpi/currentprice.json";
+    public static final String BPI_ENDPOINT = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2019-08-10&end=2019-08-15&currency=zar";
     private OkHttpClient okHttpClient = new OkHttpClient();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<String, Object> docData = new HashMap<>();
@@ -45,12 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         //create a trade
-//        Date date = new Date();
-//        Timestamp timestamp = (Timestamp) date;
-//        Trade trade1 = new Trade(timestamp, "MSFT", 3561, 3561,
-//                100, 3000, 4000, true);
-//        String test = trade1.limitProfit;
-//
+        Date currentTime = Calendar.getInstance().getTime();
+
+        Trade trade1 = new Trade(currentTime, "MSFT", 3561.0, 3561.0,
+                100.0, 3000.0, 4000.0, true);
+        String test =  trade1.limitProfit.toString();
 
 
         //this sets data
@@ -59,13 +61,13 @@ public class MainActivity extends AppCompatActivity {
         //this gets data
         //getData(); // got in in 'dataTaker' string
 
-
+//
         //show it in chart
         //showGraph();
 
 
-        //get price of btc
-        //load();
+       // get price of btc
+        load();
 
     }
 
@@ -138,22 +140,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void parseBpiResponse(String body) {
+
+
         try {
             StringBuilder builder = new StringBuilder();
 
             JSONObject jsonObject = new JSONObject(body);
-            JSONObject timeObject = jsonObject.getJSONObject("time");
-            builder.append(timeObject.getString("updated")).append("\n\n");
+//            JSONObject timeObject = jsonObject.getJSONObject("time");
+//            builder.append(timeObject.getString("updated")).append("\n\n");
+//
+//            JSONObject bpiObject = jsonObject.getJSONObject("bpi");
+//            JSONObject usdObject = bpiObject.getJSONObject("USD");
+//            builder.append(usdObject.getString("rate")).append("$").append("\n");
+//
+//            JSONObject gbpObject = bpiObject.getJSONObject("GBP");
+//            builder.append(gbpObject.getString("rate")).append("£").append("\n");
+//
+//            JSONObject euroObject = bpiObject.getJSONObject("EUR");
+//            builder.append(euroObject.getString("rate")).append("€").append("\n");
+
 
             JSONObject bpiObject = jsonObject.getJSONObject("bpi");
-            JSONObject usdObject = bpiObject.getJSONObject("USD");
-            builder.append(usdObject.getString("rate")).append("$").append("\n");
+          builder.append(bpiObject);
 
-            JSONObject gbpObject = bpiObject.getJSONObject("GBP");
-            builder.append(gbpObject.getString("rate")).append("£").append("\n");
-
-            JSONObject euroObject = bpiObject.getJSONObject("EUR");
-            builder.append(euroObject.getString("rate")).append("€").append("\n");
             TextView textView = findViewById(R.id.txt2);
             textView.setText(builder.toString());
 
