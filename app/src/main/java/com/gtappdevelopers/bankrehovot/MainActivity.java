@@ -34,7 +34,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
 
-    public static final String BPI_ENDPOINT = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2019-08-10&end=2019-08-15&currency=zar";
+    public static  String BPI_ENDPOINT = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2019-08-10&end=2019-08-15&currency=zar";
     private OkHttpClient okHttpClient = new OkHttpClient();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<String, Object> docData = new HashMap<>();
@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+//update all the data for the currencies first in the firebase
+        updateCurrencyData();
 
         //create a trade
         Date currentTime = Calendar.getInstance().getTime();
@@ -53,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
         Trade trade1 = new Trade(currentTime, "MSFT", 3561.0, 3561.0,
                 100.0, 3000.0, 4000.0, true);
         String test =  trade1.limitProfit.toString();
+        TextView textView = findViewById(R.id.txt1);
+        textView.setText(test);
+
+
+
 
 
         //this sets data
@@ -70,6 +76,19 @@ public class MainActivity extends AppCompatActivity {
         load();
 
     }
+
+
+    public void updateCurrencyData()
+    {
+
+
+
+
+
+    }
+
+
+
 
 
     public void showGraph() {
@@ -112,9 +131,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void load() {
-        Request request = new Request.Builder()
-                .url(BPI_ENDPOINT)
-                .build();
+        BPI_ENDPOINT = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2019-08-10&end=2019-08-15&currency=zar";
+
+
+        Request request = new Request.Builder().url(BPI_ENDPOINT).build();
 
 
         okHttpClient.newCall(request).enqueue(new Callback() {
