@@ -2,6 +2,7 @@ package com.gtappdevelopers.bankrehovot;
 
 import android.os.Bundle;
 import android.widget.TextView;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -34,7 +35,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
 
-    public static  String BPI_ENDPOINT = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2019-08-10&end=2019-08-15&currency=zar";
+    public static String BPI_ENDPOINT = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2019-08-10&end=2019-08-15&currency=zar";
     private OkHttpClient okHttpClient = new OkHttpClient();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<String, Object> docData = new HashMap<>();
@@ -49,16 +50,13 @@ public class MainActivity extends AppCompatActivity {
         updateCurrencyData();
 
         //create a trade
-        Date currentTime = Calendar.getInstance().getTime();
-
-        Trade trade1 = new Trade(currentTime, "MSFT", 3561.0, 3561.0,
-                100.0, 3000.0, 4000.0, true);
-        String test =  trade1.limitProfit.toString();
-        TextView textView = findViewById(R.id.txt1);
-        textView.setText(test);
-
-
-
+//        Date currentTime = Calendar.getInstance().getTime();
+//
+//        Trade trade1 = new Trade(currentTime, "MSFT", 3561.0, 3561.0,
+//                100.0, 3000.0, 4000.0, true);
+//        String test = trade1.limitProfit.toString();
+//        TextView textView = findViewById(R.id.txt1);
+//        textView.setText(test);
 
 
         //this sets data
@@ -72,23 +70,24 @@ public class MainActivity extends AppCompatActivity {
         //showGraph();
 
 
-       // get price of btc
+        // get price of btc
         load();
 
     }
 
 
-    public void updateCurrencyData()
-    {
-
+    public void updateCurrencyData() {
+    //first need to get the data
+        String[] namesCurrencies={"CAD","USD","ILS","EUR","AUD"};
+        Date currentTime = Calendar.getInstance().getTime();
+       String time= String.valueOf((currentTime.getTime()));
+       //now write the time like needed
+      //  BPI_ENDPOINT = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2019-08-10&end=+"+2019-08-15+"&currency=" + namesCurrencies[1];
 
 
 
 
     }
-
-
-
 
 
     public void showGraph() {
@@ -131,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void load() {
-        BPI_ENDPOINT = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2019-08-10&end=2019-08-15&currency=zar";
+       //BPI_ENDPOINT = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2019-08-10&end=2019-08-15&currency=zar";
 
 
         Request request = new Request.Builder().url(BPI_ENDPOINT).build();
@@ -181,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             JSONObject bpiObject = jsonObject.getJSONObject("bpi");
-          builder.append(bpiObject);
+            builder.append(bpiObject);
 
             TextView textView = findViewById(R.id.txt2);
             textView.setText(builder.toString());
