@@ -5,11 +5,11 @@ import java.util.Date;
 
 public class CurrencyModel {
     public String name;
-    public Date firstPriceDate; //gives the date according to the first price we took
+    public String firstPriceDate; //gives the date according to the first price we took
     public ArrayList<Double> priceList;
     public ArrayList<Date> dateList; //for each price it will save the date
 
-    public CurrencyModel(String name1, Date firstPriceDate1, ArrayList<Double> priceList1, ArrayList<Date> dateList1) {
+    public CurrencyModel(String name1, String firstPriceDate1, ArrayList<Double> priceList1, ArrayList<Date> dateList1) {
         name = name1;
         firstPriceDate = firstPriceDate1;
         priceList = removeInfiniteNumbers(priceList1);

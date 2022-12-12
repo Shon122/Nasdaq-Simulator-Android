@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Trade {
-    public Date date;
+    public String date;
     public String stockName;
     public Boolean longShort;//long is true, short is false
     public Double startPrice;
@@ -15,7 +15,7 @@ public class Trade {
     public Double totalProfitLoss;
     public Double percentProfitLoss;
 
-    public Trade(Date date1, String stockName1, Double startPrice1, Double currentPrice1,
+    public Trade(String date1, String stockName1, Double startPrice1, Double currentPrice1,
                  Double amountInvested1, Double stopLoss1, Double limitProfit1, Boolean longShort1) {
         date = date1;
         stockName = stockName1;
