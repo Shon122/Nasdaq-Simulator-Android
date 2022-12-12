@@ -33,9 +33,6 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "FinancialDataDownloader";
-    private static final String STOCKS_API = "pk_e5565284d93b4484a43fc6765f5bc6dd";
-    private static final String STOCKS_URL = "https://cloud.iexapis.com/stable/stock/";
     public static String BPI_ENDPOINT = "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=" + "c42711901b00e79841bb71702345719e";
     private OkHttpClient okHttpClient = new OkHttpClient();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
