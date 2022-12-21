@@ -1,15 +1,44 @@
 package com.gtappdevelopers.bankrehovot;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class InfoAll {
     public Long currentTime;
     public Long lastUpdateTime;
     public String[] apiList;
     public int apiIndex;
     public String[] stockNames;
+    public String[] currenciesNames;
+    public String[] cryptoNames;
     public StockModel[] stockModels;
     String ApiLink;
+    private OkHttpClient okHttpClient;
+    private FirebaseFirestore db;
+    Map<String, Object> docData;
+
 
     public InfoAll() {
+        stockNames = new String[]{"TSLA", "MSFT", "AMZN", "AAPL", "GOOGL", "NVDA", "META",
+                "NFLX", "ADBE", "IBM", "WMT", "MMM", "NKE", "PYPL", "JPM"};
+        cryptoNames = new String[]{"XRPUSD", "ETHUSD", "BTCUSD", "LUNAUSD", "DOGEUSD", "ADAUSD"
+                , "LTCUSD", "SOLUSD", "SHIBUSD", "ETCUSD", "ALGOUSD", "CROUSD", "LUNCUSD", "AAVEUSD", "BTTUSD"};
+        currenciesNames = new String[]{"EURUSD", "USDJPY", "GBPUSD", "ILSUSD", "AUDNOK", "CADBRL", "NZDTRY",
+                "PLNILS", "NZDCZK", "AUDPLN", "MXNGBP", "CHFJPY", "TRYDKK", "CADZAR", "EURBRL"};
+        okHttpClient = new OkHttpClient();
+        db = FirebaseFirestore.getInstance();
+        docData = new HashMap<>();
         currentTime = System.currentTimeMillis();
         apiList = new String[]{"c42711901b00e79841bb71702345719e",
                 "262483bd904a81b091b2e27cbcfc0655",
@@ -26,13 +55,66 @@ public class InfoAll {
                 "9a6a270b61f40c0e58d160cbb1c57131",
                 "02d49e539ff86d6fa9aa0f549efc93a3",
                 "b050b1fd76d5fb561c1fa00deeeea4d5",};
-        apiIndex=0;
-        ApiLink = "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=" + apiList[apiIndex];
-
+        apiIndex = 0;
+        ApiLink = "https://financialmodelingprep.com/api/v3/historical-chart/1min/MSFT?apikey=" + apiList[apiIndex];
+        load();
     }
 
     public void updateAll() {
-        //gets all the data and
+        //gets all the data and upload to firestore
+
+
+    }
+
+
+    private void load() {
+        Request request = new Request.Builder().url(ApiLink).build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                final String body = response.body().string();
+                parseBpiResponse(body);
+            }
+        });
+    }
+
+
+    private void parseBpiResponse(String body) {
+        //get prices and dates and upload to firebase
+        ArrayList<String> dates = new ArrayList<>();
+        ArrayList<String> prices = new ArrayList<>();
+        String saveString = "";
+
+        // TextView textView = findViewById(R.id.txt2);
+        //textView.setText(body.substring(dateIndex+9,dateIndex+9+11+8));
+        int tempIndex = body.indexOf("date");
+        while (tempIndex != -1) {
+            dates.add(body.substring(tempIndex + 9, tempIndex + 9 + 11 + 8));
+            saveString += dates.get(dates.size() - 1);
+            saveString += ",";
+            tempIndex = body.indexOf("date", tempIndex + 1);
+        }
+        saveString = saveString.replaceAll("(\\r|\\n)", "");
+        docData.put("dates", saveString);
+        db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
+
+        //after we got dates now we get prices
+        saveString = "";
+        tempIndex = body.indexOf("close");
+        while (tempIndex != -1) {
+            prices.add(body.substring(tempIndex + 9, tempIndex + 9 + 8));
+            saveString += prices.get(prices.size() - 1);
+            saveString += ",";
+            tempIndex = body.indexOf("close", tempIndex + 1);
+        }
+        saveString = saveString.replaceAll("(\\r|\\n)", "");
+        docData.put("prices", saveString);
+        db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
 
 
     }

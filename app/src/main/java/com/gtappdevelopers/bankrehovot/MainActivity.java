@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        InfoAll infoAll = new InfoAll();
 
 
         //create a trade
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //// get price of btc
-        load();
+        // load();
 //        TextView textView = findViewById(R.id.txt2);
 //        String info = (String) textView.getText();
 //        textView.setVisibility(View.INVISIBLE);
@@ -185,35 +186,33 @@ public class MainActivity extends AppCompatActivity {
         //get prices and dates and upload to firebase
         ArrayList<String> dates = new ArrayList<>();
         ArrayList<String> prices = new ArrayList<>();
-        String saveString="";
+        String saveString = "";
 
         // TextView textView = findViewById(R.id.txt2);
         //textView.setText(body.substring(dateIndex+9,dateIndex+9+11+8));
         int tempIndex = body.indexOf("date");
         while (tempIndex != -1) {
             dates.add(body.substring(tempIndex + 9, tempIndex + 9 + 11 + 8));
-            saveString+=dates.get(dates.size()-1);
-            saveString+= ",";
-            tempIndex = body.indexOf("date",tempIndex+1);
+            saveString += dates.get(dates.size() - 1);
+            saveString += ",";
+            tempIndex = body.indexOf("date", tempIndex + 1);
         }
-        saveString=saveString.replaceAll("(\\r|\\n)", "");
+        saveString = saveString.replaceAll("(\\r|\\n)", "");
         docData.put("dates", saveString);
         db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
 
         //after we got dates now we get prices
-        saveString="";
+        saveString = "";
         tempIndex = body.indexOf("close");
         while (tempIndex != -1) {
             prices.add(body.substring(tempIndex + 9, tempIndex + 9 + 8));
-            saveString+=prices.get(prices.size()-1);
-            saveString+= ",";
-            tempIndex = body.indexOf("close",tempIndex+1);
+            saveString += prices.get(prices.size() - 1);
+            saveString += ",";
+            tempIndex = body.indexOf("close", tempIndex + 1);
         }
-        saveString=saveString.replaceAll("(\\r|\\n)", "");
+        saveString = saveString.replaceAll("(\\r|\\n)", "");
         docData.put("prices", saveString);
         db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
-
-
 
 
     }

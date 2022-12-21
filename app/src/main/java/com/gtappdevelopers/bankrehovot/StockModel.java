@@ -7,13 +7,12 @@ public class StockModel {
     public String name;
     public ArrayList<Double> priceList;
     public ArrayList<String> dateList; //for each price it will save the date
-    public String news;
     public String analysis;
-
-    public StockModel(String name1) {
+public Double GainLossPercent;
+    public StockModel(String name1, ArrayList<Double> priceList1,ArrayList<String> dateList1) {
         name = name1;
-        priceList = new ArrayList<Double>();
-        dateList = new ArrayList<String>();
+        priceList = priceList1;
+        dateList = dateList1;
     }
 
     public ArrayList<Double> removeInfiniteNumbers(ArrayList<Double> priceList1) {
