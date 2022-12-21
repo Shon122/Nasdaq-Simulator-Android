@@ -2,15 +2,28 @@ package com.gtappdevelopers.bankrehovot;
 
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -33,7 +46,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static String BPI_ENDPOINT = "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=" + "c42711901b00e79841bb71702345719e";
+    public static String BPI_ENDPOINT = "https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=" + "f3366d9120bda80407791f48106ec000";
     private OkHttpClient okHttpClient = new OkHttpClient();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<String, Object> docData = new HashMap<>();
@@ -67,9 +80,32 @@ public class MainActivity extends AppCompatActivity {
         //showGraph();
 
 
-        // get price of btc
+        //// get price of btc
         load();
+//        TextView textView = findViewById(R.id.txt2);
+//        String info = (String) textView.getText();
+//        textView.setVisibility(View.INVISIBLE);
+//
+//        TextView textView1 = findViewById(R.id.txt1);
+//        textView1.setText(info);
+//        int dateIndex = info.indexOf("date");
+//        ArrayList<String> dates = new ArrayList<>();
+//        dates.add("first");
+//        while (dateIndex != -1 && dates.size()<10) {
+//            int tempIndex = info.indexOf('"', dateIndex + 1);
+//
+//            tempIndex = info.indexOf('"', tempIndex + 1);
+//            String take = info.substring(tempIndex, info.indexOf('"', dateIndex + 2));
+//            dates.add(take);
+//
+//            dateIndex = info.indexOf("date", dateIndex);
+//
+//
+//        }
+//        textView.setText(dates.get(0));
 
+
+        //end of oncreate
     }
 
 
@@ -88,8 +124,12 @@ public class MainActivity extends AppCompatActivity {
     public void setData() {
         docData.put("price", "1234");
         db.collection("Trades").add(docData); // this line creates a new document
-//
-//
+        //
+        //this will change a specific field inside an existing document
+        docData.put("price", "111");
+        db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
+
+
     }
 
     public void getData() {
@@ -142,38 +182,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void parseBpiResponse(String body) {
+        //get prices and dates and upload to firebase
+        ArrayList<String> dates = new ArrayList<>();
+        ArrayList<String> prices = new ArrayList<>();
+        String saveString="";
 
-        TextView textView = findViewById(R.id.txt2);
-        textView.setText(body);
-//
-//        try {
-//            StringBuilder builder = new StringBuilder();
-//
-//            JSONObject jsonObject = new JSONObject(body);
-//            JSONObject timeObject = jsonObject.getJSONObject("time");
-//            builder.append(timeObject.getString("updated")).append("\n\n");
-//
-////            JSONObject bpiObject = jsonObject.getJSONObject("bpi");
-////            JSONObject usdObject = bpiObject.getJSONObject("USD");
-////            builder.append(usdObject.getString("rate")).append("$").append("\n");
-////
-////            JSONObject gbpObject = bpiObject.getJSONObject("GBP");
-////            builder.append(gbpObject.getString("rate")).append("£").append("\n");
-////
-////            JSONObject euroObject = bpiObject.getJSONObject("EUR");
-////            builder.append(euroObject.getString("rate")).append("€").append("\n");
-//
-//
-//            JSONObject bpiObject = jsonObject.getJSONObject("bpi");
-//            builder.append(bpiObject);
-//
-//            TextView textView = findViewById(R.id.txt2);
-//            textView.setText(builder.toString());
-//
-//
-//        } catch (Exception e) {
-//
-//        }
+        // TextView textView = findViewById(R.id.txt2);
+        //textView.setText(body.substring(dateIndex+9,dateIndex+9+11+8));
+        int tempIndex = body.indexOf("date");
+        while (tempIndex != -1) {
+            dates.add(body.substring(tempIndex + 9, tempIndex + 9 + 11 + 8));
+            saveString+=dates.get(dates.size()-1);
+            saveString+= ",";
+            tempIndex = body.indexOf("date",tempIndex+1);
+        }
+        saveString=saveString.replaceAll("(\\r|\\n)", "");
+        docData.put("dates", saveString);
+        db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
+
+        //after we got dates now we get prices
+        saveString="";
+        tempIndex = body.indexOf("close");
+        while (tempIndex != -1) {
+            prices.add(body.substring(tempIndex + 9, tempIndex + 9 + 8));
+            saveString+=prices.get(prices.size()-1);
+            saveString+= ",";
+            tempIndex = body.indexOf("close",tempIndex+1);
+        }
+        saveString=saveString.replaceAll("(\\r|\\n)", "");
+        docData.put("prices", saveString);
+        db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
+
+
+
+
     }
 
 

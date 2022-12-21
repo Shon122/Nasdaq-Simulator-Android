@@ -3,21 +3,21 @@ package com.gtappdevelopers.bankrehovot;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class CurrencyModel {
+public class StockModel {
     public String name;
-    public String firstPriceDate; //gives the date according to the first price we took
     public ArrayList<Double> priceList;
-    public ArrayList<Date> dateList; //for each price it will save the date
+    public ArrayList<String> dateList; //for each price it will save the date
+    public String news;
+    public String analysis;
 
-    public CurrencyModel(String name1, String firstPriceDate1, ArrayList<Double> priceList1, ArrayList<Date> dateList1) {
+    public StockModel(String name1) {
         name = name1;
-        firstPriceDate = firstPriceDate1;
-        priceList = removeInfiniteNumbers(priceList1);
-        dateList = dateList1;
+        priceList = new ArrayList<Double>();
+        dateList = new ArrayList<String>();
     }
 
     public ArrayList<Double> removeInfiniteNumbers(ArrayList<Double> priceList1) {
-        //make sure the price is small and compact like 302.36 and not 302.363573895
+        //make sure the price is small and compact like 302.3656 and not 302.363573895
         ArrayList<Double> result = new ArrayList<Double>();
 
         for (int i = 0; i < priceList1.size(); i++) {
@@ -26,7 +26,7 @@ public class CurrencyModel {
             int totalCount = 0;
             Boolean afterPoint = false;
             String minimized = "";
-            while (count < 2) {
+            while (count < 4) {
 
                 if (temp.charAt(totalCount) == '.') {
                     minimized += temp.charAt(totalCount);
@@ -35,7 +35,7 @@ public class CurrencyModel {
                     continue;
                 }
 
-                if (afterPoint && count < 2) {
+                if (afterPoint && count < 4) {
                     minimized += temp.charAt(totalCount);
                     count++;
                 } else {
@@ -55,5 +55,20 @@ public class CurrencyModel {
         return result;
     }
 
+
+    public void extractToArrayPrice(String info) {
+        ArrayList<String> prices = new ArrayList<>();
+        ArrayList<String> dates = new ArrayList<>();
+        int dateIndex = info.indexOf("date");
+        while (dateIndex != -1) {
+            int tempIndex = info.indexOf('"', dateIndex + 1);
+            tempIndex = info.indexOf('"', tempIndex + 1);
+
+
+            dateIndex = info.indexOf("date", dateIndex);
+        }
+
+
+    }
 
 }
