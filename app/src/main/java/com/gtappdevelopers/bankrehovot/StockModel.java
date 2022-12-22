@@ -8,11 +8,21 @@ public class StockModel {
     public ArrayList<Double> priceList;
     public ArrayList<String> dateList; //for each price it will save the date
     public String analysis;
-public Double GainLossPercent;
-    public StockModel(String name1, ArrayList<Double> priceList1,ArrayList<String> dateList1) {
+    public Double gainLossPercent;
+
+    public StockModel(String name1, ArrayList<Double> priceList1, ArrayList<String> dateList1) {
         name = name1;
         priceList = priceList1;
         dateList = dateList1;
+        gainLossPercent = profitLossCalculator(priceList1.get(priceList1.size() - 1), priceList1.get(0));
+    }
+
+    public Double profitLossCalculator(Double currentPrice, Double startPrice) {
+        //gives -+16.66% percent for example
+
+        return (((currentPrice - startPrice) / startPrice) * 100);
+
+
     }
 
     public ArrayList<Double> removeInfiniteNumbers(ArrayList<Double> priceList1) {

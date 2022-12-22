@@ -1,6 +1,5 @@
 package com.gtappdevelopers.bankrehovot;
 
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -10,7 +9,10 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,6 +60,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         InfoAll infoAll = new InfoAll();
+//
+//        String takeDate = "2022-12-21 13:53:00";
+//
+//        java.text.SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        myDate.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
+//        Date newDate = null;
+//        try {
+//            newDate = myDate.parse(takeDate);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        takeDate = newDate.toString();
+//        TextView textView = findViewById(R.id.txt1);
+//        textView.setText(takeDate);
 
 
         //create a trade

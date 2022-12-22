@@ -4,9 +4,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -16,6 +22,7 @@ import okhttp3.Response;
 
 public class InfoAll {
     public Long currentTime;
+    public String news;
     public Long lastUpdateTime;
     public String[] apiList;
     public int apiIndex;
@@ -56,16 +63,30 @@ public class InfoAll {
                 "02d49e539ff86d6fa9aa0f549efc93a3",
                 "b050b1fd76d5fb561c1fa00deeeea4d5",};
         apiIndex = 0;
-        ApiLink = "https://financialmodelingprep.com/api/v3/historical-chart/1min/MSFT?apikey=" + apiList[apiIndex];
+        ApiLink = "https://financialmodelingprep.com/api/v3/historical-chart/1min/BTCUSD?apikey=" + apiList[apiIndex];
         load();
     }
 
     public void updateAll() {
         //gets all the data and upload to firestore
+        getNews();
+        getPrices();
+
+    }
+
+    public void getPrices() {
 
 
     }
 
+    public void getIndividualPrice() {
+
+
+    }
+    public void getNews() {
+
+
+    }
 
     private void load() {
         Request request = new Request.Builder().url(ApiLink).build();
@@ -78,13 +99,17 @@ public class InfoAll {
             public void onResponse(Call call, Response response)
                     throws IOException {
                 final String body = response.body().string();
-                parseBpiResponse(body);
+                try {
+                    parseBpiResponse(body);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
 
-    private void parseBpiResponse(String body) {
+    private void parseBpiResponse(String body) throws ParseException {
         //get prices and dates and upload to firebase
         ArrayList<String> dates = new ArrayList<>();
         ArrayList<String> prices = new ArrayList<>();
@@ -94,12 +119,26 @@ public class InfoAll {
         //textView.setText(body.substring(dateIndex+9,dateIndex+9+11+8));
         int tempIndex = body.indexOf("date");
         while (tempIndex != -1) {
-            dates.add(body.substring(tempIndex + 9, tempIndex + 9 + 11 + 8));
+            String takeDate = body.substring(tempIndex + 9, tempIndex + 9 + 11 + 8);
+
+
+            java.text.SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            myDate.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
+            Date newDate = null;
+            newDate = myDate.parse(takeDate);
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            takeDate = df.format(newDate); //the string result is like "2022-12-10"
+
+
+            dates.add(takeDate);
             saveString += dates.get(dates.size() - 1);
             saveString += ",";
             tempIndex = body.indexOf("date", tempIndex + 1);
         }
         saveString = saveString.replaceAll("(\\r|\\n)", "");
+        //now i change the time of date to UTC+2 israel time
+
+
         docData.put("dates", saveString);
         db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
 
