@@ -1,5 +1,6 @@
 package com.gtappdevelopers.bankrehovot;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -53,13 +54,13 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<String, Object> docData = new HashMap<>();
     String dataTaker = "s";
-    String priceTaker = "price307";
+    final String[] priceTaker = new String[1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        InfoAll infoAll = new InfoAll();
+        InfoAll infoAll = new InfoAll(this);
 //
 //        String takeDate = "2022-12-21 13:53:00";
 //
@@ -98,7 +99,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         //// get price of btc
-        // load();
+//        load();
+//        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//        String prices = sharedPreferences.getString("prices", "none");
+//        TextView textView = findViewById(R.id.txt2);
+//        textView.setText(prices);
+
 //        TextView textView = findViewById(R.id.txt2);
 //        String info = (String) textView.getText();
 //        textView.setVisibility(View.INVISIBLE);
@@ -169,17 +175,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void load() {
-        //BPI_ENDPOINT = "https://api.coindesk.com/v1/bpi/historical/close.json?start=2019-08-10&end=2019-08-15&currency=zar";
-
-
+    public void load() {
         Request request = new Request.Builder().url(BPI_ENDPOINT).build();
-
-
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
             }
 
             @Override
@@ -187,18 +187,21 @@ public class MainActivity extends AppCompatActivity {
                     throws IOException {
                 final String body = response.body().string();
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        parseBpiResponse(body);
-                    }
-                });
+
+                //check if its the first time im opening the program so i can start the shared prefrence
+                SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref",MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                myEdit.putString("prices", body);
+                myEdit.apply();
+
+
             }
         });
 
     }
 
-    private void parseBpiResponse(String body) {
+
+    public void parseBpiResponse(String body) throws ParseException {
         //get prices and dates and upload to firebase
         ArrayList<String> dates = new ArrayList<>();
         ArrayList<String> prices = new ArrayList<>();
@@ -208,12 +211,26 @@ public class MainActivity extends AppCompatActivity {
         //textView.setText(body.substring(dateIndex+9,dateIndex+9+11+8));
         int tempIndex = body.indexOf("date");
         while (tempIndex != -1) {
-            dates.add(body.substring(tempIndex + 9, tempIndex + 9 + 11 + 8));
+            String takeDate = body.substring(tempIndex + 9, tempIndex + 9 + 11 + 8);
+
+
+            java.text.SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            myDate.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
+            Date newDate = null;
+            newDate = myDate.parse(takeDate);
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            takeDate = df.format(newDate); //the string result is like "2022-12-10"
+
+
+            dates.add(takeDate);
             saveString += dates.get(dates.size() - 1);
             saveString += ",";
             tempIndex = body.indexOf("date", tempIndex + 1);
         }
         saveString = saveString.replaceAll("(\\r|\\n)", "");
+        //now i change the time of date to UTC+2 israel time
+
+
         docData.put("dates", saveString);
         db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
 

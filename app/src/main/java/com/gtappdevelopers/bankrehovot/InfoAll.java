@@ -1,5 +1,8 @@
 package com.gtappdevelopers.bankrehovot;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -20,6 +23,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
+
+import static android.content.Context.MODE_PRIVATE;
+
 public class InfoAll {
     public Long currentTime;
     public String news;
@@ -29,20 +37,37 @@ public class InfoAll {
     public String[] stockNames;
     public String[] currenciesNames;
     public String[] cryptoNames;
+    public String[] allNames;
     public StockModel[] stockModels;
-    String ApiLink;
+    String apiLink;
     private OkHttpClient okHttpClient;
     private FirebaseFirestore db;
     Map<String, Object> docData;
+    public Context mContext;
 
-
-    public InfoAll() {
+    public InfoAll(Context context) {
+        mContext = context;
         stockNames = new String[]{"TSLA", "MSFT", "AMZN", "AAPL", "GOOGL", "NVDA", "META",
                 "NFLX", "ADBE", "IBM", "WMT", "MMM", "NKE", "PYPL", "JPM"};
         cryptoNames = new String[]{"XRPUSD", "ETHUSD", "BTCUSD", "LUNAUSD", "DOGEUSD", "ADAUSD"
                 , "LTCUSD", "SOLUSD", "SHIBUSD", "ETCUSD", "ALGOUSD", "CROUSD", "LUNCUSD", "AAVEUSD", "BTTUSD"};
         currenciesNames = new String[]{"EURUSD", "USDJPY", "GBPUSD", "ILSUSD", "AUDNOK", "CADBRL", "NZDTRY",
                 "PLNILS", "NZDCZK", "AUDPLN", "MXNGBP", "CHFJPY", "TRYDKK", "CADZAR", "EURBRL"};
+
+        int tempIndex = 0;
+        allNames = new String[stockNames.length + cryptoNames.length + currenciesNames.length];
+        for (int i = 0; i < stockNames.length; i++) {
+            allNames[tempIndex] = stockNames[i];
+            tempIndex++;
+        }
+        for (int i = 0; i < cryptoNames.length; i++) {
+            allNames[tempIndex] = cryptoNames[i];
+            tempIndex++;
+        }
+        for (int i = 0; i < currenciesNames.length; i++) {
+            allNames[tempIndex] = currenciesNames[i];
+            tempIndex++;
+        }
         okHttpClient = new OkHttpClient();
         db = FirebaseFirestore.getInstance();
         docData = new HashMap<>();
@@ -63,12 +88,14 @@ public class InfoAll {
                 "02d49e539ff86d6fa9aa0f549efc93a3",
                 "b050b1fd76d5fb561c1fa00deeeea4d5",};
         apiIndex = 0;
-        ApiLink = "https://financialmodelingprep.com/api/v3/historical-chart/1min/BTCUSD?apikey=" + apiList[apiIndex];
-        load();
+        apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/1min/BTCUSD?apikey=" + apiList[apiIndex];
+        getNews();
     }
 
     public void updateAll() {
         //gets all the data and upload to firestore
+        //now i need to check if the firebase data is older than 1 minute and
+        //only then i will be able to get new data
         getNews();
         getPrices();
 
@@ -83,13 +110,27 @@ public class InfoAll {
 
 
     }
+
     public void getNews() {
+        apiLink = "https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=5&apikey=" + apiList[apiIndex];
+        apiIndex++;
+        load();
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        String data = sharedPreferences.getString("data", "none");
+        //after i get string upload to firebase
+        data = data.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " ");
+        data = data.replaceAll("\\r\\n|\\r|\\n", " ");
+        data=data.substring(  data.indexOf("content",25)  ,data.indexOf("tickers"));
+
+
+        docData.put("news", data);
+        db.collection("Trades").document("newsAll").set(docData, SetOptions.merge());
 
 
     }
 
-    private void load() {
-        Request request = new Request.Builder().url(ApiLink).build();
+    public void load() {
+        Request request = new Request.Builder().url(apiLink).build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -99,17 +140,19 @@ public class InfoAll {
             public void onResponse(Call call, Response response)
                     throws IOException {
                 final String body = response.body().string();
-                try {
-                    parseBpiResponse(body);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+
+                SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                myEdit.putString("data", body);
+                myEdit.apply();
+
+
             }
         });
     }
 
 
-    private void parseBpiResponse(String body) throws ParseException {
+    public void parseBpiResponse(String body) throws ParseException {
         //get prices and dates and upload to firebase
         ArrayList<String> dates = new ArrayList<>();
         ArrayList<String> prices = new ArrayList<>();
