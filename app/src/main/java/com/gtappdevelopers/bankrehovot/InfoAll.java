@@ -95,20 +95,35 @@ public class InfoAll {
                 "b050b1fd76d5fb561c1fa00deeeea4d5",};
         apiIndex = 0;
         apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/1min/BTCUSD?apikey=" + apiList[apiIndex];
-
+        stockModels = new StockModel[stockNames.length];
+        updatePrices("1min");
     }
 
     public void updateAll() {
         //gets all the data and upload to firestore
         //now i need to check if the firebase data is older than 1 minute and
         //only then i will be able to get new data
-        getNews();
-        getPrices();
+        updateNews();
+        updatePrices("1min");
 
     }
 
-    public void getPrices() {
+    public void updatePrices(String timeInterval) { //available time intervals: 1min,5min,15min,30min,1hour,4hour. for days its link /historical-price-full/AAPL
+        //get all the info into the variables first
+        for (int i = 0; i < stockModels.length; i++) {
+            String nameStock=stockNames[i];
+        //now extract prices
+            ArrayList<Double> priceList= new ArrayList<>();
 
+
+
+            ArrayList<Double> dateList= new ArrayList<>();
+        }
+
+
+        //upload variables info to firebase
+        docData.put("price", "555");// creates an entirely new document with new field
+        db.collection("Trades").document("stockInfo").collection("allStocks").document("ETHUSD").set(docData);
 
     }
 
@@ -117,7 +132,7 @@ public class InfoAll {
 
     }
 
-    public void getNews() {
+    public void updateNews() {
         long lastUpdate = 0;
         //get lastUpdate data from firebase
         db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -172,8 +187,27 @@ public class InfoAll {
 
             docData.put("news", data);
             db.collection("Trades").document("newsAll").set(docData, SetOptions.merge());
-        }
+            news = data;
+        } else {
+            db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
 
+
+                        String uploaderTaker = (document.get("news").toString());
+                        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                        myEdit.putString("dataNews", uploaderTaker);
+                        myEdit.apply();
+
+                    }
+                }
+            });
+            String dataNewsTaker = sharedPreferences.getString("dataNews", "5");
+            news = dataNewsTaker;
+        }
 
     }
 

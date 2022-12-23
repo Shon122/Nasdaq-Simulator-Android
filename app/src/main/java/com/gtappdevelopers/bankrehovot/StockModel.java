@@ -15,6 +15,12 @@ public class StockModel {
         priceList = priceList1;
         dateList = dateList1;
         gainLossPercent = profitLossCalculator(priceList1.get(priceList1.size() - 1), priceList1.get(0));
+        analysis = updateAnalysis(priceList1);
+    }
+
+    public String updateAnalysis(ArrayList<Double> priceList) {
+
+        return "";
     }
 
     public Double profitLossCalculator(Double currentPrice, Double startPrice) {

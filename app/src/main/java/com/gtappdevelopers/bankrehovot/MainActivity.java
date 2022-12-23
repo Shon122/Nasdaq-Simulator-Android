@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         InfoAll infoAll = new InfoAll(this);
+//        docData.put("agae3", "just testing");
+//        db.collection("palol1").document("lkol12").set(docData, SetOptions.merge());
 //        db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 //            @Override
 //            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            }
 //        });
+
 
 //
 //        String takeDate = "2022-12-21 13:53:00";
@@ -161,6 +164,10 @@ public class MainActivity extends AppCompatActivity {
         docData.put("price", "1234");
         db.collection("Trades").add(docData); // this line creates a new document
         //
+        //this creates or sets if already created
+        docData.put("price","555");// creates an entirely new document with new field
+        db.collection("Trades").document("stockInfo").collection("allStocks").document("ETHUSD").set(docData);
+
         //this will change a specific field inside an existing document
         docData.put("price", "111");
         db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
