@@ -60,7 +60,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        InfoAll infoAll = new InfoAll(this);
+        try {
+            InfoAll infoAll = new InfoAll(this);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 //        docData.put("agae3", "just testing");
 //        db.collection("palol1").document("lkol12").set(docData, SetOptions.merge());
 //        db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

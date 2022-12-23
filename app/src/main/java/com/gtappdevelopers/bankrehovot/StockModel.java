@@ -11,12 +11,15 @@ public class StockModel {
     public String analysis;
     public Double gainLossPercent;
 
-    public StockModel(String name1, ArrayList<Double> priceList1, ArrayList<String> dateList1,String timeInterval1) {
+    public StockModel(String name1, ArrayList<Double> priceList1, ArrayList<String> dateList1, String timeInterval1) {
         name = name1;
         priceList = priceList1;
-        timeInterval= timeInterval1;
+        timeInterval = timeInterval1;
         dateList = dateList1;
-        gainLossPercent = profitLossCalculator(priceList1.get(priceList1.size() - 1), priceList1.get(0));
+        if (priceList1.size() > 0)
+            gainLossPercent = profitLossCalculator(priceList1.get(priceList1.size() - 1), priceList1.get(0));
+        else
+            gainLossPercent = 0.0;
         analysis = updateAnalysis(priceList1);
     }
 
