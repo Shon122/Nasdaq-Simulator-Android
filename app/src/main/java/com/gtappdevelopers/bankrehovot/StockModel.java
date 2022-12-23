@@ -5,14 +5,16 @@ import java.util.Date;
 
 public class StockModel {
     public String name;
+    public String timeInterval;
     public ArrayList<Double> priceList;
     public ArrayList<String> dateList; //for each price it will save the date
     public String analysis;
     public Double gainLossPercent;
 
-    public StockModel(String name1, ArrayList<Double> priceList1, ArrayList<String> dateList1) {
+    public StockModel(String name1, ArrayList<Double> priceList1, ArrayList<String> dateList1,String timeInterval1) {
         name = name1;
         priceList = priceList1;
+        timeInterval= timeInterval1;
         dateList = dateList1;
         gainLossPercent = profitLossCalculator(priceList1.get(priceList1.size() - 1), priceList1.get(0));
         analysis = updateAnalysis(priceList1);

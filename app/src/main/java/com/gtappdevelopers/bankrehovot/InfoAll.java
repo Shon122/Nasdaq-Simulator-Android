@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import okhttp3.Call;
@@ -51,7 +52,26 @@ public class InfoAll {
     Map<String, Object> docData;
     public Context mContext;
 
+
+    /////////////////////////////////////////////////
     public InfoAll(Context context) {
+        //get api index from firebase
+        db.collection("Trades").document("indexapi").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    String uploaderTaker = (document.get("indexnumber").toString());
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                    myEdit.putInt("dataIndexApi", Integer.parseInt(uploaderTaker));
+                    myEdit.apply();
+                }
+            }
+        });
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        apiIndex = sharedPreferences.getInt("dataIndexApi", 0);
+
         mContext = context;
         stockNames = new String[]{"TSLA", "MSFT", "AMZN", "AAPL", "GOOGL", "NVDA", "META",
                 "NFLX", "ADBE", "IBM", "WMT", "MMM", "NKE", "PYPL", "JPM"};
@@ -93,7 +113,6 @@ public class InfoAll {
                 "9a6a270b61f40c0e58d160cbb1c57131",
                 "02d49e539ff86d6fa9aa0f549efc93a3",
                 "b050b1fd76d5fb561c1fa00deeeea4d5",};
-        apiIndex = 0;
         apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/1min/BTCUSD?apikey=" + apiList[apiIndex];
         stockModels = new StockModel[stockNames.length];
         updatePrices("1min");
@@ -108,23 +127,69 @@ public class InfoAll {
 
     }
 
-    public void updatePrices(String timeInterval) { //available time intervals: 1min,5min,15min,30min,1hour,4hour. for days its link /historical-price-full/AAPL
+    public void updatePrices(String timeInterval) { // 1min,5min,15min,30min,1hour,4hour. for days its link /historical-price-full/AAPL so write day
         //get all the info into the variables first
+
         for (int i = 0; i < stockModels.length; i++) {
-            String nameStock=stockNames[i];
-        //now extract prices
-            ArrayList<Double> priceList= new ArrayList<>();
+            String nameStock = stockNames[i];
+            //check if the name of the stock was recently updated or not
+            //
+            db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        String uploaderTaker = (document.get("timeinterval").toString());
+                        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                        myEdit.putString("dataLastInterval", uploaderTaker);
+                        myEdit.apply();
+                    }
+                }
+            });
+            SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+            String lastTimeInterval = sharedPreferences.getString("dataLastInterval", "none");
+
+            db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        String uploaderTaker = (document.get("lastUpdate").toString());
+                        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                        myEdit.putLong("dataLastUpdate", Long.parseLong(uploaderTaker));
+                        myEdit.apply();
+                    }
+                }
+            });
+            long lastTimeUpdate = sharedPreferences.getLong("dataLastUpdate", 0);
+            int diff = (int) (currentTime - lastTimeUpdate);
+            //////
+            if (diff > 120000 || !Objects.equals(timeInterval, lastTimeInterval)) {
+                if (Objects.equals(timeInterval, "day")) {
+                    apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + nameStock + "?serietype=line&apikey=" + apiList[apiIndex];
+                } else {
+                    apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + nameStock + "?apikey=" + apiList[apiIndex];
+
+                }
+                load();
+                apiIndex++;
+                String dataTaker = sharedPreferences.getString("data", "none");
+                //now extract prices
+                ArrayList<Double> priceList = new ArrayList<>();
 
 
-
-            ArrayList<Double> dateList= new ArrayList<>();
+                ArrayList<String> dateList = new ArrayList<>();
+                stockModels[i] = new StockModel(nameStock, priceList, dateList, timeInterval);
+            }
         }
 
-
-        //upload variables info to firebase
-        docData.put("price", "555");// creates an entirely new document with new field
-        db.collection("Trades").document("stockInfo").collection("allStocks").document("ETHUSD").set(docData);
-
+        //
+        //
+        //update the index number in firebase
+        docData.put("indexnumber", apiIndex);
+        db.collection("Trades").document("indexapi").set(docData, SetOptions.merge());
     }
 
     public void getIndividualPrice() {
@@ -160,8 +225,8 @@ public class InfoAll {
 
         if (diff > 120000) {
             apiLink = "https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=5&apikey=" + apiList[apiIndex];
-            apiIndex++;
             load();
+            apiIndex++;
             String data = sharedPreferences.getString("data", "none");
             //after i get string upload to firebase
             data = data.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " ");
