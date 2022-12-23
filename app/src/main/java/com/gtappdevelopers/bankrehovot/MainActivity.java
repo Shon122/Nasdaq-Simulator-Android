@@ -61,6 +61,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         InfoAll infoAll = new InfoAll(this);
+//        db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//
+//                    TextView textView = findViewById(R.id.txt1);
+//                    textView.setText(document.get("lastNewsUpdate").toString());
+//
+//                }
+//            }
+//        });
+
 //
 //        String takeDate = "2022-12-21 13:53:00";
 //
@@ -156,22 +169,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getData() {
-        db.collection("Trades").document("Prices").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
 
                     TextView textView = findViewById(R.id.txt1);
-                    textView.setText(document.getData() + "s");
-                    //now taking it back to string type
-                    dataTaker = textView.getText().toString(); //got it in string form
-                    //and now reset the text view so it doesnt bother anything
-                    textView.setText("");
+                    textView.setText(document.get("lastNewsUpdate").toString());
+
                 }
             }
         });
-
 
     }
 
@@ -189,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 //check if its the first time im opening the program so i can start the shared prefrence
-                SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref",MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
                 SharedPreferences.Editor myEdit = sharedPreferences.edit();
                 myEdit.putString("prices", body);
                 myEdit.apply();

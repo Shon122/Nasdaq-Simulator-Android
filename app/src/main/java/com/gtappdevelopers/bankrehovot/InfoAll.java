@@ -3,6 +3,9 @@ package com.gtappdevelopers.bankrehovot;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -25,8 +28,11 @@ import okhttp3.Response;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.widget.TextView;
 
 import static android.content.Context.MODE_PRIVATE;
+
+import androidx.annotation.NonNull;
 
 public class InfoAll {
     public Long currentTime;
@@ -89,7 +95,7 @@ public class InfoAll {
                 "b050b1fd76d5fb561c1fa00deeeea4d5",};
         apiIndex = 0;
         apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/1min/BTCUSD?apikey=" + apiList[apiIndex];
-        getNews();
+
     }
 
     public void updateAll() {
@@ -112,19 +118,61 @@ public class InfoAll {
     }
 
     public void getNews() {
-        apiLink = "https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=5&apikey=" + apiList[apiIndex];
-        apiIndex++;
-        load();
+        long lastUpdate = 0;
+        //get lastUpdate data from firebase
+        db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+
+
+                    String uploaderTaker = (document.get("lastNewsUpdate").toString());
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                    myEdit.putString("dataLastUpdate", uploaderTaker);
+                    myEdit.apply();
+
+                }
+            }
+        });
         SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        String data = sharedPreferences.getString("data", "none");
-        //after i get string upload to firebase
-        data = data.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " ");
-        data = data.replaceAll("\\r\\n|\\r|\\n", " ");
-        data=data.substring(  data.indexOf("content",25)  ,data.indexOf("tickers"));
+        String dataTaker = sharedPreferences.getString("dataLastUpdate", "5");
+        lastUpdate = Long.parseLong((dataTaker));
+        int diff = (int) (currentTime - lastUpdate); // 1 min = 60000 ms
+        //make sure more than 2 minute has passed since last call
 
 
-        docData.put("news", data);
-        db.collection("Trades").document("newsAll").set(docData, SetOptions.merge());
+        if (diff > 120000) {
+            apiLink = "https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=5&apikey=" + apiList[apiIndex];
+            apiIndex++;
+            load();
+            String data = sharedPreferences.getString("data", "none");
+            //after i get string upload to firebase
+            data = data.replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " ");
+            data = data.replaceAll("\\r\\n|\\r|\\n", " ");
+            String temp = String.valueOf((char) 92);
+            data = data.replace(temp + "n", "");
+            //now i just filter so it will only show content
+            ArrayList<String> allContent = new ArrayList<>();
+            int contentIndex = data.indexOf((String.valueOf('"') + "content" + String.valueOf('"')), 25); // searching for " ("content")"
+            while (contentIndex != -1) {
+                String takePart = data.substring(contentIndex + 14, (data.indexOf("tickers", contentIndex + 9)) - 10);
+                allContent.add(takePart);
+
+                contentIndex = data.indexOf(String.valueOf('"') + "content" + String.valueOf('"'), contentIndex + 15);
+            }
+            data = "";
+            for (int i = 0; i < allContent.size(); i++) {
+                data += "" + allContent.get(i) + ". ";
+
+            }
+            docData.put("lastNewsUpdate", currentTime);
+            db.collection("Trades").document("newsAll").set(docData, SetOptions.merge());
+
+            docData.put("news", data);
+            db.collection("Trades").document("newsAll").set(docData, SetOptions.merge());
+        }
 
 
     }
