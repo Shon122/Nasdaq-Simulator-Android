@@ -179,7 +179,7 @@ public class InfoAll {
                     apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + nameStock + "?apikey=" + apiList[apiIndex];
 
                 }
-                load();
+                load(apiLink);
                 apiIndex++;
                 if (apiIndex >= apiList.length)
                     apiIndex = 0;
@@ -257,121 +257,171 @@ public class InfoAll {
 
 
     public void updateIndividualPrice(String nameStock, String timeInterval) throws ParseException {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        docData.put("analysis", "changed");// creates an entirely new document with new field
+        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
+
+//        //make sure it did update price
+//        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    String uploaderTaker = (String) document.get("dateList");
+//                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//                    myEdit.putString("data1", uploaderTaker);
+//                    myEdit.apply();
+//                    uploaderTaker = (String) document.get("priceList");
+//                    myEdit = sharedPreferences.edit();
+//                    myEdit.putString("data2", uploaderTaker);
+//                    myEdit.apply();
+//
+//                }
+//            }
+//        });
+//        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//        String lastDateFirebase = sharedPreferences.getString("data1", "none");
+//        String lastPriceFirebase = sharedPreferences.getString("data2", "none");
+//        String takenPriceFirebase = lastPriceFirebase;
+//        String takenDateFirebase = lastDateFirebase;
+//        while (takenPriceFirebase.equals(lastPriceFirebase) || takenDateFirebase.equals(lastDateFirebase)) {
         //check if the name of the stock was recently updated or not
         //
-        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    String uploaderTaker = (String) document.get("timeinterval");
-                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                    myEdit.putString("dataLastInterval", uploaderTaker);
-                    myEdit.apply();
-                }
-            }
-        });
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        String lastTimeInterval = sharedPreferences.getString("dataLastInterval", "none");
 
-        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    Object nowTake = document.get("lastUpdate");
-                    long uploaderTaker = (long) nowTake;
-                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                    myEdit.putString("dataLastUpdate", String.valueOf(uploaderTaker));
-                    myEdit.apply();
-                }
-            }
-        });
-        long lastTimeUpdate = Long.parseLong(sharedPreferences.getString("dataLastUpdate", "1671869153213"));
-        long diff = (currentTime - lastTimeUpdate);
+
+        //
+//        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    String uploaderTaker = (String) document.get("timeinterval");
+//                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//                    myEdit.putString("dataLastInterval", uploaderTaker);
+//                    myEdit.apply();
+//                }
+//            }
+//        });
+//        String lastTimeInterval = sharedPreferences.getString("dataLastInterval", "none");
+//
+//        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    Object nowTake = document.get("lastUpdate");
+//                    long uploaderTaker = (long) nowTake;
+//                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//                    myEdit.putString("dataLastUpdate", String.valueOf(uploaderTaker));
+//                    myEdit.apply();
+//                }
+//            }
+//        });
+//        long lastTimeUpdate = Long.parseLong(sharedPreferences.getString("dataLastUpdate", "1671869153213"));
+//        long diff = (currentTime - lastTimeUpdate);
         //////
-        if (1 == 1 || !Objects.equals(timeInterval, lastTimeInterval)) {
-            if (timeInterval.toString().equals("day")) {
-                apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + nameStock + "?apikey=" + apiList[apiIndex];
+        if (timeInterval.equals("day")) {
+            apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + nameStock + "?apikey=" + apiList[apiIndex];
+        } else {
+            apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + nameStock + "?apikey=" + apiList[apiIndex];
+        }
+        docData.put("analysis", apiLink);// creates an entirely new document with new field
+        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
+        load(apiLink);
+        apiIndex++;
+        if (apiIndex >= apiList.length)
+            apiIndex = 0;
+        String dataTaker = "";
+        dataTaker = sharedPreferences.getString("data", "none");
+        docData.put("analysis", dataTaker);// creates an entirely new document with new field
+        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
+        //now extract prices
+        ArrayList<Double> priceList = new ArrayList<>();
+        String saveString = "";
+        int tempIndex = dataTaker.indexOf("close");
+        while (tempIndex > -1) {
+            String takeHere1 = (dataTaker.substring(tempIndex + 9, dataTaker.indexOf(',', tempIndex + 9)));
+
+            priceList.add(Double.valueOf(takeHere1));
+            saveString += priceList.get(priceList.size() - 1);
+            tempIndex = dataTaker.indexOf("close", tempIndex + 1);
+            if (tempIndex != -1)
+                saveString += ",";
+        }
+        saveString = saveString.replaceAll("(\\r|\\n)", "");
+        String savePriceString = saveString; //this i will upload to firebase
+        ArrayList<String> dateList = new ArrayList<>();
+        saveString = ""; //!!IMPORTANT TO RESET THE SAVESTRING!!!!!!!!!!
+        tempIndex = dataTaker.indexOf("date");
+        while (tempIndex != -1) {
+            String takeDate = "";
+            if (timeInterval.equals("day")) {
+                takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 10);
             } else {
-                apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + nameStock + "?apikey=" + apiList[apiIndex];
-
-            }
-            load();
-            apiIndex++;
-            if (apiIndex >= apiList.length)
-                apiIndex = 0;
-            String dataTaker = "";
-            while (dataTaker.equals("") || dataTaker.equals("none") || dataTaker.length()<20) {
-                dataTaker = sharedPreferences.getString("data", "none");
-            }
-            //now extract prices
-            ArrayList<Double> priceList = new ArrayList<>();
-            String saveString = "";
-            int tempIndex = dataTaker.indexOf("close");
-            while (tempIndex > -1) {
-                String takeHere1 = (dataTaker.substring(tempIndex + 9, dataTaker.indexOf(',', tempIndex + 9)));
-
-                priceList.add(Double.valueOf(takeHere1));
-                saveString += priceList.get(priceList.size() - 1);
-                tempIndex = dataTaker.indexOf("close", tempIndex + 1);
-                if (tempIndex != -1)
-                    saveString += ",";
-            }
-            saveString = saveString.replaceAll("(\\r|\\n)", "");
-            String savePriceString = saveString; //this i will upload to firebase
-            ArrayList<String> dateList = new ArrayList<>();
-            saveString = ""; //!!IMPORTANT TO RESET THE SAVESTRING!!!!!!!!!!
-            tempIndex = dataTaker.indexOf("date");
-            while (tempIndex != -1) {
-                String takeDate = "";
-                if (!(timeInterval.toString().equals("day"))) {
-                    takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 11 + 8);
-                    java.text.SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 11 + 8);
+                if (!takeDate.contains("o")) {
+                    SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     myDate.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
                     Date newDate = null;
                     newDate = myDate.parse(takeDate);
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                     takeDate = df.format(newDate); //the string result is like "2022-12-10"
-                } else {
-                    takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 10);
-
                 }
-                dateList.add(takeDate);
-                saveString += dateList.get(dateList.size() - 1);
-
-                tempIndex = dataTaker.indexOf("date", tempIndex + 1);
-                if (tempIndex != -1)
-                    saveString += ",";
-
             }
-            saveString = saveString.replaceAll("(\\r|\\n)", "");
-            String saveDatesString = saveString; // this i upload to firebase
-
-            StockModel adir = new StockModel(nameStock, priceList, dateList, timeInterval);
-
-            //now upload priceList to firebase
-            docData.put("analysis", adir.analysis);// creates an entirely new document with new field
-            db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
-
-            docData.put("dateList", saveDatesString);// creates an entirely new document with new field
-            db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
-
-            docData.put("gainLossPercent", adir.gainLossPercent);// creates an entirely new document with new field
-            db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
-
-            docData.put("lastUpdate", currentTime);// creates an entirely new document with new field
-            db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
-
-            docData.put("priceList", savePriceString);// creates an entirely new document with new field
-            db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
-
-            docData.put("timeinterval", timeInterval);// creates an entirely new document with new field
-            db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
-
+            dateList.add(takeDate);
+            saveString += dateList.get(dateList.size() - 1);
+            tempIndex = dataTaker.indexOf("date", tempIndex + 1);
+            if (tempIndex != -1)
+                saveString += ",";
         }
+        saveString = saveString.replaceAll("(\\r|\\n)", "");
+        String saveDatesString = saveString; // this i upload to firebase
+        StockModel adir = new StockModel(nameStock, priceList, dateList, timeInterval);
+        //now upload priceList to firebase
+//        docData.put("analysis", adir.analysis);// creates an entirely new document with new field
+//        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
+        docData.put("dateList", saveDatesString);// creates an entirely new document with new field
+        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
+
+        docData.put("gainLossPercent", adir.gainLossPercent);// creates an entirely new document with new field
+        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
+
+        docData.put("lastUpdate", currentTime);// creates an entirely new document with new field
+        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
+
+        docData.put("priceList", savePriceString);// creates an entirely new document with new field
+        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
+
+        docData.put("timeinterval", timeInterval);// creates an entirely new document with new field
+        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
+        //            db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                @Override
+//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                    if (task.isSuccessful()) {
+//                        DocumentSnapshot document = task.getResult();
+//                        String uploaderTaker = (String) document.get("dateList");
+//                        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//                        myEdit.putString("data1", uploaderTaker);
+//                        myEdit.apply();
+//                        uploaderTaker = (String) document.get("priceList");
+//                        myEdit = sharedPreferences.edit();
+//                        myEdit.putString("data2", uploaderTaker);
+//                        myEdit.apply();
+//
+//                    }
+//                }
+//            });
+//            lastDateFirebase = sharedPreferences.getString("data1", "none");
+//            lastPriceFirebase = sharedPreferences.getString("data2", "none");
+//            if (!(takenPriceFirebase.equals(lastPriceFirebase)) || !(takenDateFirebase.equals(lastDateFirebase)))
+//                break
+//                ;
+        //}
     }
 
 
@@ -403,7 +453,7 @@ public class InfoAll {
 
         if (diff > 120000) {
             apiLink = "https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=5&apikey=" + apiList[apiIndex];
-            load();
+            load(apiLink);
             apiIndex++;
             if (apiIndex > apiList.length)
                 apiIndex = 0;
@@ -457,8 +507,8 @@ public class InfoAll {
     }
 
 
-    public void load() {
-        Request request = new Request.Builder().url(apiLink).build();
+    public void load(String apiLink1) {
+        Request request = new Request.Builder().url(apiLink1).build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

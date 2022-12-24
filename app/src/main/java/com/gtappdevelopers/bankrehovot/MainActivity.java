@@ -60,27 +60,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        try {    // 1min,5min,15min,30min,1hour,4hour. for days its link /historical-price-full/AAPL so write day
-            InfoAll infoAll = new InfoAll(this);
-
-            infoAll.updateIndividualPrice("AAPL","4hour");
-            infoAll.updateIndividualPrice("AAPL","4hour");
-            infoAll.updateIndividualPrice("AAPL","4hour");
-            infoAll.updateIndividualPrice("AAPL","4hour");
-            infoAll.updateIndividualPrice("AAPL","4hour");
-            infoAll.updateIndividualPrice("AAPL","4hour");
-            infoAll.updateIndividualPrice("AAPL","4hour");
-            infoAll.updateIndividualPrice("AAPL","4hour");
-            infoAll.updateIndividualPrice("AAPL","4hour");
-//            infoAll.updateIndividualPrice("AAPL","1hour");
-//            infoAll.updateIndividualPrice("AAPL","1hour");
-//            infoAll.updateIndividualPrice("AAPL","1hour");
-//            infoAll.updateIndividualPrice("AAPL","1hour");
-//            infoAll.updateIndividualPrice("AAPL","1hour");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+//
+//        try {    // 1min,5min,15min,30min,1hour,4hour. for days its link /historical-price-full/AAPL so write day
+//            InfoAll infoAll = new InfoAll(this);
+//            for (int i = 0; i < 55; i++) {
+//                infoAll.updateIndividualPrice("AAPL", "day");
+//            }
+//
+////            infoAll.updateIndividualPrice("AAPL","1hour");
+////            infoAll.updateIndividualPrice("AAPL","1hour");
+////            infoAll.updateIndividualPrice("AAPL","1hour");
+////            infoAll.updateIndividualPrice("AAPL","1hour");
+////            infoAll.updateIndividualPrice("AAPL","1hour");
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
 
 
 //        docData.put("agae3", "just testing");
@@ -187,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
         db.collection("Trades").add(docData); // this line creates a new document
         //
         //this creates or sets if already created
-        docData.put("price","555");// creates an entirely new document with new field
+        docData.put("price", "555");// creates an entirely new document with new field
         db.collection("Trades").document("stockInfo").collection("allStocks").document("ETHUSD").set(docData);
 
         //this will change a specific field inside an existing document
@@ -286,6 +280,21 @@ public class MainActivity extends AppCompatActivity {
         db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
 
 
+    }
+
+    public void do4hour(View view) throws ParseException {
+        InfoAll infoAll = new InfoAll(this);
+        infoAll.updateIndividualPrice("AAPL", "4hour");
+    }
+
+    public void do1hour(View view) throws ParseException {
+        InfoAll infoAll = new InfoAll(this);
+        infoAll.updateIndividualPrice("AAPL", "1hour");
+    }
+
+    public void do1day(View view) throws ParseException {
+        InfoAll infoAll = new InfoAll(this);
+        infoAll.updateIndividualPrice("AAPL", "day");
     }
 
 
