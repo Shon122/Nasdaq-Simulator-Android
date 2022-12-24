@@ -60,11 +60,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        try {
+
+        try {    // 1min,5min,15min,30min,1hour,4hour. for days its link /historical-price-full/AAPL so write day
             InfoAll infoAll = new InfoAll(this);
+
+            infoAll.updateIndividualPrice("AAPL","4hour");
+            infoAll.updateIndividualPrice("AAPL","4hour");
+            infoAll.updateIndividualPrice("AAPL","4hour");
+            infoAll.updateIndividualPrice("AAPL","4hour");
+            infoAll.updateIndividualPrice("AAPL","4hour");
+            infoAll.updateIndividualPrice("AAPL","4hour");
+            infoAll.updateIndividualPrice("AAPL","4hour");
+            infoAll.updateIndividualPrice("AAPL","4hour");
+            infoAll.updateIndividualPrice("AAPL","4hour");
+//            infoAll.updateIndividualPrice("AAPL","1hour");
+//            infoAll.updateIndividualPrice("AAPL","1hour");
+//            infoAll.updateIndividualPrice("AAPL","1hour");
+//            infoAll.updateIndividualPrice("AAPL","1hour");
+//            infoAll.updateIndividualPrice("AAPL","1hour");
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+
 //        docData.put("agae3", "just testing");
 //        db.collection("palol1").document("lkol12").set(docData, SetOptions.merge());
 //        db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

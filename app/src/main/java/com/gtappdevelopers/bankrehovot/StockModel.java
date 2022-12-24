@@ -17,10 +17,11 @@ public class StockModel {
         timeInterval = timeInterval1;
         dateList = dateList1;
         if (priceList1.size() > 0)
-            gainLossPercent = profitLossCalculator(priceList1.get(priceList1.size() - 1), priceList1.get(0));
+            gainLossPercent = profitLossCalculator(priceList1.get(0), priceList1.get(priceList1.size() - 1));
         else
             gainLossPercent = 0.0;
-        analysis = updateAnalysis(priceList1);
+        //analysis = updateAnalysis(priceList1);
+        analysis = "this is it";
     }
 
     public String updateAnalysis(ArrayList<Double> priceList) {
