@@ -2,6 +2,7 @@ package com.gtappdevelopers.bankrehovot;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
@@ -60,6 +61,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        try {
+            InfoAll infoAll = new InfoAll(this);
+            infoAll.updateAllPrices();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 //
 //        try {    // 1min,5min,15min,30min,1hour,4hour. for days its link /historical-price-full/AAPL so write day
 //            InfoAll infoAll = new InfoAll(this);
@@ -282,14 +290,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void do4hour(View view) throws ParseException {
+    public void do4hour(View view) throws ParseException, InterruptedException {
         InfoAll infoAll = new InfoAll(this);
         infoAll.updateIndividualPrice("AAPL", "4hour");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                try {
+                    infoAll.updateIndividualPrice("AAPL", "4hour");
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 3000);
     }
 
     public void do1hour(View view) throws ParseException {
         InfoAll infoAll = new InfoAll(this);
-        infoAll.updateIndividualPrice("AAPL", "1hour");
+        infoAll.updateIndividualPrice("AAPL", "1min");
     }
 
     public void do1day(View view) throws ParseException {
