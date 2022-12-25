@@ -14,6 +14,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,83 +64,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         try {
             InfoAll infoAll = new InfoAll(this);
-            infoAll.updateIndividualPrice("AAPL","1min");
+            //StockModel[] stockModels = new StockModel[infoAll.allNames.length];
+                String currentName = infoAll.allNames[1];
+                StockModel stockModel = infoAll.getIndividualData(currentName);
+                //stockModels[1] = stockModel;
+
+
+            TextView textView = findViewById(R.id.txt1);
+            textView.setText(String.valueOf(stockModel.priceList.get(0)));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        //String price = "7892.113500000";
-//
-//
-//        int take1 = price.length();
-//        while (price.charAt(take1 - 1) == '0') {
-//            price = price.substring(0, price.length() - 1);
-//            take1 = price.length();
-//        }
-//        if (price.charAt(price.length() - 1) == '.') {
-//            price = price.substring(0, price.length() - 1);
-//            //return price;
-//        }
-//        //now dealing with prices who are not "37.00000"
-//
-//        String beforePoint = price.substring(0, price.indexOf("."));
-//        String afterPoint = price.substring(price.indexOf(".") + 1);
-//
-//
-//        if (afterPoint.length() > 5)
-//            afterPoint = afterPoint.substring(0, 5);
-//        String result = beforePoint + "." + afterPoint;
-//
-//        TextView textView = findViewById(R.id.txt1);
-//        textView.setText(result);
-
-
-//
-//        try {    // 1min,5min,15min,30min,1hour,4hour. for days its link /historical-price-full/AAPL so write day
-//            InfoAll infoAll = new InfoAll(this);
-//            for (int i = 0; i < 55; i++) {
-//                infoAll.updateIndividualPrice("AAPL", "day");
-//            }
-//
-////            infoAll.updateIndividualPrice("AAPL","1hour");
-////            infoAll.updateIndividualPrice("AAPL","1hour");
-////            infoAll.updateIndividualPrice("AAPL","1hour");
-////            infoAll.updateIndividualPrice("AAPL","1hour");
-////            infoAll.updateIndividualPrice("AAPL","1hour");
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-
-
-//        docData.put("agae3", "just testing");
-//        db.collection("palol1").document("lkol12").set(docData, SetOptions.merge());
-//        db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//
-//                    TextView textView = findViewById(R.id.txt1);
-//                    textView.setText(document.get("lastNewsUpdate").toString());
-//
-//                }
-//            }
-//        });
-
-
-//
-//        String takeDate = "2022-12-21 13:53:00";
-//
-//        java.text.SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        myDate.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
-//        Date newDate = null;
-//        try {
-//            newDate = myDate.parse(takeDate);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        takeDate = newDate.toString();
-//        TextView textView = findViewById(R.id.txt1);
-//        textView.setText(takeDate);
 
 
         //create a trade
@@ -153,44 +88,8 @@ public class MainActivity extends AppCompatActivity {
 //        textView.setText(test);
 
 
-        //this sets data
-        //  setData();
-
-        //this gets data
-        //getData(); // got in in 'dataTaker' string
-
         //show it in chart
         //showGraph();
-
-
-        //// get price of btc
-//        load();
-//        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-//        String prices = sharedPreferences.getString("prices", "none");
-//        TextView textView = findViewById(R.id.txt2);
-//        textView.setText(prices);
-
-//        TextView textView = findViewById(R.id.txt2);
-//        String info = (String) textView.getText();
-//        textView.setVisibility(View.INVISIBLE);
-//
-//        TextView textView1 = findViewById(R.id.txt1);
-//        textView1.setText(info);
-//        int dateIndex = info.indexOf("date");
-//        ArrayList<String> dates = new ArrayList<>();
-//        dates.add("first");
-//        while (dateIndex != -1 && dates.size()<10) {
-//            int tempIndex = info.indexOf('"', dateIndex + 1);
-//
-//            tempIndex = info.indexOf('"', tempIndex + 1);
-//            String take = info.substring(tempIndex, info.indexOf('"', dateIndex + 2));
-//            dates.add(take);
-//
-//            dateIndex = info.indexOf("date", dateIndex);
-//
-//
-//        }
-//        textView.setText(dates.get(0));
 
 
         //end of oncreate
@@ -209,111 +108,6 @@ public class MainActivity extends AppCompatActivity {
         graph.addSeries(series);
     }
 
-    public void setData() {
-        docData.put("price", "1234");
-        db.collection("Trades").add(docData); // this line creates a new document
-        //
-        //this creates or sets if already created
-        docData.put("price", "555");// creates an entirely new document with new field
-        db.collection("Trades").document("stockInfo").collection("allStocks").document("ETHUSD").set(docData);
-
-        //this will change a specific field inside an existing document
-        docData.put("price", "111");
-        db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
-
-
-    }
-
-    public void getData() {
-        db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-
-                    TextView textView = findViewById(R.id.txt1);
-                    textView.setText(document.get("lastNewsUpdate").toString());
-
-                }
-            }
-        });
-
-    }
-
-    public void load() {
-        Request request = new Request.Builder().url(BPI_ENDPOINT).build();
-        okHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-            }
-
-            @Override
-            public void onResponse(Call call, Response response)
-                    throws IOException {
-                final String body = response.body().string();
-
-
-                //check if its the first time im opening the program so i can start the shared prefrence
-                SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                myEdit.putString("prices", body);
-                myEdit.apply();
-
-
-            }
-        });
-
-    }
-
-
-    public void parseBpiResponse(String body) throws ParseException {
-        //get prices and dates and upload to firebase
-        ArrayList<String> dates = new ArrayList<>();
-        ArrayList<String> prices = new ArrayList<>();
-        String saveString = "";
-
-        // TextView textView = findViewById(R.id.txt2);
-        //textView.setText(body.substring(dateIndex+9,dateIndex+9+11+8));
-        int tempIndex = body.indexOf("date");
-        while (tempIndex != -1) {
-            String takeDate = body.substring(tempIndex + 9, tempIndex + 9 + 11 + 8);
-
-
-            java.text.SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            myDate.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
-            Date newDate = null;
-            newDate = myDate.parse(takeDate);
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            takeDate = df.format(newDate); //the string result is like "2022-12-10"
-
-
-            dates.add(takeDate);
-            saveString += dates.get(dates.size() - 1);
-            saveString += ",";
-            tempIndex = body.indexOf("date", tempIndex + 1);
-        }
-        saveString = saveString.replaceAll("(\\r|\\n)", "");
-        //now i change the time of date to UTC+2 israel time
-
-
-        docData.put("dates", saveString);
-        db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
-
-        //after we got dates now we get prices
-        saveString = "";
-        tempIndex = body.indexOf("close");
-        while (tempIndex != -1) {
-            prices.add(body.substring(tempIndex + 9, tempIndex + 9 + 8));
-            saveString += prices.get(prices.size() - 1);
-            saveString += ",";
-            tempIndex = body.indexOf("close", tempIndex + 1);
-        }
-        saveString = saveString.replaceAll("(\\r|\\n)", "");
-        docData.put("prices", saveString);
-        db.collection("Trades").document("Prices").set(docData, SetOptions.merge());
-
-
-    }
 
     public void do4hour(View view) throws ParseException, InterruptedException {
         InfoAll infoAll = new InfoAll(this);
@@ -331,15 +125,78 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void do1hour(View view) throws ParseException {
-        InfoAll infoAll = new InfoAll(this);
-        infoAll.updateIndividualPrice("AAPL", "1min");
+//        InfoAll infoAll = new InfoAll(this);
+//        infoAll.updateIndividualPrice("AAPL", "1min");
+//
+//        StockModel stockModel = getIndividualData("AAPL");
+//
+//
+//        //  for (int i = 0; i < 1000; i++) {
+//        TextView textView = findViewById(R.id.txt1);
+//        textView.setText(stockModel.priceList.get(0).toString());
+        // }
     }
 
     public void do1day(View view) throws ParseException {
-        InfoAll infoAll = new InfoAll(this);
-        infoAll.updateIndividualPrice("AAPL", "day");
+//
+//        StockModel stockModel = getIndividualData("ATVI");
+//
+//
+//        // for (int i = 0; i < 1000; i++) {
+//        TextView textView = findViewById(R.id.txt1);
+//        textView.setText(stockModel.priceList.get(0).toString());
+//        // }
+//        InfoAll infoAll = new InfoAll(this);
+//        infoAll.updateIndividualPrice("AAPL", "day");
     }
 
+//
+//    public StockModel getIndividualData(String nameStock) {
+//        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//        //get everything first and then put it in stockmodel
+//        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//
+//
+//                    String dateList = String.valueOf((document.get("dateList")));
+//                    String priceList = String.valueOf((document.get("priceList")));
+//                    String timeinterval = String.valueOf((document.get("timeinterval")));
+//
+//                    SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//                    myEdit.putString("dateList", dateList);
+//                    myEdit.putString("priceList", priceList);
+//                    myEdit.putString("timeinterval", timeinterval);
+//                    myEdit.apply();
+//
+//                }
+//            }
+//        });
+//        String dateListString = sharedPreferences.getString("dateList", "5");
+//        String priceListString = sharedPreferences.getString("priceList", "5");
+//        String timeinterval = sharedPreferences.getString("timeinterval", "5");
+//        //now make it double for model
+//        ArrayList<Double> priceList = new ArrayList<>();
+//        ArrayList<String> dateList = new ArrayList<>();
+//
+//
+//        String[] splitNumbers = dateListString.split(",");
+//        Collections.addAll(dateList, splitNumbers);
+//
+//
+//        splitNumbers = priceListString.split(",");
+//
+//        for (String number : splitNumbers) {
+//            priceList.add(Double.valueOf(number));
+//        }
+//
+//
+//        return new StockModel(nameStock, priceList, dateList, timeinterval);
+//
+//    }
 
     //end of main
 }

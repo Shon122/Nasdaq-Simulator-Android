@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -47,7 +48,7 @@ public class InfoAll {
 
     /////////////////////////////////////////////////
     public InfoAll(Context context) throws ParseException {
-        stockModelIndex=0;
+        stockModelIndex = 0;
         okHttpClient = new OkHttpClient();
         mContext = context;
         db = FirebaseFirestore.getInstance();
@@ -125,7 +126,6 @@ public class InfoAll {
     public void updateAllPrices() throws ParseException {
         //update all timeInterval will allways be 1 minute
         //get last Big Update All and make sure more than 2 minutes have passed since that
-        String timeInterval = "1min";
         long lastUpdate = 0;
         //get lastUpdate data from firebase
         db.collection("Trades").document("indexapi").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -149,60 +149,80 @@ public class InfoAll {
         lastUpdate = Long.parseLong((dataTaker));
         int diff = (int) (currentTime - lastUpdate); // 1 min = 60000 ms
         //make sure more than 1 day has passed since last call
-        //diff = 1300000;
         if (diff > 604800000) {
             for (int i = 0; i < allNames.length; i++) {
-                updateIndividualPrice(allNames[i], timeInterval);
+                updateIndividualPrice(allNames[i], "1min");
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
                     }
-                }, 250);
+                }, 4000);
 
-                updateIndividualPrice(allNames[i], timeInterval);
+                updateIndividualPrice(allNames[i], "1min");
             }
 
             docData.put("lastUpdateAll", currentTime);
             db.collection("Trades").document("indexapi").set(docData, SetOptions.merge());
             docData.put("indexnumber", apiIndex);
             db.collection("Trades").document("indexapi").set(docData, SetOptions.merge());
+        } else {
+            for (int i = 0; i < allNames.length; i++) {
+                String currentName = allNames[i];
+                StockModel stockModel = getIndividualData(currentName);
+                stockModels[i] = stockModel;
+                //stockModelIndex++;
+            }
+
         }
+
+        //stockModelIndex=0;
     }
 
 
-    public String removeInfiniteNumbers(String price) {
-        //make sure the price is small and compact like 302.3656 and not 302.363573895
-        //0.12345678 ---> 0.12345
-        //1.12345678 ---> 1.1234
-        //12.12345678 --->12.123
-        //123.12345678 --->123.123
-        //1234.12345678 --->1234.123
-        //12345.12345678 --->12345.123
-
-        //first of all cut all the zeros at the end
+    public StockModel getIndividualData(String nameStock) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        //get everything first and then put it in stockmodel
+        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
 
 
-        int take1 = price.length();
-        while (price.charAt(take1 - 1) == '0') {
-            price = price.substring(0, price.length() - 1);
-            take1 = price.length();
+                    String dateList = String.valueOf((document.get("dateList")));
+                    String priceList = String.valueOf((document.get("priceList")));
+                    String timeinterval = String.valueOf((document.get("timeinterval")));
+
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                    myEdit.putString("dateList", dateList);
+                    myEdit.putString("priceList", priceList);
+                    myEdit.putString("timeinterval", timeinterval);
+                    myEdit.apply();
+
+                }
+            }
+        });
+        String dateListString = sharedPreferences.getString("dateList", "5");
+        String priceListString = sharedPreferences.getString("priceList", "5");
+        String timeinterval = sharedPreferences.getString("timeinterval", "5");
+        //now make it double for model
+        ArrayList<Double> priceList = new ArrayList<>();
+        ArrayList<String> dateList = new ArrayList<>();
+
+
+        String[] splitNumbers = dateListString.split(",");
+        Collections.addAll(dateList, splitNumbers);
+
+
+        splitNumbers = priceListString.split(",");
+
+        for (String number : splitNumbers) {
+            priceList.add(Double.valueOf(number));
         }
-        if (price.charAt(price.length() - 1) == '.') {
-            price = price.substring(0, price.length() - 1);
-            return price;
-        }
-        //now dealing with prices who are not "37.00000"
-
-        String beforePoint = price.substring(0, price.indexOf("."));
-        String afterPoint = price.substring(price.indexOf(".") + 1);
 
 
-        if (afterPoint.length() > 5)
-            afterPoint = afterPoint.substring(0, 5);
-        String result = beforePoint + "." + afterPoint;
-
-
-        return result;
+        return new StockModel(nameStock, priceList, dateList, timeinterval);
 
     }
 
@@ -270,7 +290,7 @@ public class InfoAll {
         saveString = saveString.replaceAll("(\\r|\\n)", "");
         String saveDatesString = saveString; // this i upload to firebase
         stockModels[stockModelIndex] = new StockModel(nameStock, priceList, dateList, timeInterval);
-        stockModelIndex++;
+
         //now upload priceList to firebase
         docData.put("analysis", stockModels[stockModelIndex].analysis);// creates an entirely new document with new field
         db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
@@ -291,6 +311,7 @@ public class InfoAll {
 
         docData.put("indexnumber", apiIndex);
         db.collection("Trades").document("indexapi").set(docData, SetOptions.merge());
+        stockModelIndex++;
     }
 
 
@@ -372,6 +393,43 @@ public class InfoAll {
             String dataNewsTaker = sharedPreferences.getString("dataNews", "5");
             news = dataNewsTaker;
         }
+
+    }
+
+
+    public String removeInfiniteNumbers(String price) {
+        //make sure the price is small and compact like 302.3656 and not 302.363573895
+        //0.12345678 ---> 0.12345
+        //1.12345678 ---> 1.1234
+        //12.12345678 --->12.123
+        //123.12345678 --->123.123
+        //1234.12345678 --->1234.123
+        //12345.12345678 --->12345.123
+
+        //first of all cut all the zeros at the end
+
+
+        int take1 = price.length();
+        while (price.charAt(take1 - 1) == '0') {
+            price = price.substring(0, price.length() - 1);
+            take1 = price.length();
+        }
+        if (price.charAt(price.length() - 1) == '.') {
+            price = price.substring(0, price.length() - 1);
+            return price;
+        }
+        //now dealing with prices who are not "37.00000"
+
+        String beforePoint = price.substring(0, price.indexOf("."));
+        String afterPoint = price.substring(price.indexOf(".") + 1);
+
+
+        if (afterPoint.length() > 5)
+            afterPoint = afterPoint.substring(0, 5);
+        String result = beforePoint + "." + afterPoint;
+
+
+        return result;
 
     }
 
