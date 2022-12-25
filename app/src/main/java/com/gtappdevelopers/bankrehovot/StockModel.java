@@ -18,7 +18,7 @@ public class StockModel {
         dateList = dateList1;
         if (priceList1.size() > 10) {
             gainLossPercent = profitLossCalculator(priceList1.get(0), priceList1.get(priceList1.size() - 1));
-            gainLossPercent = removeInfiniteNumbers(gainLossPercent);
+            gainLossPercent = Double.valueOf(removeInfiniteNumbers(gainLossPercent.toString()));
         } else
             gainLossPercent = 0.0;
         if (priceList1.size() > 10)
@@ -38,15 +38,12 @@ public class StockModel {
 
     public String updateAnalysis(ArrayList<Double> prices) {
         StringBuilder analysis = new StringBuilder();
-
         // Calculate the average price
         double sum = 0;
-        for (double price : prices) {
+        for (double price : prices)
             sum += price;
-        }
         double averagePrice = sum / prices.size();
-        analysis.append("Average price: " + averagePrice + "." + "\n");
-
+        averagePrice = Double.parseDouble(removeInfiniteNumbers(String.valueOf(averagePrice)));
         // Calculate the minimum and maximum prices
         double minPrice = Double.MAX_VALUE;
         double maxPrice = Double.MIN_VALUE;
@@ -58,24 +55,11 @@ public class StockModel {
                 maxPrice = price;
             }
         }
-        analysis.append("Minimum price: " + minPrice + "\n");
-        analysis.append("Maximum price: " + maxPrice + "\n");
-        // Add verbal analysis of the prices
-        if (averagePrice > maxPrice) {
-            analysis.append("The stock has been consistently gaining value.\n");
-        } else if (averagePrice < minPrice) {
-            analysis.append("The stock has been consistently losing value.\n");
-        } else {
-            analysis.append("The stock has had mixed performance.\n");
-        }
+        minPrice = Double.parseDouble(removeInfiniteNumbers(String.valueOf(minPrice)));
+        maxPrice = Double.parseDouble(removeInfiniteNumbers(String.valueOf(maxPrice)));
         // Calculate the price range
         double priceRange = maxPrice - minPrice;
-        analysis.append("Price range: " + priceRange + "\n");
-        if (priceRange > (maxPrice - minPrice) * 0.1) {
-            analysis.append("The stock has had a significant price range.\n");
-        } else {
-            analysis.append("The stock has had a stable price range.\n");
-        }
+        priceRange = Double.parseDouble(removeInfiniteNumbers(String.valueOf(priceRange)));
         // Calculate the standard deviation
         double sumSquaredDifferences = 0;
         for (double price : prices) {
@@ -84,31 +68,46 @@ public class StockModel {
         }
         double variance = sumSquaredDifferences / prices.size();
         double standardDeviation = Math.sqrt(variance);
-        analysis.append("Standard deviation: " + standardDeviation + "." + "\n");
+        standardDeviation = Double.parseDouble(removeInfiniteNumbers(String.valueOf(standardDeviation)));
+        //calculate MA's
+        double maAll = calculateMA(prices, prices.size());
+        maAll = Double.parseDouble(removeInfiniteNumbers(String.valueOf(maAll)));
+        double supportLevel = averagePrice - standardDeviation;
+        double resistanceLevel = averagePrice + standardDeviation;
+        resistanceLevel = Double.parseDouble(removeInfiniteNumbers(String.valueOf(resistanceLevel)));
+        supportLevel = Double.parseDouble(removeInfiniteNumbers(String.valueOf(supportLevel)));
+
+        //now put in a string
+        //verbal:
         if (standardDeviation > averagePrice * 0.1) {
             analysis.append("The stock has had high volatility.\n");
         } else {
             analysis.append("The stock has had low volatility.\n");
         }
-
-        //calculate MA's
-
-//        double ma20 = calculateMA(prices, 20);
-//        double ma50 = calculateMA(prices, 50);
-        double maAll = calculateMA(prices, prices.size());
-
-//        analysis.append("20-day Average: " + ma20 + "." + "\n");
-//        analysis.append("50-day Average: " + ma50 + "." + "\n");
+        if (priceRange > (maxPrice - minPrice) * 0.1) {
+            analysis.append("The stock has had a significant price range.\n");
+        } else {
+            analysis.append("The stock has had a stable price range.\n");
+        }
+        if (averagePrice > maxPrice) {
+            analysis.append("The stock has been consistently gaining value.\n");
+        } else if (averagePrice < minPrice) {
+            analysis.append("The stock has been consistently losing value.\n");
+        } else {
+            analysis.append("The stock has had mixed performance.\n");
+        }
+        //numbers:
         analysis.append("All-Time Average: " + maAll + "." + "\n");
-
-        double supportLevel = averagePrice - standardDeviation;
-        double resistanceLevel = averagePrice + standardDeviation;
-
         analysis.append("Resistance Level: " + resistanceLevel + "." + "\n");
         analysis.append("Support Level: " + supportLevel + "." + "\n");
+        analysis.append("Standard deviation: " + standardDeviation + "." + "\n");
+        analysis.append("Price range: " + priceRange + "\n");
+        analysis.append("Average price: " + averagePrice + "." + "\n");
+        analysis.append("Minimum price: " + minPrice + "\n");
+        analysis.append("Maximum price: " + maxPrice + "\n");
+
 
         return analysis.toString();
-
     }
 
     public Double profitLossCalculator(Double currentPrice, Double startPrice) {
@@ -116,71 +115,41 @@ public class StockModel {
         return (((currentPrice - startPrice) / startPrice) * 100);
     }
 
-    public ArrayList<Double> removeInfiniteNumbers(ArrayList<Double> priceList1) {
+    public String removeInfiniteNumbers(String price) {
         //make sure the price is small and compact like 302.3656 and not 302.363573895
-        ArrayList<Double> result = new ArrayList<Double>();
+        //0.12345678 ---> 0.12345
+        //1.12345678 ---> 1.1234
+        //12.12345678 --->12.123
+        //123.12345678 --->123.123
+        //1234.12345678 --->1234.123
+        //12345.12345678 --->12345.123
 
-        for (int i = 0; i < priceList1.size(); i++) {
-            String temp = priceList1.toString();
-            int count = 0;
-            int totalCount = 0;
-            Boolean afterPoint = false;
-            String minimized = "";
-            while (count < 4) {
-
-                if (temp.charAt(totalCount) == '.') {
-                    minimized += temp.charAt(totalCount);
-                    totalCount++;
-                    afterPoint = true;
-                    continue;
-                }
-
-                if (afterPoint && count < 4) {
-                    minimized += temp.charAt(totalCount);
-                    count++;
-                } else {
-                    minimized += temp.charAt(totalCount);
-                }
-
-                totalCount++;
-            }
-            Double taker = Double.parseDouble(minimized);
-            result.add(taker);
-            //adds the minimized number to the list
+        //first of all cut all the zeros at the end
 
 
+        int take1 = price.length();
+        while (price.charAt(take1 - 1) == '0') {
+            price = price.substring(0, price.length() - 1);
+            take1 = price.length();
         }
+        if (price.charAt(price.length() - 1) == '.') {
+            price = price.substring(0, price.length() - 1);
+            return price;
+        }
+        //now dealing with prices who are not "37.00000"
+
+        String beforePoint = price.substring(0, price.indexOf("."));
+        String afterPoint = price.substring(price.indexOf(".") + 1);
+
+
+        if (afterPoint.length() > 5)
+            afterPoint = afterPoint.substring(0, 5);
+        String result = beforePoint + "." + afterPoint;
 
 
         return result;
+
     }
 
-    public Double removeInfiniteNumbers(Double number) {
-        String temp = String.valueOf(number);
-        int count = 0;
-        int totalCount = 0;
-        Boolean afterPoint = false;
-        String minimized = "";
-        while (count < 3 && totalCount < temp.length()) {
-            if (temp.charAt(totalCount) == '.') {
-                minimized += temp.charAt(totalCount);
-                totalCount++;
-                afterPoint = true;
-                continue;
-            }
-            if (afterPoint && count < 3) {
-                minimized += temp.charAt(totalCount);
-                count++;
-            } else {
-                minimized += temp.charAt(totalCount);
-            }
-            totalCount++;
-        }
-        if (minimized.equals(""))
-            return 0.0;
-        Double taker = Double.parseDouble(minimized);
-
-        return taker;
-    }
 
 }

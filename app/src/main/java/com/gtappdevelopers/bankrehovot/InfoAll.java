@@ -1,7 +1,12 @@
 package com.gtappdevelopers.bankrehovot;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -13,12 +18,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TimeZone;
 
 import okhttp3.Call;
@@ -27,25 +30,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
-import android.widget.TextView;
-
-import static android.content.Context.MODE_PRIVATE;
-
-import androidx.annotation.NonNull;
-
 public class InfoAll {
     public Long currentTime;
     public String news;
-    public Long lastUpdateTime;
     public String[] apiList;
     public int apiIndex;
-    public String[] stockNames;
-    public String[] currenciesNames;
-    public String[] cryptoNames;
     public String[] allNames;
     public StockModel[] stockModels;
+    int stockModelIndex;
     String apiLink;
     private OkHttpClient okHttpClient;
     private FirebaseFirestore db;
@@ -55,6 +47,7 @@ public class InfoAll {
 
     /////////////////////////////////////////////////
     public InfoAll(Context context) throws ParseException {
+        stockModelIndex=0;
         okHttpClient = new OkHttpClient();
         mContext = context;
         db = FirebaseFirestore.getInstance();
@@ -76,27 +69,16 @@ public class InfoAll {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
         apiIndex = sharedPreferences.getInt("dataIndexApi", 0);
         //apiIndex = 0;
-        stockNames = new String[]{"TSLA", "MSFT", "AMZN", "AAPL", "GOOGL", "NVDA", "META",
-                "NFLX", "ADBE", "IBM", "WMT", "MMM", "NKE", "PYPL", "JPM"};
-        cryptoNames = new String[]{"XRPUSD", "ETHUSD", "BTCUSD", "LUNAUSD", "DOGEUSD", "ADAUSD"
-                , "LTCUSD", "SOLUSD", "SHIBUSD", "ALGOUSD", "BTTUSD", "CROUSD", "LUNCUSD"};
-        currenciesNames = new String[]{"EURUSD", "USDJPY", "GBPUSD", "ILSUSD", "AUDNOK", "CADBRL", "NZDTRY",
-                "PLNILS", "NZDCZK", "AUDPLN", "MXNGBP", "CHFJPY", "TRYDKK", "CADZAR", "EURBRL"};
+        allNames = new String[]{
 
-        int tempIndex = -1;
-        allNames = new String[stockNames.length + cryptoNames.length + currenciesNames.length];
-        for (String stockName : stockNames) {
-            tempIndex++;
-            allNames[tempIndex] = stockName;
-        }
-        for (String cryptoName : cryptoNames) {
-            tempIndex++;
-            allNames[tempIndex] = cryptoName;
-        }
-        for (String currenciesName : currenciesNames) {
-            tempIndex++;
-            allNames[tempIndex] = currenciesName;
-        }
+                "ABNB", "ADBE", "ADI", "ADP", "AEP", "ALGN", "AMD", "AMGN",
+                "AMZN", "AAPL", "ATVI", "AUDNOK", "AUDPLN", "BNBUSD", "BTCUSD",
+                "CADBRL", "CADZAR", "CHFJPY", "ETHUSD", "EURBRL", "EURUSD", "GILD",
+                "GOOGL", "IBM", "INTC", "ILSUSD", "KO", "LTCUSD", "META",
+                "MMM", "MSFT", "NKE", "NFLX", "NZDCZK", "NZDTRY", "PYPL", "PLNILS",
+                "SOLUSD", "TSLA", "TRYDKK", "USDJPY", "WMT", "XRPUSD"
+        };
+
 
         currentTime = System.currentTimeMillis();
         apiList = new String[]{"c42711901b00e79841bb71702345719e",
@@ -126,10 +108,19 @@ public class InfoAll {
                 "b384bd91fb7fcb3a9657beac393cc9db",
                 "7ddd34443e97cc9ad5d4e6fe6d2d5502",
                 "c5492f9f3334045292514ace4409bf35",
-                "9826c9f4968f4726aff2e843db493424"};
+                "9826c9f4968f4726aff2e843db493424",
+                "2ccc83581cab1580034bd1d43219f421",
+                "36c1d526b5750ae07a2de23109bedcda",
+                "dda76b57b63a5a86e18a5e94e619a370",
+                "0f569e49ec24d01e6abef9bd7f3aa3d2",
+                "9b5236ded34b6ec08e2baf996f2e2604"
+
+
+        };
         apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/1min/BTCUSD?apikey=" + apiList[apiIndex];
         stockModels = new StockModel[allNames.length];
     }
+
 
     public void updateAllPrices() throws ParseException {
         //update all timeInterval will allways be 1 minute
@@ -157,11 +148,18 @@ public class InfoAll {
         String dataTaker = sharedPreferences.getString("dataLastBigUpdate", "5");
         lastUpdate = Long.parseLong((dataTaker));
         int diff = (int) (currentTime - lastUpdate); // 1 min = 60000 ms
-        //make sure more than 2 minute has passed since last call
-        if (diff > 12000) {
+        //make sure more than 1 day has passed since last call
+        //diff = 1300000;
+        if (diff > 604800000) {
             for (int i = 0; i < allNames.length; i++) {
-                updateIndividualPrice(allNames[i],timeInterval);
+                updateIndividualPrice(allNames[i], timeInterval);
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                    }
+                }, 250);
 
+                updateIndividualPrice(allNames[i], timeInterval);
             }
 
             docData.put("lastUpdateAll", currentTime);
@@ -169,127 +167,43 @@ public class InfoAll {
             docData.put("indexnumber", apiIndex);
             db.collection("Trades").document("indexapi").set(docData, SetOptions.merge());
         }
+    }
 
 
-//
-//        for (int i = 0; i < stockModels.length; i++) {
-//            String nameStock = allNames[i];
-//            //check if the name of the stock was recently updated or not
-//            //
-//            db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                @Override
-//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                    if (task.isSuccessful()) {
-//                        DocumentSnapshot document = task.getResult();
-//                        String uploaderTaker = (String) document.get("timeinterval");
-//                        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-//                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
-//                        myEdit.putString("dataLastInterval", uploaderTaker);
-//                        myEdit.apply();
-//                    }
-//                }
-//            });
-//            SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-//            String lastTimeInterval = sharedPreferences.getString("dataLastInterval", "none");
-//
-//            db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                @Override
-//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                    if (task.isSuccessful()) {
-//                        DocumentSnapshot document = task.getResult();
-//                        Object nowTake = document.get("lastUpdate");
-//                        long uploaderTaker = (long) nowTake;
-//                        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-//                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
-//                        myEdit.putString("dataLastUpdate", String.valueOf(uploaderTaker));
-//                        myEdit.apply();
-//                    }
-//                }
-//            });
-//            long lastTimeUpdate = Long.parseLong(sharedPreferences.getString("dataLastUpdate", "1671869153213"));
-//            long diff = (currentTime - lastTimeUpdate);
-//            //////
-//            if (diff > 1 || !Objects.equals(timeInterval, lastTimeInterval)) {
-//                if (Objects.equals(timeInterval, "day")) {
-//                    apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + nameStock + "?serietype=line&apikey=" + apiList[apiIndex];
-//                } else {
-//                    apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + nameStock + "?apikey=" + apiList[apiIndex];
-//
-//                }
-//                load(apiLink);
-//                apiIndex++;
-//                if (apiIndex >= apiList.length)
-//                    apiIndex = 0;
-//                String dataTaker = sharedPreferences.getString("data", "none");
-//                //now extract prices
-//                ArrayList<Double> priceList = new ArrayList<>();
-//                String saveString = "";
-//                int tempIndex = dataTaker.indexOf("close");
-//                while (tempIndex != -1) {
-//                    String takeHere1 = (dataTaker.substring(tempIndex + 9, tempIndex + 9 + 8));
-//                    if (takeHere1.contains("E"))
-//                        takeHere1 = "0";
-//                    priceList.add(Double.valueOf(takeHere1));
-//                    saveString += priceList.get(priceList.size() - 1);
-//                    saveString += ",";
-//                    tempIndex = dataTaker.indexOf("close", tempIndex + 1);
-//                }
-//                saveString = saveString.replaceAll("(\\r|\\n)", "");
-//                String savePriceString = saveString; //this i will upload to firebase
-//                ArrayList<String> dateList = new ArrayList<>();
-//
-//                tempIndex = dataTaker.indexOf("date");
-//                while (tempIndex != -1) {
-//                    String takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 11 + 8);
-//
-//
-//                    java.text.SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                    myDate.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
-//                    Date newDate = null;
-//                    newDate = myDate.parse(takeDate);
-//                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-//                    takeDate = df.format(newDate); //the string result is like "2022-12-10"
-//
-//
-//                    dateList.add(takeDate);
-//                    saveString += dateList.get(dateList.size() - 1);
-//                    saveString += ",";
-//                    tempIndex = dataTaker.indexOf("date", tempIndex + 1);
-//                }
-//                saveString = saveString.replaceAll("(\\r|\\n)", "");
-//                String saveDatesString = saveString; // this i upload to firebase
-//
-//                stockModels[i] = new StockModel(nameStock, priceList, dateList, timeInterval);
-//
-//                //now upload priceList to firebase
-//                docData.put("analysis", stockModels[i].analysis);// creates an entirely new document with new field
-//                db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
-//
-//                docData.put("dateList", dateList);// creates an entirely new document with new field
-//                db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
-//
-//                docData.put("gainLossPercent", stockModels[i].gainLossPercent);// creates an entirely new document with new field
-//                db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
-//
-//                docData.put("lastUpdate", currentTime);// creates an entirely new document with new field
-//                db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
-//
-//                docData.put("priceList", priceList);// creates an entirely new document with new field
-//                db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
-//
-//                docData.put("timeinterval", timeInterval);// creates an entirely new document with new field
-//                db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
-//
-//            }
-//
-//
-//        }
-//
-//        //
-//        //
-//        //update the index number in firebase
-//        docData.put("indexnumber", apiIndex);
-//        db.collection("Trades").document("indexapi").set(docData, SetOptions.merge());
+    public String removeInfiniteNumbers(String price) {
+        //make sure the price is small and compact like 302.3656 and not 302.363573895
+        //0.12345678 ---> 0.12345
+        //1.12345678 ---> 1.1234
+        //12.12345678 --->12.123
+        //123.12345678 --->123.123
+        //1234.12345678 --->1234.123
+        //12345.12345678 --->12345.123
+
+        //first of all cut all the zeros at the end
+
+
+        int take1 = price.length();
+        while (price.charAt(take1 - 1) == '0') {
+            price = price.substring(0, price.length() - 1);
+            take1 = price.length();
+        }
+        if (price.charAt(price.length() - 1) == '.') {
+            price = price.substring(0, price.length() - 1);
+            return price;
+        }
+        //now dealing with prices who are not "37.00000"
+
+        String beforePoint = price.substring(0, price.indexOf("."));
+        String afterPoint = price.substring(price.indexOf(".") + 1);
+
+
+        if (afterPoint.length() > 5)
+            afterPoint = afterPoint.substring(0, 5);
+        String result = beforePoint + "." + afterPoint;
+
+
+        return result;
+
     }
 
 
@@ -318,7 +232,9 @@ public class InfoAll {
         int tempIndex = dataTaker.indexOf("close");
         while (tempIndex > -1) {
             String takeHere1 = (dataTaker.substring(tempIndex + 9, dataTaker.indexOf(',', tempIndex + 9)));
-
+            //here make sure there is no infinite number like 37.00000000
+            takeHere1 = removeInfiniteNumbers(takeHere1);
+            //now convert to Double
             priceList.add(Double.valueOf(takeHere1));
             saveString += priceList.get(priceList.size() - 1);
             tempIndex = dataTaker.indexOf("close", tempIndex + 1);
@@ -353,14 +269,15 @@ public class InfoAll {
         }
         saveString = saveString.replaceAll("(\\r|\\n)", "");
         String saveDatesString = saveString; // this i upload to firebase
-        StockModel adir = new StockModel(nameStock, priceList, dateList, timeInterval);
+        stockModels[stockModelIndex] = new StockModel(nameStock, priceList, dateList, timeInterval);
+        stockModelIndex++;
         //now upload priceList to firebase
-        docData.put("analysis", adir.analysis);// creates an entirely new document with new field
+        docData.put("analysis", stockModels[stockModelIndex].analysis);// creates an entirely new document with new field
         db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
         docData.put("dateList", saveDatesString);// creates an entirely new document with new field
         db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
 
-        docData.put("gainLossPercent", adir.gainLossPercent);// creates an entirely new document with new field
+        docData.put("gainLossPercent", stockModels[stockModelIndex].gainLossPercent);// creates an entirely new document with new field
         db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).set(docData);
 
         docData.put("lastUpdate", currentTime);// creates an entirely new document with new field
@@ -400,10 +317,10 @@ public class InfoAll {
         String dataTaker = sharedPreferences.getString("dataLastUpdate", "5");
         lastUpdate = Long.parseLong((dataTaker));
         int diff = (int) (currentTime - lastUpdate); // 1 min = 60000 ms
-        //make sure more than 2 minute has passed since last call
+        //make sure more than 1 day has passed since last call
 
 
-        if (diff > 120000) {
+        if (diff > 604800000) {
             apiLink = "https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=5&apikey=" + apiList[apiIndex];
             load(apiLink);
             apiIndex++;

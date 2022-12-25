@@ -63,10 +63,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         try {
             InfoAll infoAll = new InfoAll(this);
-            infoAll.updateAllPrices();
+            infoAll.updateIndividualPrice("AAPL","1min");
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        //String price = "7892.113500000";
+//
+//
+//        int take1 = price.length();
+//        while (price.charAt(take1 - 1) == '0') {
+//            price = price.substring(0, price.length() - 1);
+//            take1 = price.length();
+//        }
+//        if (price.charAt(price.length() - 1) == '.') {
+//            price = price.substring(0, price.length() - 1);
+//            //return price;
+//        }
+//        //now dealing with prices who are not "37.00000"
+//
+//        String beforePoint = price.substring(0, price.indexOf("."));
+//        String afterPoint = price.substring(price.indexOf(".") + 1);
+//
+//
+//        if (afterPoint.length() > 5)
+//            afterPoint = afterPoint.substring(0, 5);
+//        String result = beforePoint + "." + afterPoint;
+//
+//        TextView textView = findViewById(R.id.txt1);
+//        textView.setText(result);
+
 
 //
 //        try {    // 1min,5min,15min,30min,1hour,4hour. for days its link /historical-price-full/AAPL so write day
