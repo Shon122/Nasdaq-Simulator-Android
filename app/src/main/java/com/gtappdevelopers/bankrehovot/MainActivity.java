@@ -64,15 +64,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         try {
             InfoAll infoAll = new InfoAll(this);
-            //StockModel[] stockModels = new StockModel[infoAll.allNames.length];
-                String currentName = infoAll.allNames[1];
-                StockModel stockModel = infoAll.getIndividualData(currentName);
-                //stockModels[1] = stockModel;
+            infoAll.updateAllPrices();
+//            //StockModel[] stockModels = new StockModel[infoAll.allNames.length];
+//            String currentName = infoAll.allNames[5];
+//            StockModel stockModel = infoAll.getIndividualData(currentName);
+//            //stockModels[1] = stockModel;
+//
+//
+//            TextView textView = findViewById(R.id.txt1);
+//            textView.setText(String.valueOf(stockModel.analysis));
+//
+//
+//         Thread.sleep(10000);
+//            infoAll = new InfoAll(this);
+//            currentName = infoAll.allNames[5];
+//            stockModel = infoAll.getIndividualData(currentName);
+//            textView.setText(String.valueOf(stockModel.analysis));
 
 
-            TextView textView = findViewById(R.id.txt1);
-            textView.setText(String.valueOf(stockModel.priceList.get(0)));
-        } catch (ParseException e) {
+        } catch (ParseException | InterruptedException e) {
             e.printStackTrace();
         }
 

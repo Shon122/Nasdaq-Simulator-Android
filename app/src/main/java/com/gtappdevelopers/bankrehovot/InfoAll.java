@@ -123,7 +123,7 @@ public class InfoAll {
     }
 
 
-    public void updateAllPrices() throws ParseException {
+    public void updateAllPrices() throws ParseException, InterruptedException {
         //update all timeInterval will allways be 1 minute
         //get last Big Update All and make sure more than 2 minutes have passed since that
         long lastUpdate = 0;
@@ -149,16 +149,19 @@ public class InfoAll {
         lastUpdate = Long.parseLong((dataTaker));
         int diff = (int) (currentTime - lastUpdate); // 1 min = 60000 ms
         //make sure more than 1 day has passed since last call
+        diff = 1111111111;
         if (diff > 604800000) {
             for (int i = 0; i < allNames.length; i++) {
-                updateIndividualPrice(allNames[i], "1min");
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                    }
-                }, 4000);
+                //updateIndividualPrice(allNames[i], "1min");
 
                 updateIndividualPrice(allNames[i], "1min");
+                stockModelIndex++;
+//                Thread.sleep(4000);
+//                Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    public void run() {
+//                    }
+//                }, 9000);
             }
 
             docData.put("lastUpdateAll", currentTime);
@@ -249,8 +252,10 @@ public class InfoAll {
         //now extract prices
         ArrayList<Double> priceList = new ArrayList<>();
         String saveString = "";
+        int count = 0;
         int tempIndex = dataTaker.indexOf("close");
-        while (tempIndex > -1) {
+        while (tempIndex > -1 && count < 51) {
+            count++;
             String takeHere1 = (dataTaker.substring(tempIndex + 9, dataTaker.indexOf(',', tempIndex + 9)));
             //here make sure there is no infinite number like 37.00000000
             takeHere1 = removeInfiniteNumbers(takeHere1);
@@ -266,7 +271,9 @@ public class InfoAll {
         ArrayList<String> dateList = new ArrayList<>();
         saveString = ""; //!!IMPORTANT TO RESET THE SAVESTRING!!!!!!!!!!
         tempIndex = dataTaker.indexOf("date");
-        while (tempIndex != -1) {
+        count = 0;
+        while (tempIndex != -1 && count < 51) {
+            count++;
             String takeDate = "";
             if (timeInterval.equals("day")) {
                 takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 10);
@@ -311,7 +318,7 @@ public class InfoAll {
 
         docData.put("indexnumber", apiIndex);
         db.collection("Trades").document("indexapi").set(docData, SetOptions.merge());
-        stockModelIndex++;
+        //    stockModelIndex++;
     }
 
 
