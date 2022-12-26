@@ -1,5 +1,6 @@
 package com.gtappdevelopers.bankrehovot;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.icu.text.IDNA;
 import android.os.AsyncTask;
@@ -61,17 +62,14 @@ public class MainActivity extends AppCompatActivity {
     private OkHttpClient okHttpClient = new OkHttpClient();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<String, Object> docData = new HashMap<>();
-    String dataTaker = "s";
+    //String dataTaker = "s";
     String[] allNames = new String[]
 
             {
 
                     "ABNB", "ADBE", "ADI", "ADP", "AEP", "ALGN", "AMD", "AMGN",
-                    "AMZN", "AAPL", "ATVI", "AUDNOK", "AUDPLN", "BNBUSD", "BTCUSD",
-                    "CADBRL", "CADZAR", "CHFJPY", "ETHUSD", "EURBRL", "EURUSD", "GILD",
-                    "GOOGL", "IBM", "INTC", "ILSUSD", "KO", "LTCUSD", "META",
-                    "MMM", "MSFT", "NKE", "NFLX", "NZDCZK", "NZDTRY", "PYPL", "PLNILS",
-                    "SOLUSD", "TSLA", "TRYDKK", "USDJPY", "WMT", "XRPUSD"
+
+
             };
     final String[] priceTaker = new String[1];
 
@@ -87,10 +85,9 @@ public class MainActivity extends AppCompatActivity {
 //        } catch (ParseException | InterruptedException e) {
 //            e.printStackTrace();
 //        }
-
+        TextView textview1 = findViewById(R.id.txt2);
+        TextView textview2 = findViewById(R.id.txt3);
         new GetDataTask().execute();
-
-
 
 //        for (int i = 0; i < allNames.length; i++) {
 //
@@ -387,37 +384,105 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
 
-
     private class GetDataTask extends AsyncTask<Void, Void, String> {
+
+
+        TextView textview1 = findViewById(R.id.txt2);
+        TextView textview2 = findViewById(R.id.txt3);
+
         @Override
         protected String doInBackground(Void... params) {
-            // Create an OkHttpClient object
-            OkHttpClient client = new OkHttpClient();
+            String resultEnd = "";
+            //  String stockName = String.valueOf(textview1.getText());
+            String[] allNames = MainActivity.this.allNames;
+            // String timeInterval = String.valueOf(textview2.getText());
+            for (int i = 0; i < allNames.length; i++) {
+                String stockName = allNames[i];
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder().url("https://financialmodelingprep.com/api/v3/historical-price-full/" + stockName + "?timeseries=3&apikey=b050b1fd76d5fb561c1fa00deeeea4d5").build();
 
-            // Build the request
-            Request request = new Request.Builder()
-                    .url("https://financialmodelingprep.com/api/v3/historical-chart/1min/BTCUSD?apikey=02d49e539ff86d6fa9aa0f549efc93a3")
-                    .build();
 
-            // Make the request and retrieve the response
-            try {
-                Response response = client.newCall(request).execute();
-                String responseString = response.body().string();
-                return responseString;
-            } catch (IOException e) {
-                // Handle exception
-                return null;
+                try {
+                    Response response = client.newCall(request).execute();
+                    String responseString = response.body().string();
+                    resultEnd += responseString;
+                } catch (IOException e) {
+                    // return null;
+                }
             }
+            return resultEnd;
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(String result) {
             // Update the UI with the result
-
+            //ArrayList<Double> priceList1 = extractPrices(result);
             TextView textView = findViewById(R.id.txt1);
-            textView.setText(String.valueOf(result));
+            textView.setText(textView.getText() + String.valueOf(result));
 
         }
+    }
+
+    public ArrayList<Double> extractPrices(String info) {
+
+        //now extract prices
+        ArrayList<Double> priceList = new ArrayList<>();
+        String saveString = "";
+        int count = 0;
+        int tempIndex = info.indexOf("close");
+        while (tempIndex > -1 && count < 51) {
+            count++;
+            String takeHere1 = (info.substring(tempIndex + 9, info.indexOf(',', tempIndex + 9)));
+            //here make sure there is no infinite number like 37.00000000
+            takeHere1 = removeInfiniteNumbers(takeHere1);
+            //now convert to Double
+            priceList.add(Double.valueOf(takeHere1));
+            saveString += priceList.get(priceList.size() - 1);
+            tempIndex = info.indexOf("close", tempIndex + 1);
+            if (tempIndex != -1)
+                saveString += ",";
+        }
+        saveString = saveString.replaceAll("(\\r|\\n)", "");
+        String savePriceString = saveString; //this i will upload to firebase
+        return priceList;
+    }
+
+
+    public String removeInfiniteNumbers(String price) {
+        //make sure the price is small and compact like 302.3656 and not 302.363573895
+        //0.12345678 ---> 0.12345
+        //1.12345678 ---> 1.1234
+        //12.12345678 --->12.123
+        //123.12345678 --->123.123
+        //1234.12345678 --->1234.123
+        //12345.12345678 --->12345.123
+
+        //first of all cut all the zeros at the end
+
+
+        int take1 = price.length();
+        while (price.charAt(take1 - 1) == '0') {
+            price = price.substring(0, price.length() - 1);
+            take1 = price.length();
+        }
+        if (price.charAt(price.length() - 1) == '.') {
+            price = price.substring(0, price.length() - 1);
+            return price;
+        }
+        //now dealing with prices who are not "37.00000"
+
+        String beforePoint = price.substring(0, price.indexOf("."));
+        String afterPoint = price.substring(price.indexOf(".") + 1);
+
+
+        if (afterPoint.length() > 5)
+            afterPoint = afterPoint.substring(0, 5);
+        String result = beforePoint + "." + afterPoint;
+
+
+        return result;
+
     }
 
 
