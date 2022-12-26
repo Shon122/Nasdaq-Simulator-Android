@@ -1,21 +1,27 @@
 package com.gtappdevelopers.bankrehovot;
 
 import android.content.SharedPreferences;
+import android.icu.text.IDNA;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,35 +62,98 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<String, Object> docData = new HashMap<>();
     String dataTaker = "s";
+    String[] allNames = new String[]
+
+            {
+
+                    "ABNB", "ADBE", "ADI", "ADP", "AEP", "ALGN", "AMD", "AMGN",
+                    "AMZN", "AAPL", "ATVI", "AUDNOK", "AUDPLN", "BNBUSD", "BTCUSD",
+                    "CADBRL", "CADZAR", "CHFJPY", "ETHUSD", "EURBRL", "EURUSD", "GILD",
+                    "GOOGL", "IBM", "INTC", "ILSUSD", "KO", "LTCUSD", "META",
+                    "MMM", "MSFT", "NKE", "NFLX", "NZDCZK", "NZDTRY", "PYPL", "PLNILS",
+                    "SOLUSD", "TSLA", "TRYDKK", "USDJPY", "WMT", "XRPUSD"
+            };
     final String[] priceTaker = new String[1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        try {
-            InfoAll infoAll = new InfoAll(this);
-            infoAll.updateAllPrices();
-//            //StockModel[] stockModels = new StockModel[infoAll.allNames.length];
-//            String currentName = infoAll.allNames[5];
-//            StockModel stockModel = infoAll.getIndividualData(currentName);
-//            //stockModels[1] = stockModel;
+//        try {
+//            InfoAll infoAll = new InfoAll(this);
 //
+//            infoAll.makeSingleString("1min");
 //
-//            TextView textView = findViewById(R.id.txt1);
-//            textView.setText(String.valueOf(stockModel.analysis));
-//
-//
-//         Thread.sleep(10000);
-//            infoAll = new InfoAll(this);
-//            currentName = infoAll.allNames[5];
-//            stockModel = infoAll.getIndividualData(currentName);
-//            textView.setText(String.valueOf(stockModel.analysis));
+//        } catch (ParseException | InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+        new GetDataTask().execute();
 
 
-        } catch (ParseException | InterruptedException e) {
-            e.printStackTrace();
-        }
+
+//        for (int i = 0; i < allNames.length; i++) {
+//
+//            try {
+//                TimeUnit.SECONDS.sleep(3);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//            try {
+//                doOne(allNames[i]);
+//            } catch (ParseException | InterruptedException e) {
+//                e.printStackTrace();
+//            }
+
+//
+//            SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//            SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//            myEdit.putString("name1234", allNames[i]);
+//            myEdit.apply();
+//
+//
+//
+//
+//            Handler handler = new Handler();
+//            handler.postDelayed(new Runnable() {
+//                public void run() {
+//                    try {
+//                        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//                        String name = sharedPreferences.getString("name1234", "5");
+//                        doOne(name);
+//                    } catch (ParseException | InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }, 4000);
+//
+
+
+        //  }
+//        try {
+//            InfoAll infoAll = new InfoAll(this);
+//            infoAll.updateAllPrices();
+////            //StockModel[] stockModels = new StockModel[infoAll.allNames.length];
+////            String currentName = infoAll.allNames[5];
+////            StockModel stockModel = infoAll.getIndividualData(currentName);
+////            //stockModels[1] = stockModel;
+////
+////
+////            TextView textView = findViewById(R.id.txt1);
+////            textView.setText(String.valueOf(stockModel.analysis));
+////
+////
+////         Thread.sleep(10000);
+////            infoAll = new InfoAll(this);
+////            currentName = infoAll.allNames[5];
+////            stockModel = infoAll.getIndividualData(currentName);
+////            textView.setText(String.valueOf(stockModel.analysis));
+//
+//
+//        } catch (ParseException | InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
 
         //create a trade
@@ -103,6 +172,115 @@ public class MainActivity extends AppCompatActivity {
 
 
         //end of oncreate
+    }
+//
+//    public void allOneString(String timeInterval) {
+//
+//        for (int i = 0; i < allNames.length; i++) {
+//        String    nameStock=allNames[i];
+//            SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//            String dataTaker = "";
+//
+//            if (timeInterval.equals("day")) {
+//                apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + nameStock + "?apikey=" + apiList[apiIndex];
+//            } else {
+//                apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + nameStock + "?apikey=" + apiList[apiIndex];
+//            }
+//            load(apiLink);
+//            apiIndex++;
+//            if (apiIndex >= apiList.length)
+//                apiIndex = 0;
+//            dataTaker = "";
+//            dataTaker = sharedPreferences.getString("data", "none");
+//            //now extract prices
+//            ArrayList<Double> priceList = new ArrayList<>();
+//            String saveString = "";
+//            int count = 0;
+//            int tempIndex = dataTaker.indexOf("close");
+//            while (tempIndex > -1 && count < 51) {
+//                count++;
+//                String takeHere1 = (dataTaker.substring(tempIndex + 9, dataTaker.indexOf(',', tempIndex + 9)));
+//                //here make sure there is no infinite number like 37.00000000
+//                takeHere1 = removeInfiniteNumbers(takeHere1);
+//                //now convert to Double
+//                priceList.add(Double.valueOf(takeHere1));
+//                saveString += priceList.get(priceList.size() - 1);
+//                tempIndex = dataTaker.indexOf("close", tempIndex + 1);
+//                if (tempIndex != -1)
+//                    saveString += ",";
+//            }
+//            saveString = saveString.replaceAll("(\\r|\\n)", "");
+//            String savePriceString = saveString; //this i will upload to firebase
+//            ArrayList<String> dateList = new ArrayList<>();
+//            saveString = ""; //!!IMPORTANT TO RESET THE SAVESTRING!!!!!!!!!!
+//            tempIndex = dataTaker.indexOf("date");
+//            count = 0;
+//            while (tempIndex != -1 && count < 51) {
+//                count++;
+//                String takeDate = "";
+//                if (timeInterval.equals("day")) {
+//                    takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 10);
+//                } else {
+//                    takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 11 + 8);
+//                    if (!takeDate.contains("o")) {
+//                        SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                        myDate.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
+//                        Date newDate = null;
+//                        newDate = myDate.parse(takeDate);
+//                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+//                        takeDate = df.format(newDate); //the string result is like "2022-12-10"
+//                    }
+//                }
+//                dateList.add(takeDate);
+//                saveString += dateList.get(dateList.size() - 1);
+//                tempIndex = dataTaker.indexOf("date", tempIndex + 1);
+//                if (tempIndex != -1)
+//                    saveString += ",";
+//            }
+//            saveString = saveString.replaceAll("(\\r|\\n)", "");
+//            String saveDatesString = saveString; // this i upload to firebase
+//            StockModel stockModel = new StockModel(nameStock, priceList, dateList, timeInterval);
+//        }
+//    }
+
+
+    public void doOne(String name) throws ParseException, InterruptedException {
+        InfoAll infoAll = new InfoAll(this);
+        infoAll.updateIndividualPrice(name, "1min");
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        myEdit.putString("name123", name);
+        myEdit.apply();
+
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                try {
+
+                    String dataTaker = sharedPreferences.getString("name123", "5");
+                    infoAll.updateIndividualPrice(dataTaker, "1min");
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 4000);
+
+        handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                try {
+
+                    String dataTaker = sharedPreferences.getString("name123", "5");
+                    infoAll.updateIndividualPrice(dataTaker, "1min");
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 4000);
+
+
     }
 
 
@@ -131,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        }, 3000);
+        }, 4000);
     }
 
     public void do1hour(View view) throws ParseException {
@@ -208,5 +386,42 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 
+
+
+    private class GetDataTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... params) {
+            // Create an OkHttpClient object
+            OkHttpClient client = new OkHttpClient();
+
+            // Build the request
+            Request request = new Request.Builder()
+                    .url("https://financialmodelingprep.com/api/v3/historical-chart/1min/BTCUSD?apikey=02d49e539ff86d6fa9aa0f549efc93a3")
+                    .build();
+
+            // Make the request and retrieve the response
+            try {
+                Response response = client.newCall(request).execute();
+                String responseString = response.body().string();
+                return responseString;
+            } catch (IOException e) {
+                // Handle exception
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // Update the UI with the result
+
+            TextView textView = findViewById(R.id.txt1);
+            textView.setText(String.valueOf(result));
+
+        }
+    }
+
+
     //end of main
+
+
 }
