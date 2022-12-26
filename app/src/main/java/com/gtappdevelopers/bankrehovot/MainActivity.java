@@ -399,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < allNames.length; i++) {
                 String stockName = allNames[i];
                 OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder().url("https://financialmodelingprep.com/api/v3/historical-price-full/" + stockName + "?timeseries=3&apikey=b050b1fd76d5fb561c1fa00deeeea4d5").build();
+                Request request = new Request.Builder().url("https://financialmodelingprep.com/api/v3/historical-price-full/" + stockName + "?timeseries=1&apikey=b050b1fd76d5fb561c1fa00deeeea4d5").build();
 
 
                 try {
@@ -417,9 +417,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             // Update the UI with the result
-            //ArrayList<Double> priceList1 = extractPrices(result);
+            ArrayList<Double> priceList1 = extractPrices(result);
             TextView textView = findViewById(R.id.txt1);
-            textView.setText(textView.getText() + String.valueOf(result));
+            textView.setText(textView.getText() + String.valueOf(priceList1));
 
         }
     }
