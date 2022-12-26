@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
             {
 
-                    "ABNB", "ADBE", "ADI", "ADP", "AEP", "ALGN", "AMD", "AMGN",
+                    "ABNB", "ADBE", "ADI", "ADP"
 
 
             };
@@ -170,115 +170,6 @@ public class MainActivity extends AppCompatActivity {
 
         //end of oncreate
     }
-//
-//    public void allOneString(String timeInterval) {
-//
-//        for (int i = 0; i < allNames.length; i++) {
-//        String    nameStock=allNames[i];
-//            SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-//            String dataTaker = "";
-//
-//            if (timeInterval.equals("day")) {
-//                apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + nameStock + "?apikey=" + apiList[apiIndex];
-//            } else {
-//                apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + nameStock + "?apikey=" + apiList[apiIndex];
-//            }
-//            load(apiLink);
-//            apiIndex++;
-//            if (apiIndex >= apiList.length)
-//                apiIndex = 0;
-//            dataTaker = "";
-//            dataTaker = sharedPreferences.getString("data", "none");
-//            //now extract prices
-//            ArrayList<Double> priceList = new ArrayList<>();
-//            String saveString = "";
-//            int count = 0;
-//            int tempIndex = dataTaker.indexOf("close");
-//            while (tempIndex > -1 && count < 51) {
-//                count++;
-//                String takeHere1 = (dataTaker.substring(tempIndex + 9, dataTaker.indexOf(',', tempIndex + 9)));
-//                //here make sure there is no infinite number like 37.00000000
-//                takeHere1 = removeInfiniteNumbers(takeHere1);
-//                //now convert to Double
-//                priceList.add(Double.valueOf(takeHere1));
-//                saveString += priceList.get(priceList.size() - 1);
-//                tempIndex = dataTaker.indexOf("close", tempIndex + 1);
-//                if (tempIndex != -1)
-//                    saveString += ",";
-//            }
-//            saveString = saveString.replaceAll("(\\r|\\n)", "");
-//            String savePriceString = saveString; //this i will upload to firebase
-//            ArrayList<String> dateList = new ArrayList<>();
-//            saveString = ""; //!!IMPORTANT TO RESET THE SAVESTRING!!!!!!!!!!
-//            tempIndex = dataTaker.indexOf("date");
-//            count = 0;
-//            while (tempIndex != -1 && count < 51) {
-//                count++;
-//                String takeDate = "";
-//                if (timeInterval.equals("day")) {
-//                    takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 10);
-//                } else {
-//                    takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 11 + 8);
-//                    if (!takeDate.contains("o")) {
-//                        SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                        myDate.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
-//                        Date newDate = null;
-//                        newDate = myDate.parse(takeDate);
-//                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-//                        takeDate = df.format(newDate); //the string result is like "2022-12-10"
-//                    }
-//                }
-//                dateList.add(takeDate);
-//                saveString += dateList.get(dateList.size() - 1);
-//                tempIndex = dataTaker.indexOf("date", tempIndex + 1);
-//                if (tempIndex != -1)
-//                    saveString += ",";
-//            }
-//            saveString = saveString.replaceAll("(\\r|\\n)", "");
-//            String saveDatesString = saveString; // this i upload to firebase
-//            StockModel stockModel = new StockModel(nameStock, priceList, dateList, timeInterval);
-//        }
-//    }
-
-
-    public void doOne(String name) throws ParseException, InterruptedException {
-        InfoAll infoAll = new InfoAll(this);
-        infoAll.updateIndividualPrice(name, "1min");
-
-        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        myEdit.putString("name123", name);
-        myEdit.apply();
-
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                try {
-
-                    String dataTaker = sharedPreferences.getString("name123", "5");
-                    infoAll.updateIndividualPrice(dataTaker, "1min");
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 4000);
-
-        handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                try {
-
-                    String dataTaker = sharedPreferences.getString("name123", "5");
-                    infoAll.updateIndividualPrice(dataTaker, "1min");
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 4000);
-
-
-    }
 
 
     public void showGraph() {
@@ -292,96 +183,6 @@ public class MainActivity extends AppCompatActivity {
         });
         graph.addSeries(series);
     }
-
-
-    public void do4hour(View view) throws ParseException, InterruptedException {
-        InfoAll infoAll = new InfoAll(this);
-        infoAll.updateIndividualPrice("AAPL", "4hour");
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                try {
-                    infoAll.updateIndividualPrice("AAPL", "4hour");
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, 4000);
-    }
-
-    public void do1hour(View view) throws ParseException {
-//        InfoAll infoAll = new InfoAll(this);
-//        infoAll.updateIndividualPrice("AAPL", "1min");
-//
-//        StockModel stockModel = getIndividualData("AAPL");
-//
-//
-//        //  for (int i = 0; i < 1000; i++) {
-//        TextView textView = findViewById(R.id.txt1);
-//        textView.setText(stockModel.priceList.get(0).toString());
-        // }
-    }
-
-    public void do1day(View view) throws ParseException {
-//
-//        StockModel stockModel = getIndividualData("ATVI");
-//
-//
-//        // for (int i = 0; i < 1000; i++) {
-//        TextView textView = findViewById(R.id.txt1);
-//        textView.setText(stockModel.priceList.get(0).toString());
-//        // }
-//        InfoAll infoAll = new InfoAll(this);
-//        infoAll.updateIndividualPrice("AAPL", "day");
-    }
-
-//
-//    public StockModel getIndividualData(String nameStock) {
-//        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-//        //get everything first and then put it in stockmodel
-//        db.collection("Trades").document("stockInfo").collection("allStocks").document(nameStock).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//
-//
-//                    String dateList = String.valueOf((document.get("dateList")));
-//                    String priceList = String.valueOf((document.get("priceList")));
-//                    String timeinterval = String.valueOf((document.get("timeinterval")));
-//
-//                    SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-//                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-//                    myEdit.putString("dateList", dateList);
-//                    myEdit.putString("priceList", priceList);
-//                    myEdit.putString("timeinterval", timeinterval);
-//                    myEdit.apply();
-//
-//                }
-//            }
-//        });
-//        String dateListString = sharedPreferences.getString("dateList", "5");
-//        String priceListString = sharedPreferences.getString("priceList", "5");
-//        String timeinterval = sharedPreferences.getString("timeinterval", "5");
-//        //now make it double for model
-//        ArrayList<Double> priceList = new ArrayList<>();
-//        ArrayList<String> dateList = new ArrayList<>();
-//
-//
-//        String[] splitNumbers = dateListString.split(",");
-//        Collections.addAll(dateList, splitNumbers);
-//
-//
-//        splitNumbers = priceListString.split(",");
-//
-//        for (String number : splitNumbers) {
-//            priceList.add(Double.valueOf(number));
-//        }
-//
-//
-//        return new StockModel(nameStock, priceList, dateList, timeinterval);
-//
-//    }
 
 
     private class GetDataTask extends AsyncTask<Void, Void, String> {
@@ -399,12 +200,14 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < allNames.length; i++) {
                 String stockName = allNames[i];
                 OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder().url("https://financialmodelingprep.com/api/v3/historical-price-full/" + stockName + "?timeseries=1&apikey=b050b1fd76d5fb561c1fa00deeeea4d5").build();
+                Request request = new Request.Builder().url("https://financialmodelingprep.com/api/v3/historical-price-full/" + stockName + "?timeseries=1&apikey=36c1d526b5750ae07a2de23109bedcda").build();
 
 
                 try {
                     Response response = client.newCall(request).execute();
                     String responseString = response.body().string();
+                    ArrayList<Double> priceList1 = extractPrices(responseString);
+
                     resultEnd += responseString;
                 } catch (IOException e) {
                     // return null;
@@ -417,9 +220,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             // Update the UI with the result
-            ArrayList<Double> priceList1 = extractPrices(result);
             TextView textView = findViewById(R.id.txt1);
-            textView.setText(textView.getText() + String.valueOf(priceList1));
+            textView.setText(textView.getText() + String.valueOf(result));
 
         }
     }
@@ -446,6 +248,41 @@ public class MainActivity extends AppCompatActivity {
         saveString = saveString.replaceAll("(\\r|\\n)", "");
         String savePriceString = saveString; //this i will upload to firebase
         return priceList;
+    }
+
+
+    public String extractDates(String data, String dataTaker, String timeInterval) throws ParseException {
+        String saveString = "";
+        int count = 0;
+        int tempIndex = 0;
+
+        ArrayList<String> dateList = new ArrayList<>();
+        saveString = ""; //!!IMPORTANT TO RESET THE SAVESTRING!!!!!!!!!!
+        tempIndex = dataTaker.indexOf("date");
+        while (tempIndex != -1 && count < 51) {
+            count++;
+            String takeDate = "";
+            if (timeInterval.equals("day")) {
+                takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 10);
+            } else {
+                takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 11 + 8);
+                if (!takeDate.contains("o")) {
+                    SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    myDate.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
+                    Date newDate = null;
+                    newDate = myDate.parse(takeDate);
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                    takeDate = df.format(newDate); //the string result is like "2022-12-10"
+                }
+            }
+            dateList.add(takeDate);
+            saveString += dateList.get(dateList.size() - 1);
+            tempIndex = dataTaker.indexOf("date", tempIndex + 1);
+            if (tempIndex != -1)
+                saveString += ",";
+        }
+        saveString = saveString.replaceAll("(\\r|\\n)", "");
+        return saveString;
     }
 
 
