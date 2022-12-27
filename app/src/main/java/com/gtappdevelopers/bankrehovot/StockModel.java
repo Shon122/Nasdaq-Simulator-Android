@@ -16,12 +16,12 @@ public class StockModel {
         priceList = priceList1;
         timeInterval = timeInterval1;
         dateList = dateList1;
-        if (priceList1.size() > 10) {
+        if (priceList1.size() > 1) {
             gainLossPercent = profitLossCalculator(priceList1.get(0), priceList1.get(priceList1.size() - 1));
             gainLossPercent = Double.valueOf(removeInfiniteNumbers(gainLossPercent.toString()));
         } else
             gainLossPercent = 0.0;
-        if (priceList1.size() > 10)
+        if (priceList1.size() > 1)
             analysis = updateAnalysis(priceList1);
         else
             analysis = "Analysis is currently unavailable...";

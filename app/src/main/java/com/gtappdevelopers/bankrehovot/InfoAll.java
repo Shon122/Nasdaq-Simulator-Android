@@ -77,12 +77,11 @@ public class InfoAll {
         allNames = new String[]{
 
                 "ABNB", "ADBE", "ADI", "ADP", "AEP", "ALGN", "AMD", "AMGN",
-                "AMZN", "AAPL", "ATVI", "AUDNOK", "AUDPLN", "BNBUSD", "BTCUSD"
-//                ,
-//                "CADBRL", "CADZAR", "CHFJPY", "ETHUSD", "EURBRL", "EURUSD", "GILD",
-//                "GOOGL", "IBM", "INTC", "ILSUSD", "KO", "LTCUSD", "META",
-//                "MMM", "MSFT", "NKE", "NFLX", "NZDCZK", "NZDTRY", "PYPL", "PLNILS",
-//                "SOLUSD", "TSLA", "TRYDKK", "USDJPY", "WMT", "XRPUSD"
+                "AMZN", "AAPL", "ATVI", "AUDNOK", "AUDPLN", "BNBUSD", "BTCUSD",
+                "CADBRL", "CADZAR", "CHFJPY", "ETHUSD", "EURBRL", "EURUSD", "GILD",
+                "GOOGL", "IBM", "INTC", "ILSUSD", "KO", "LTCUSD", "META",
+                "MMM", "MSFT", "NKE", "NFLX", "NZDCZK", "NZDTRY", "PYPL", "PLNILS",
+                "SOLUSD", "TSLA", "TRYDKK", "USDJPY", "WMT", "XRPUSD"
         };
 
 
@@ -250,7 +249,7 @@ public class InfoAll {
         result = "";
         SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        myEdit.putString("result1","");
+        myEdit.putString("result1", "");
         myEdit.apply();
 
         for (int i = 0; i < allNames.length; i++) {

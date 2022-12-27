@@ -1,56 +1,34 @@
 package com.gtappdevelopers.bankrehovot;
 
 import android.annotation.SuppressLint;
-import android.content.SharedPreferences;
-import android.icu.text.IDNA;
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -67,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
             {
 
-                    "ABNB", "ADBE", "ADI", "ADP"
+                    "AAPL"//, "ADBE", "ADI", "ADP"
 
 
             };
@@ -85,10 +63,18 @@ public class MainActivity extends AppCompatActivity {
 //        } catch (ParseException | InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        TextView textview1 = findViewById(R.id.txt2);
-        TextView textview2 = findViewById(R.id.txt3);
-        new GetDataTask().execute();
 
+        GetDataTask task = new GetDataTask();
+        try {
+            String result = task.execute().get();
+            docData.put("infoString", result);
+            db.collection("Trades").document("stockInfo").set(docData);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+//
+//        docData.put("infoString", textview.getText());// creates an entirely new document with new field
+//        db.collection("Trades").document("stockInfo").set(docData);
 //        for (int i = 0; i < allNames.length; i++) {
 //
 //            try {
@@ -188,28 +174,28 @@ public class MainActivity extends AppCompatActivity {
     private class GetDataTask extends AsyncTask<Void, Void, String> {
 
 
-        TextView textview1 = findViewById(R.id.txt2);
-        TextView textview2 = findViewById(R.id.txt3);
 
         @Override
         protected String doInBackground(Void... params) {
             String resultEnd = "";
-            //  String stockName = String.valueOf(textview1.getText());
             String[] allNames = MainActivity.this.allNames;
-            // String timeInterval = String.valueOf(textview2.getText());
             for (int i = 0; i < allNames.length; i++) {
                 String stockName = allNames[i];
                 OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder().url("https://financialmodelingprep.com/api/v3/historical-price-full/" + stockName + "?timeseries=1&apikey=36c1d526b5750ae07a2de23109bedcda").build();
+                Request request = new Request.Builder().url("https://financialmodelingprep.com/api/v3/historical-price-full/" + stockName + "?timeseries=5&apikey=36c1d526b5750ae07a2de23109bedcda").build();
 
 
                 try {
                     Response response = client.newCall(request).execute();
                     String responseString = response.body().string();
                     ArrayList<Double> priceList1 = extractPrices(responseString);
+                    ArrayList<String> dateList1 = extractDates(responseString, "day");
+                    String timeInterval = "1min";
+                    StockModel s1 = new StockModel(stockName, priceList1, dateList1, timeInterval);
 
-                    resultEnd += responseString;
-                } catch (IOException e) {
+
+                    resultEnd += "|||" + s1.name + " ? " + s1.priceList + " ? " + s1.dateList + " ? " + s1.analysis + " ? " + s1.gainLossPercent + " ? " + s1.timeInterval + "|||" + "\n";
+                } catch (IOException | ParseException e) {
                     // return null;
                 }
             }
@@ -220,8 +206,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             // Update the UI with the result
-            TextView textView = findViewById(R.id.txt1);
-            textView.setText(textView.getText() + String.valueOf(result));
+//            TextView textView = findViewById(R.id.txt1);
+//            textView.setText(textView.getText() + String.valueOf(result));
 
         }
     }
@@ -246,12 +232,11 @@ public class MainActivity extends AppCompatActivity {
                 saveString += ",";
         }
         saveString = saveString.replaceAll("(\\r|\\n)", "");
-        String savePriceString = saveString; //this i will upload to firebase
         return priceList;
     }
 
 
-    public String extractDates(String data, String dataTaker, String timeInterval) throws ParseException {
+    public ArrayList<String> extractDates(String dataTaker, String timeInterval) throws ParseException {
         String saveString = "";
         int count = 0;
         int tempIndex = 0;
@@ -282,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
                 saveString += ",";
         }
         saveString = saveString.replaceAll("(\\r|\\n)", "");
-        return saveString;
+        return dateList;
     }
 
 
@@ -324,6 +309,4 @@ public class MainActivity extends AppCompatActivity {
 
 
     //end of main
-
-
 }
