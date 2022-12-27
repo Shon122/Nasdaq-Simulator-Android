@@ -2,8 +2,10 @@ package com.gtappdevelopers.bankrehovot;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Handler;
 
@@ -24,7 +26,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
+import java.util.concurrent.ExecutionException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -47,9 +51,13 @@ public class InfoAll {
     public Context mContext;
     String result;
     int iNames;
+    String timeInterval;
+    String currentStockName;
+    StockModel saveCurrentStockModel;
 
     /////////////////////////////////////////////////
     public InfoAll(Context context) throws ParseException {
+        timeInterval = "1min";
         result = "";
         iNames = 0;
         stockModelIndex = 0;
@@ -124,6 +132,134 @@ public class InfoAll {
         };
         apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/1min/BTCUSD?apikey=" + apiList[apiIndex];
         stockModels = new StockModel[allNames.length];
+    }
+
+
+    public StockModel GetOnePriceModel(String name1, String timeinterval1, boolean single) {
+        //get latest api index and use it here
+
+        //also make sure more than 2 minutes have passed since last update
+        timeInterval = timeinterval1;
+        currentStockName = name1;
+        if (timeInterval.equals("day")) {
+            if (single)
+                apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + currentStockName + "?timeseries=1&apikey=" + apiList[apiIndex];
+            else
+                apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + currentStockName + "?apikey=" + apiList[apiIndex];
+
+        } else {
+            if (single)//make it from the current day if boolean single is true
+                apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + currentStockName + "?apikey=" + apiList[apiIndex];
+            else
+                apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + currentStockName + "?apikey=" + apiList[apiIndex];
+
+
+
+
+        }
+        GetDataTask task = new GetDataTask();
+        try {
+            task.execute().get();
+//            String result = task.execute().get();
+//            docData.put("infoString", result);
+//            db.collection("Trades").document("stockInfo").set(docData);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+
+        apiIndex++;
+        if (apiIndex >= apiList.length)
+            apiIndex = 0;
+        //upload api index to firebase again
+        return saveCurrentStockModel;
+    }
+
+    private class GetDataTask extends AsyncTask<Void, Void, String> {
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder().url(apiLink).build();
+            try {
+                Response response = client.newCall(request).execute();
+                String responseString = Objects.requireNonNull(response.body()).string();
+                ArrayList<Double> priceList1 = extractPrices(responseString);
+                ArrayList<String> dateList1 = extractDates(responseString, timeInterval);
+                saveCurrentStockModel = new StockModel(currentStockName, priceList1, dateList1, timeInterval);
+            } catch (IOException | ParseException ignored) {
+            }
+            return "";
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        protected void onPostExecute(String result) {
+            // Update the UI with the result
+//            TextView textView = findViewById(R.id.txt1);
+//            textView.setText(textView.getText() + String.valueOf(result));
+
+        }
+    }
+
+
+    public ArrayList<Double> extractPrices(String info) {
+
+        //now extract prices
+        ArrayList<Double> priceList = new ArrayList<>();
+        String saveString = "";
+        int count = 0;
+        int tempIndex = info.indexOf("close");
+        while (tempIndex > -1 && count < 51) {
+            count++;
+            String takeHere1 = (info.substring(tempIndex + 9, info.indexOf(',', tempIndex + 9)));
+            //here make sure there is no infinite number like 37.00000000
+            takeHere1 = removeInfiniteNumbers(takeHere1);
+            //now convert to Double
+            priceList.add(Double.valueOf(takeHere1));
+            saveString += priceList.get(priceList.size() - 1);
+            tempIndex = info.indexOf("close", tempIndex + 1);
+            if (tempIndex != -1)
+                saveString += ",";
+        }
+        saveString = saveString.replaceAll("(\\r|\\n)", "");
+        return priceList;
+    }
+
+
+    public ArrayList<String> extractDates(String dataTaker, String timeInterval) throws ParseException {
+        String saveString = "";
+        int count = 0;
+        int tempIndex = 0;
+
+        ArrayList<String> dateList = new ArrayList<>();
+        saveString = ""; //!!IMPORTANT TO RESET THE SAVESTRING!!!!!!!!!!
+        tempIndex = dataTaker.indexOf("date");
+        while (tempIndex != -1 && count < 51) {
+            count++;
+            String takeDate = "";
+            if (timeInterval.equals("day")) {
+                takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 10);
+            } else {
+                takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 11 + 8);
+                if (!takeDate.contains("o")) {
+                    SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    myDate.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
+                    Date newDate = null;
+                    newDate = myDate.parse(takeDate);
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                    takeDate = df.format(newDate); //the string result is like "2022-12-10"
+                }
+            }
+            dateList.add(takeDate);
+            saveString += dateList.get(dateList.size() - 1);
+            tempIndex = dataTaker.indexOf("date", tempIndex + 1);
+            if (tempIndex != -1)
+                saveString += ",";
+        }
+        saveString = saveString.replaceAll("(\\r|\\n)", "");
+        return dateList;
     }
 
 

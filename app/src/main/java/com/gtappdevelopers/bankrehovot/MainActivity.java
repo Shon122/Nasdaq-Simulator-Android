@@ -45,11 +45,12 @@ public class MainActivity extends AppCompatActivity {
 
             {
 
-                    "AAPL"//, "ADBE", "ADI", "ADP"
+                    "ABNB", "ADBE", "ADI"
 
 
             };
     final String[] priceTaker = new String[1];
+    String temp11;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,15 +64,34 @@ public class MainActivity extends AppCompatActivity {
 //        } catch (ParseException | InterruptedException e) {
 //            e.printStackTrace();
 //        }
-
-        GetDataTask task = new GetDataTask();
+//        temp11 = "";
+//        for (int i = 0; i < allNames.length; i++) {
+//            allNames[0] = allNames[i];
+//            GetDataTask task = new GetDataTask();
+//            try {
+//                String result = task.execute().get();
+////
+////                TextView textView = findViewById(R.id.txt1);
+////                textView.setText(textView.getText()+result);
+//
+////            docData.put("infoString", result);
+////            db.collection("Trades").document("stockInfo").set(docData);
+//            } catch (ExecutionException | InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
+//
+        StockModel s1 = null;
         try {
-            String result = task.execute().get();
-            docData.put("infoString", result);
-            db.collection("Trades").document("stockInfo").set(docData);
-        } catch (ExecutionException | InterruptedException e) {
+            InfoAll info1 = new InfoAll(this);
+            s1 = info1.GetOnePriceModel("ABNB", "1min", true);
+        } catch (ParseException e) {
             e.printStackTrace();
         }
+        TextView textView = findViewById(R.id.txt1);
+        assert s1 != null;
+        textView.setText(String.valueOf(s1.priceList.get(0)));
 //
 //        docData.put("infoString", textview.getText());// creates an entirely new document with new field
 //        db.collection("Trades").document("stockInfo").set(docData);
@@ -174,31 +194,29 @@ public class MainActivity extends AppCompatActivity {
     private class GetDataTask extends AsyncTask<Void, Void, String> {
 
 
-
         @Override
         protected String doInBackground(Void... params) {
             String resultEnd = "";
             String[] allNames = MainActivity.this.allNames;
-            for (int i = 0; i < allNames.length; i++) {
-                String stockName = allNames[i];
-                OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder().url("https://financialmodelingprep.com/api/v3/historical-price-full/" + stockName + "?timeseries=5&apikey=36c1d526b5750ae07a2de23109bedcda").build();
+            String stockName = allNames[0];
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder().url("https://financialmodelingprep.com/api/v3/historical-price-full/" + stockName + "?timeseries=1&apikey=07fef516f7504f5b2781c5c58b75a63d").build();
 
 
-                try {
-                    Response response = client.newCall(request).execute();
-                    String responseString = response.body().string();
-                    ArrayList<Double> priceList1 = extractPrices(responseString);
-                    ArrayList<String> dateList1 = extractDates(responseString, "day");
-                    String timeInterval = "1min";
-                    StockModel s1 = new StockModel(stockName, priceList1, dateList1, timeInterval);
+            try {
+                Response response = client.newCall(request).execute();
+                String responseString = response.body().string();
+                ArrayList<Double> priceList1 = extractPrices(responseString);
+                ArrayList<String> dateList1 = extractDates(responseString, "day");
+                String timeInterval = "1min";
+                StockModel s1 = new StockModel(stockName, priceList1, dateList1, timeInterval);
 
 
-                    resultEnd += "|||" + s1.name + " ? " + s1.priceList + " ? " + s1.dateList + " ? " + s1.analysis + " ? " + s1.gainLossPercent + " ? " + s1.timeInterval + "|||" + "\n";
-                } catch (IOException | ParseException e) {
-                    // return null;
-                }
+                temp11 += "|||" + s1.name + " ? " + s1.priceList + " ? " + s1.dateList + " ? " +/* s1.analysis */ " ? " + s1.gainLossPercent + " ? " + s1.timeInterval + "|||" + "\n";
+            } catch (IOException | ParseException e) {
+                // return null;
             }
+
             return resultEnd;
         }
 
