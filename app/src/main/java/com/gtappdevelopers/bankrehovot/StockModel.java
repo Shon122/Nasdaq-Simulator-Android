@@ -81,7 +81,7 @@ public class StockModel {
 
         //now put in a string
         //verbal:
-        analysis.append("Analysis for "+name+"."+"\n");
+        analysis.append("Analysis for "+name+":"+"\n");
         if (standardDeviation > averagePrice * 0.1) {
             analysis.append("The stock has had high volatility.\n");
         } else {

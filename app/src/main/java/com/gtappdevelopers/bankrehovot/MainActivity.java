@@ -63,19 +63,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//
-//        StockModel s1 = null;
-//        try {
-//            InfoAll info1 = new InfoAll(this);
-//            s1 = info1.GetOnePriceModel("ABNB", "1min", true);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
+
+        StockModel s1 = null;
+        try {
+            InfoAll info1 = new InfoAll(this);
+            s1 = info1.GetOnePriceModel("ABNB", "1min", true);
+            TextView textView = findViewById(R.id.txt1);
+            textView.setText(String.valueOf(info1.stockModels[0].priceList.get(0)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 //        TextView textView = findViewById(R.id.txt1);
 //        assert s1 != null;
 //        textView.setText(String.valueOf(s1.priceList.get(0)));
-        TextView textView = findViewById(R.id.txt1);
-        textView.setText("before");
+
+
+//        TextView textView = findViewById(R.id.txt1);
+//        textView.setText("before");
 //        TextView textView = findViewById(R.id.txt1);
 //        textView.setText("before");
 //        for (int i = 0; i < 35; i++) {
@@ -345,7 +349,6 @@ public class MainActivity extends AppCompatActivity {
         });
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         String taker1 = sharedPreferences.getString("newString", "");
-
 
 
         textView.setText("after");
