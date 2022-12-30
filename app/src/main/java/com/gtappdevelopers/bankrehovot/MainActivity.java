@@ -67,9 +67,10 @@ public class MainActivity extends AppCompatActivity {
         StockModel s1 = null;
         try {
             InfoAll info1 = new InfoAll(this);
-            s1 = info1.GetOnePriceModel("ABNB", "1min", true);
-            TextView textView = findViewById(R.id.txt1);
-            textView.setText(String.valueOf(info1.stockModels[0].priceList.get(0)));
+            info1.updateAllPriceModels("1min");
+            info1.updateNews();
+//            TextView textView = findViewById(R.id.txt1);
+//            textView.setText(String.valueOf(info1.stockModels[0].priceList.get(0)));
         } catch (ParseException e) {
             e.printStackTrace();
         }
