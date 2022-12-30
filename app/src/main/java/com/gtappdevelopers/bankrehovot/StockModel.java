@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class StockModel {
+    public long updateTime;
     public String name;
     public String timeInterval;
     public ArrayList<Double> priceList;
@@ -12,6 +13,7 @@ public class StockModel {
     public Double gainLossPercent;
 
     public StockModel(String name1, ArrayList<Double> priceList1, ArrayList<String> dateList1, String timeInterval1) {
+        updateTime=System.currentTimeMillis();
         name = name1;
         priceList = priceList1;
         timeInterval = timeInterval1;

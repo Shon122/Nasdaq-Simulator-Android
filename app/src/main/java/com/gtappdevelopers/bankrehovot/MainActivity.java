@@ -2,8 +2,10 @@ package com.gtappdevelopers.bankrehovot;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -11,9 +13,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.TimeZone;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -56,42 +63,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//
+//        StockModel s1 = null;
 //        try {
-//            InfoAll infoAll = new InfoAll(this);
-//
-//            infoAll.makeSingleString("1min");
-//
-//        } catch (ParseException | InterruptedException e) {
+//            InfoAll info1 = new InfoAll(this);
+//            s1 = info1.GetOnePriceModel("ABNB", "1min", true);
+//        } catch (ParseException e) {
 //            e.printStackTrace();
 //        }
-//        temp11 = "";
-//        for (int i = 0; i < allNames.length; i++) {
-//            allNames[0] = allNames[i];
-//            GetDataTask task = new GetDataTask();
-//            try {
-//                String result = task.execute().get();
-////
-////                TextView textView = findViewById(R.id.txt1);
-////                textView.setText(textView.getText()+result);
-//
-////            docData.put("infoString", result);
-////            db.collection("Trades").document("stockInfo").set(docData);
-//            } catch (ExecutionException | InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
+//        TextView textView = findViewById(R.id.txt1);
+//        assert s1 != null;
+//        textView.setText(String.valueOf(s1.priceList.get(0)));
+        TextView textView = findViewById(R.id.txt1);
+        textView.setText("before");
+//        TextView textView = findViewById(R.id.txt1);
+//        textView.setText("before");
+//        for (int i = 0; i < 35; i++) {
+//            docData.put("" + i, i);
+//            db.collection("Trades").document("stockInfo").collection("allStocks").document("" + i).set(docData, SetOptions.merge());
 //        }
 //
-        StockModel s1 = null;
-        try {
-            InfoAll info1 = new InfoAll(this);
-            s1 = info1.GetOnePriceModel("ABNB", "1min", true);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        TextView textView = findViewById(R.id.txt1);
-        assert s1 != null;
-        textView.setText(String.valueOf(s1.priceList.get(0)));
+//        textView.setText("after");
+
+
 //
 //        docData.put("infoString", textview.getText());// creates an entirely new document with new field
 //        db.collection("Trades").document("stockInfo").set(docData);
@@ -325,6 +319,39 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void do4hour(View view) {
+        TextView textView = findViewById(R.id.txt1);
+        textView.setText("before");
+//        for (int i = 0; i < 35; i++) {
+//            docData.put("" + i, i);
+//            db.collection("Trades").document("stockInfo").collection("allStocks").document("" + i).set(docData, SetOptions.merge());
+//        }
+
+//        docData.put("newString", "httpshhttps://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15ttps://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15//console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15https://console.firebase.google.com/u/0/project/bank-rehovot/firestore/data/~2FTrades~2FstockInfo~2FallStocks~2F15");
+//        db.collection("Trades").document("stockInfo").collection("allStocks").document("" + "newString").set(docData, SetOptions.merge());
+
+        db.collection("Trades").document("stockInfo").collection("allStocks").document("" + "newString").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    String uploaderTaker = String.valueOf(document.get("newString"));
+                    SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                    myEdit.putString("newString", uploaderTaker);
+                    myEdit.apply();
+                }
+            }
+        });
+        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        String taker1 = sharedPreferences.getString("newString", "");
+
+
+
+        textView.setText("after");
+
+
+    }
 
     //end of main
 }
