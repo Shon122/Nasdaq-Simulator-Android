@@ -17,14 +17,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
 public class LoginActivity extends AppCompatActivity {
-
-    private EditText mUsernameEditText;
-    private EditText mPasswordEditText;
-    private Button mLoginButton;
-    private Button mRegisterButton;
-
-    private SharedPreferences mSharedPreferences;
+    private EditText usernameEditText;
+    private EditText passwordEditText;
+    private Button loginButton;
+    private Button registerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,41 +36,39 @@ public class LoginActivity extends AppCompatActivity {
         TextView textView;
         MainActivity.stockModels = null;
 
-        mUsernameEditText = findViewById(R.id.edit_text_username);
-        mPasswordEditText = findViewById(R.id.edit_text_password);
-        mLoginButton = findViewById(R.id.button_login);
-        mRegisterButton = findViewById(R.id.button_register);
+        usernameEditText = (EditText) findViewById(R.id.username_edit_text);
+        passwordEditText = (EditText) findViewById(R.id.password_edit_text);
+        loginButton = (Button) findViewById(R.id.login_button);
+        registerButton = (Button) findViewById(R.id.register_button);
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    }
 
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = mUsernameEditText.getText().toString();
-                String password = mPasswordEditText.getText().toString();
+    public void onClickLogin(View view) {
+        String username = usernameEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+        boolean check = authenticateUser(username, password);
 
-                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
-                    Toast.makeText(LoginActivity.this, "Username and password cannot be empty",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
-                String registeredUsername = mSharedPreferences.getString("username", null);
-                String registeredPassword = mSharedPreferences.getString("password", null);
+    }
 
-                if (username.equals(registeredUsername) && password.equals(registeredPassword)) {
-                    Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
-        mRegisterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-            }
-        });
+    public boolean authenticateUser(String username, String password) {
+        if (username.isEmpty()) {
+            Toast.makeText(this, "Username is Required!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (username.length() < 6 || !username.matches("[a-zA-Z]+")) {
+            Toast.makeText(this, "Username should be at least 6 letters and no spaces or special characters", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (password.isEmpty()) {
+            Toast.makeText(this, "Password is Required!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        //TODO: Add code to authenticate the user firebase
+        return true;
     }
 }

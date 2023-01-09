@@ -57,10 +57,11 @@ public class InfoAll {
     String currentStockName;
     StockModel saveCurrentStockModel;
     String allStockInfoStringFirebase;
+    public ArrayList<User> users;
 
     /////////////////////////////////////////////////
     public InfoAll(Context context) throws ParseException {
-
+        users = new ArrayList<>();
         allStockInfoStringFirebase = "";
         timeInterval = "1min";
         result = "";
@@ -129,6 +130,92 @@ public class InfoAll {
 
 
     }
+
+
+    public void updateUsersFirebase() {
+        //take the current users from firebase and put it the variable "users"
+        db.collection("Trades").document("Users").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    String uploaderTaker = String.valueOf(document.get("allUsers"));
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                    myEdit.putString("infoUsers", uploaderTaker);
+                    myEdit.apply();
+                }
+            }
+        });
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        String combinedString = sharedPreferences.getString("infoUsers", "");
+        //now extract string to the users variable
+        String[] split = combinedString.split(",");
+        int numUsers = split.length / 14;
+        ArrayList<User> users1 = new ArrayList<>(numUsers);
+        int index = 0;
+        for (int i = 0; i < numUsers; i++) {
+            String password = split[index++];
+            String username = split[index++];
+            Double balance = Double.parseDouble(split[index++]);
+            ArrayList<Trade> tradesList = new ArrayList<>();
+            while (index < split.length) {
+                String date = split[index++];
+                String stockName = split[index++];
+                Boolean longShort = Boolean.parseBoolean(split[index++]);
+                Double startPrice = Double.parseDouble(split[index++]);
+                Double currentPrice = Double.parseDouble(split[index++]);
+                Double amountInvested = Double.parseDouble(split[index++]);
+                Double stopLoss = Double.parseDouble(split[index++]);
+                Double limitProfit = Double.parseDouble(split[index++]);
+                Double totalProfitLoss = Double.parseDouble(split[index++]);
+                Double percentProfitLoss = Double.parseDouble(split[index++]);
+                long updateTime = Long.parseLong(split[index++]);
+                Trade trade = new Trade(date, stockName, startPrice, currentPrice, amountInvested, stopLoss, limitProfit, longShort);
+                trade.totalProfitLoss = totalProfitLoss;
+                trade.percentProfitLoss = percentProfitLoss;
+                trade.updateTime = updateTime;
+                tradesList.add(trade);
+            }
+            Trade[] trades = tradesList.toArray(new Trade[tradesList.size()]);
+            User user = new User(password, username, trades, balance);
+            users1.add(user);
+        }
+        this.users = users1;
+
+
+    }
+
+    public void uploadUsersFirebase() {
+        //uploads the current arraylist of users variable to firebase
+        StringBuilder sb = new StringBuilder();
+        for (User user : users) {
+            sb.append(user.password).append(",");
+            sb.append(user.username).append(",");
+            sb.append(user.balance).append(",");
+            for (Trade trade : user.trades) {
+                sb.append(trade.date).append(",");
+                sb.append(trade.stockName).append(",");
+                sb.append(trade.longShort).append(",");
+                sb.append(trade.startPrice).append(",");
+                sb.append(trade.currentPrice).append(",");
+                sb.append(trade.amountInvested).append(",");
+                sb.append(trade.stopLoss).append(",");
+                sb.append(trade.limitProfit).append(",");
+                sb.append(trade.totalProfitLoss).append(",");
+                sb.append(trade.percentProfitLoss).append(",");
+                sb.append(System.currentTimeMillis()).append(",");
+            }
+        }
+        String finalinfo = sb.toString();
+        //now upload to firebase
+
+        docData.put("allUsers", users);
+        db.collection("Trades").document("Users").set(docData, SetOptions.merge());
+
+
+    }
+
 
     public void updateAllStockInfoFirebase() {
         db.collection("Trades").document("stockInfo").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

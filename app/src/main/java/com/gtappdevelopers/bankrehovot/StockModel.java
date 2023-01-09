@@ -37,7 +37,6 @@ public class StockModel {
         return sum / period;
     }
 
-
     public String updateAnalysis(ArrayList<Double> prices) {
         StringBuilder analysis = new StringBuilder();
         // Calculate the average price
