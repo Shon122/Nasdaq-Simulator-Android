@@ -177,8 +177,7 @@ public class InfoAll {
                 trade.updateTime = updateTime;
                 tradesList.add(trade);
             }
-            Trade[] trades = tradesList.toArray(new Trade[tradesList.size()]);
-            User user = new User(password, username, trades, balance);
+            User user = new User(password, username, tradesList, balance);
             users1.add(user);
         }
         this.users = users1;

@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
     public static String news = "";
     public static String username = "";
     public static String password = "";
-    public static Trade[] trades=null;
-    public static User[] users=null;
+    public static ArrayList<Trade> trades = null;
+    public static ArrayList<User> users = new ArrayList<>();
     //
 
 
@@ -57,21 +57,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //start of program essentials
+        firstLoad();
+
+
+        //end of oncreate
+    }
+
+    public void firstLoad() {
         try {
             InfoAll info1 = new InfoAll(this);
             info1.updateAllPriceModels("1min");
             info1.updateNews();
+            info1.updateUsersFirebase();
+            users = info1.users;
             news = info1.news;
             stockModels = info1.stockModels;
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-
-        //end of oncreate
     }
-
 
     public void showGraph() {
         GraphView graph = (GraphView) findViewById(R.id.graph1);
