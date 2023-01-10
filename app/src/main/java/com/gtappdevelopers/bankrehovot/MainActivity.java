@@ -1,53 +1,25 @@
 package com.gtappdevelopers.bankrehovot;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.TimeZone;
+import java.util.Arrays;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import org.w3c.dom.Text;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
 
 public class MainActivity extends AppCompatActivity {
     //user essentials saving his data
-    public static StockModel[] stockModels = null;
+    public static ArrayList<StockModel> stockModels = null;
     public static String news = "";
     public static String username = "";
     public static String password = "";
-    public static ArrayList<Trade> trades = null;
+    public static ArrayList<Trade> trades = new ArrayList<>();;
     public static ArrayList<User> users = new ArrayList<>();
     //
 
@@ -59,19 +31,18 @@ public class MainActivity extends AppCompatActivity {
 
         firstLoad();
 
-
         //end of oncreate
     }
 
     public void firstLoad() {
         try {
             InfoAll info1 = new InfoAll(this);
-            info1.updateAllPriceModels("1min");
+            info1.updateAllPriceModels("4hour");
             info1.updateNews();
             info1.updateUsersFirebase();
             users = info1.users;
             news = info1.news;
-            stockModels = info1.stockModels;
+            stockModels = (ArrayList<StockModel>) Arrays.asList(info1.stockModels);
         } catch (ParseException e) {
             e.printStackTrace();
         }

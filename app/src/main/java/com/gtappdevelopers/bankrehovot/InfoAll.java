@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Handler;
 
 import androidx.annotation.NonNull;
 
@@ -22,7 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -32,8 +30,6 @@ import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -131,6 +127,12 @@ public class InfoAll {
 
     }
 
+    public User updateInfoSingleUser(User u1) {
+        //updates balance and trades
+
+        return u1;
+    }
+
 
     public void updateUsersFirebase() {
         //take the current users from firebase and put it the variable "users"
@@ -151,10 +153,9 @@ public class InfoAll {
         String combinedString = sharedPreferences.getString("infoUsers", "");
         //now extract string to the users variable
         String[] split = combinedString.split(",");
-        int numUsers = split.length / 14;
-        ArrayList<User> users1 = new ArrayList<>(numUsers);
         int index = 0;
-        for (int i = 0; i < numUsers; i++) {
+        ArrayList<User> users1 = new ArrayList<>();
+        while (index < split.length) {
             String password = split[index++];
             String username = split[index++];
             Double balance = Double.parseDouble(split[index++]);
@@ -167,6 +168,7 @@ public class InfoAll {
                 Double currentPrice = Double.parseDouble(split[index++]);
                 Double amountInvested = Double.parseDouble(split[index++]);
                 Double stopLoss = Double.parseDouble(split[index++]);
+                Boolean openClose = Boolean.parseBoolean(split[index++]);
                 Double limitProfit = Double.parseDouble(split[index++]);
                 Double totalProfitLoss = Double.parseDouble(split[index++]);
                 Double percentProfitLoss = Double.parseDouble(split[index++]);
@@ -175,6 +177,7 @@ public class InfoAll {
                 trade.totalProfitLoss = totalProfitLoss;
                 trade.percentProfitLoss = percentProfitLoss;
                 trade.updateTime = updateTime;
+                trade.openClose = openClose;
                 tradesList.add(trade);
             }
             User user = new User(password, username, tradesList, balance);
@@ -182,6 +185,11 @@ public class InfoAll {
         }
         this.users = users1;
 
+        //here update all user data trades
+        for (int i = 0; i < users.size(); i++) {
+            users.set(i, updateInfoSingleUser(users.get(i)));
+
+        }
 
     }
 
@@ -200,6 +208,7 @@ public class InfoAll {
                 sb.append(trade.currentPrice).append(",");
                 sb.append(trade.amountInvested).append(",");
                 sb.append(trade.stopLoss).append(",");
+                sb.append(trade.openClose).append(",");
                 sb.append(trade.limitProfit).append(",");
                 sb.append(trade.totalProfitLoss).append(",");
                 sb.append(trade.percentProfitLoss).append(",");
@@ -344,12 +353,12 @@ public class InfoAll {
     public void updateAllPriceModels(String timeInterval5) {
 
         for (int i = 0; i < allNames.length; i++) {
-            GetOnePriceModel(allNames[i], timeInterval5, true);
+            GetOnePriceModel(allNames[i], timeInterval5, false);
         }
 
     }
 
-    public StockModel GetOnePriceModel(String name1, String timeinterval1, boolean single) {
+    public void GetOnePriceModel(String name1, String timeinterval1, boolean single) {
         updateApiIndexFirebase();
         updateAllStockInfoFirebase();
         timeInterval = timeinterval1;
@@ -365,7 +374,7 @@ public class InfoAll {
 
 
         //proceed only if the statment true
-        if (allStockInfoStringFirebase.equals("") || !stockModels[index].timeInterval.equals(timeInterval) || (System.currentTimeMillis() - stockModels[index].updateTime) > 200000) {
+        if (allStockInfoStringFirebase.equals("") || !stockModels[index].timeInterval.equals(timeInterval) || (System.currentTimeMillis() - stockModels[index].updateTime) > 250000) {
             //
             if (timeInterval.equals("day")) {
                 if (single)
@@ -406,11 +415,10 @@ public class InfoAll {
             String taker = allStockInfoStringFirebase;
             stockModels[index] = saveCurrentStockModel;
             uploadStockModelsStringFirebase();
-            return saveCurrentStockModel;
+            return;
 
         }
         uploadStockModelsStringFirebase();
-        return stockModels[index];
     }
 
     private class GetDataTask extends AsyncTask<Void, Void, String> {
@@ -485,7 +493,7 @@ public class InfoAll {
         String saveString = "";
         int count = 0;
         int tempIndex = info.indexOf("close");
-        while (tempIndex > -1 && count < 51) {
+        while (tempIndex > -1 && count < 71) {
             count++;
             String takeHere1 = (info.substring(tempIndex + 9, info.indexOf(',', tempIndex + 9)));
             //here make sure there is no infinite number like 37.00000000
@@ -509,7 +517,7 @@ public class InfoAll {
         ArrayList<String> dateList = new ArrayList<>();
         saveString = ""; //!!IMPORTANT TO RESET THE SAVESTRING!!!!!!!!!!
         tempIndex = dataTaker.indexOf("date");
-        while (tempIndex != -1 && count < 51) {
+        while (tempIndex != -1 && count < 71) {
             count++;
             String takeDate = "";
             if (timeInterval.equals("day")) {

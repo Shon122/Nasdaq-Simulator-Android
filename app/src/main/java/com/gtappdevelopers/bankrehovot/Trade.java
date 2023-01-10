@@ -10,10 +10,11 @@ public class Trade {
     public Double startPrice;
     public Double currentPrice;
     public Double amountInvested;
-    public Double stopLoss;
-    public Double limitProfit;
+    public Double stopLoss; //if negative then there is no stop loss
+    public Double limitProfit; //if negative then there is no limit stop
     public Double totalProfitLoss;
     public Double percentProfitLoss;
+    public boolean openClose; //true is active trade, false is closed trade
     public long updateTime;
 
     public Trade(String date1, String stockName1, Double startPrice1, Double currentPrice1,
@@ -29,13 +30,54 @@ public class Trade {
         longShort = longShort1;
         totalProfitLoss = 0.0;
         percentProfitLoss = 0.0;
+        openClose = true;
     }
 
+    public void updateTrade() {
+        updateTime = System.currentTimeMillis();
+        int n = 0;
+        for (StockModel s1 : MainActivity.stockModels) {
+            if (s1.name.equals(this.stockName)) {
+                break;
+            }
+            n++;
+        }
+        StockModel s1 = MainActivity.stockModels.get(n);
+        currentPrice = s1.priceList.get(0);
+        //assuming prices have updates and now i check if limit or stop loss got hit
+        //also update profit and user balance
+        int indexTaker = -1;
+        for (int i = 0; i < s1.priceList.size(); i++) { // stops got hit somewhere
+            if (s1.priceList.get(i) <= stopLoss || s1.priceList.get(i) >= limitProfit) {
+                indexTaker = i;
+                break;
+            }
+        }
+        if (indexTaker == -1) { //meaning stops did not get hit
+            currentPrice = s1.priceList.get(indexTaker);
+            profitLossCalculator();
+            openClose = false;
+
+        } else {
+            profitLossCalculator();
+
+        }
+
+
+        //if no one was hit then update user balance and trade profit accordingly and update on firebase
+
+    }
 
     public void profitLossCalculator() {
         //gives -+16.66% percent for example
-        this.percentProfitLoss = ((this.currentPrice - this.startPrice) / this.startPrice) * 100;
+        if (longShort) {
+            this.percentProfitLoss = ((this.currentPrice - this.startPrice) / this.startPrice) * 100;
+            this.totalProfitLoss = (amountInvested + (percentProfitLoss / 100) * amountInvested) - amountInvested;
+        } else {
+            this.percentProfitLoss = -1 * (((this.currentPrice - this.startPrice) / this.startPrice) * 100);
+            this.totalProfitLoss = -1 * ((amountInvested + (percentProfitLoss / 100) * amountInvested) - amountInvested);
 
+        }
 
     }
 
