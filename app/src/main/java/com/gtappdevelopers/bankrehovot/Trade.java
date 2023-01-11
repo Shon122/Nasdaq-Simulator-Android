@@ -34,37 +34,37 @@ public class Trade {
     }
 
     public void updateTrade() {
-        updateTime = System.currentTimeMillis();
-        int n = 0;
-        for (StockModel s1 : MainActivity.stockModels) {
-            if (s1.name.equals(this.stockName)) {
-                break;
+        if(openClose) {
+            updateTime = System.currentTimeMillis();
+            int n = 0;
+            for (StockModel s1 : MainActivity.stockModels) {
+                if (s1.name.equals(this.stockName)) {
+                    break;
+                }
+                n++;
             }
-            n++;
-        }
-        StockModel s1 = MainActivity.stockModels.get(n);
-        currentPrice = s1.priceList.get(0);
-        //assuming prices have updates and now i check if limit or stop loss got hit
-        //also update profit and user balance
-        int indexTaker = -1;
-        for (int i = 0; i < s1.priceList.size(); i++) { // stops got hit somewhere
-            if (s1.priceList.get(i) <= stopLoss || s1.priceList.get(i) >= limitProfit) {
-                indexTaker = i;
-                break;
+            StockModel s1 = MainActivity.stockModels.get(n);
+            currentPrice = s1.priceList.get(0);
+            //assuming prices have updates and now i check if limit or stop loss got hit
+            //also update profit and user balance
+            int indexTaker = -1;
+            for (int i = 0; i < s1.priceList.size(); i++) { // stops got hit somewhere
+                if (s1.priceList.get(i) <= stopLoss || s1.priceList.get(i) >= limitProfit) {
+                    indexTaker = i;
+                    break;
+                }
+            }
+            if (indexTaker == -1) { //meaning stops did not get hit
+                currentPrice = s1.priceList.get(indexTaker);
+                profitLossCalculator();
+                openClose = false;
+
+            } else {
+                profitLossCalculator();
+
             }
         }
-        if (indexTaker == -1) { //meaning stops did not get hit
-            currentPrice = s1.priceList.get(indexTaker);
-            profitLossCalculator();
-            openClose = false;
 
-        } else {
-            profitLossCalculator();
-
-        }
-
-
-        //if no one was hit then update user balance and trade profit accordingly and update on firebase
 
     }
 

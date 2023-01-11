@@ -129,7 +129,10 @@ public class InfoAll {
 
     public User updateInfoSingleUser(User u1) {
         //updates balance and trades
+        for (int i = 0; i < u1.trades.size(); i++) {
+            u1.trades.get(i).updateTrade();
 
+        }
         return u1;
     }
 
@@ -159,6 +162,7 @@ public class InfoAll {
             String password = split[index++];
             String username = split[index++];
             Double balance = Double.parseDouble(split[index++]);
+            Double startingBalance = Double.parseDouble(split[index++]);
             ArrayList<Trade> tradesList = new ArrayList<>();
             while (index < split.length) {
                 String date = split[index++];
@@ -180,7 +184,8 @@ public class InfoAll {
                 trade.openClose = openClose;
                 tradesList.add(trade);
             }
-            User user = new User(password, username, tradesList, balance);
+            User user = new User(password, username, tradesList, startingBalance);
+            user.balance=balance;
             users1.add(user);
         }
         this.users = users1;
@@ -188,8 +193,17 @@ public class InfoAll {
         //here update all user data trades
         for (int i = 0; i < users.size(); i++) {
             users.set(i, updateInfoSingleUser(users.get(i)));
+            //now update balance
+            Double temp = users.get(i).startingBalance;
+            for (int j = 0; j < users.get(i).trades.size(); j++) {
+                temp += users.get(i).trades.get(j).totalProfitLoss;
+            }
+            users.get(i).balance = temp;
 
         }
+        //now upload to firebase after trades update
+        uploadUsersFirebase();
+
 
     }
 
@@ -200,6 +214,7 @@ public class InfoAll {
             sb.append(user.password).append(",");
             sb.append(user.username).append(",");
             sb.append(user.balance).append(",");
+            sb.append(user.startingBalance).append(",");
             for (Trade trade : user.trades) {
                 sb.append(trade.date).append(",");
                 sb.append(trade.stockName).append(",");

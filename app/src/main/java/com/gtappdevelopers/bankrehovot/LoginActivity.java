@@ -46,9 +46,18 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = (Button) findViewById(R.id.login_button);
         registerButton = (Button) findViewById(R.id.register_button);
 
+
     }
 
     public void switchIntent() {
+        //before switich i put all the current user stats in mainactivity vars
+
+        for (int i = 0; i < MainActivity.users.size(); i++) {
+            if (MainActivity.users.get(i).username.equals(MainActivity.username))
+                MainActivity.currentUserIndex = i;
+        }
+        MainActivity.trades = MainActivity.users.get(MainActivity.currentUserIndex).trades;
+
         Intent intent = new Intent(this, HomePage.class);
         startActivity(intent);
     }

@@ -19,8 +19,9 @@ public class MainActivity extends AppCompatActivity {
     public static String news = "";
     public static String username = "";
     public static String password = "";
-    public static ArrayList<Trade> trades = new ArrayList<>();;
+    public static ArrayList<Trade> trades = new ArrayList<>();
     public static ArrayList<User> users = new ArrayList<>();
+    public static int currentUserIndex = 0;
     //
 
 
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+
     }
 
     public void showGraph() {
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         });
         graph.addSeries(series);
     }
+
 
     //end of main
 }
