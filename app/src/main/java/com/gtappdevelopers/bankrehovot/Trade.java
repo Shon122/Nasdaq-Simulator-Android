@@ -33,6 +33,19 @@ public class Trade {
         openClose = true;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     public void updateTrade() {
         if(openClose) {
             updateTime = System.currentTimeMillis();

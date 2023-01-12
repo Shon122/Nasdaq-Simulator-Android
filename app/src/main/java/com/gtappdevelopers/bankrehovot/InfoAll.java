@@ -15,18 +15,19 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -59,7 +60,7 @@ public class InfoAll {
     public InfoAll(Context context) throws ParseException {
         users = new ArrayList<>();
         allStockInfoStringFirebase = "";
-        timeInterval = "1min";
+        timeInterval = "";
         result = "";
         iNames = 0;
         stockModelIndex = 0;
@@ -72,7 +73,8 @@ public class InfoAll {
 
         allNames = new String[]{
 
-                "ABNB", "ADBE", "ADI", "ADP", "AEP", "ALGN", "AMD", "AMGN",
+                "ABNB"
+//                , "ADBE", "ADI", "ADP", "AEP", "ALGN", "AMD", "AMGN",
 //                "AMZN", "AAPL", "ATVI", "AUDNOK", "AUDPLN", "BNBUSD", "BTCUSD",
 //                "CADBRL", "CADZAR", "CHFJPY", "ETHUSD", "EURBRL", "EURUSD", "GILD",
 //                "GOOGL", "IBM", "INTC", "ILSUSD", "KO", "LTCUSD", "META",
@@ -127,6 +129,7 @@ public class InfoAll {
 
     }
 
+    //users
     public User updateInfoSingleUser(User u1) {
         //updates balance and trades
         for (int i = 0; i < u1.trades.size(); i++) {
@@ -135,7 +138,6 @@ public class InfoAll {
         }
         return u1;
     }
-
 
     public void updateUsersFirebase() {
         //take the current users from firebase and put it the variable "users"
@@ -185,7 +187,7 @@ public class InfoAll {
                 tradesList.add(trade);
             }
             User user = new User(password, username, tradesList, startingBalance);
-            user.balance=balance;
+            user.balance = balance;
             users1.add(user);
         }
         this.users = users1;
@@ -239,23 +241,41 @@ public class InfoAll {
 
     }
 
+    ////////////////////////////////
+    //first get all the prices into stock models
+    //then combine all the info to one string
+    //then upload the string to firebase
 
-    public void updateAllStockInfoFirebase() {
-        db.collection("Trades").document("stockInfo").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    String uploaderTaker = String.valueOf(document.get("infoString"));
-                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                    myEdit.putString("infoString41", uploaderTaker);
-                    myEdit.apply();
-                }
+    public void getAllStockModels(String timeinterval1) {
+        //puts all the information to the var stockModels
+        updateApiIndexFirebase();
+        timeInterval = timeinterval1;
+        for (int i = 0; i < allNames.length; i++) {
+            currentStockName = allNames[i];
+            if (timeInterval.equals("day")) {
+                apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + currentStockName + "?serietype=line&apikey=" + apiList[apiIndex];
+            } else {
+                apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + currentStockName + "?apikey=" + apiList[apiIndex];
             }
-        });
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        allStockInfoStringFirebase = sharedPreferences.getString("infoString41", "");
+            GetDataTask task = new GetDataTask();
+            try {
+                task.execute().get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+            apiIndex++;
+            if (apiIndex >= apiList.length)
+                apiIndex = 0;
+            stockModels[i] = saveCurrentStockModel;
+        }
+
+
+
+        uploadApiIndexFirebase();
+
+        docData.put("infoString", stockModels[0].priceList.toString());
+        db.collection("Trades").document("stockInfo").set(docData, SetOptions.merge());
+
     }
 
     public void updateApiIndexFirebase() {
@@ -276,164 +296,11 @@ public class InfoAll {
         apiIndex = sharedPreferences.getInt("dataIndexApi", 0);
     }
 
-    public void extractAllStockFirebaseString() {
-        //before calling this method we need to update string in a different method
-        String take = allStockInfoStringFirebase;
-//        take = take.replaceAll(""+(";;"+ (char) 91), ";;");
-//        take = take.replaceAll(""+((char) 93 +";;"), ";;");
-
-        if (take.equals(""))
-            return;
-
-
-        //extract all and then return specific
-        String[] bigStrings = take.split("><");
-        for (int i = 0; i < bigStrings.length; i++) {
-            String[] littleString = bigStrings[i].split(";;");
-
-
-            //updateTime,name,timeInterval,priceList,dateList,analysis,gainLossPercent thats the order of strings
-            long updateTime = Long.parseLong(littleString[0]);
-            String name = littleString[1];
-            String timeInterval2 = littleString[2];
-            ArrayList<Double> priceList = new ArrayList<Double>();
-            ArrayList<String> dateList = new ArrayList<>();
-            if (take.contains(",")) {
-                for (String str : littleString[3].split(","))
-                    priceList.add(Double.parseDouble(str));
-                dateList = new ArrayList<>(Arrays.asList(littleString[4].split(",")));
-            } else {
-                priceList.add(Double.parseDouble(littleString[3]));
-                dateList.add(littleString[4]);
-            }
-            String analysis = littleString[5];
-            Double gainLossPercent = Double.valueOf(littleString[6]);
-
-
-            int tempindex = 0;
-            for (int j = 0; j < stockModels.length; j++) {
-                if (stockModels[j].name.equals(name))
-                    tempindex = j;
-            }
-            stockModels[tempindex] = new StockModel(name, priceList, dateList, timeInterval2);
-            // stockModelIndex++;
-
-        }
-
-        // stockModelIndex = 0;
-    }
-
-    public void uploadStockModelsStringFirebase() {
-        String allmodels = "";
-        for (int i = 0; i < stockModels.length; i++) {
-            //if (!stockModels[i].name.equals("none")) {
-            //updateTime,name,timeInterval,priceList,dateList,analysis,gainLossPercent thats the order of strings
-            allmodels += stockModels[i].updateTime + ";;";
-            allmodels += stockModels[i].name + ";;";
-            allmodels += stockModels[i].timeInterval + ";;";
-//
-//            String takeNow = stockModels[i].priceList.toString();
-//            takeNow.replaceAll(String.valueOf((char) 93), "");
-//            takeNow.replaceAll(String.valueOf((char) 91), "");
-//            allmodels += takeNow + ";;";
-//            takeNow = stockModels[i].dateList.toString();
-//            takeNow.replaceAll(String.valueOf((char) 93), "");
-//            takeNow.replaceAll(String.valueOf((char) 91), "");
-//            allmodels += takeNow + ";;";
-
-            StringBuilder sb = new StringBuilder();
-            String result = sb.append(stockModels[i].priceList.stream()
-                    .map(Object::toString)
-                    .collect(Collectors.joining(","))).toString();
-
-            allmodels += result + ";;";
-
-            sb = new StringBuilder();
-            result = sb.append(stockModels[i].dateList.stream()
-                    .collect(Collectors.joining(","))).toString();
-            allmodels += result + ";;";
-            // allmodels += stockModels[i].priceList+ ";;";
-            // allmodels += stockModels[i].dateList + ";;";
-            allmodels += stockModels[i].analysis + ";;";
-            allmodels += stockModels[i].gainLossPercent;
-            if (i < stockModels.length - 1)
-                allmodels += "><";
-            //}
-        }
-
-        docData.put("infoString", allmodels);
-        db.collection("Trades").document("stockInfo").set(docData, SetOptions.merge());
-    }
-
-    public void updateAllPriceModels(String timeInterval5) {
-
-        for (int i = 0; i < allNames.length; i++) {
-            GetOnePriceModel(allNames[i], timeInterval5, false);
-        }
-
-    }
-
-    public void GetOnePriceModel(String name1, String timeinterval1, boolean single) {
-        updateApiIndexFirebase();
-        updateAllStockInfoFirebase();
-        timeInterval = timeinterval1;
-        currentStockName = name1;
-        //also make sure more than 2 minutes have passed since last update if its the same timeInterval
-        // stockModelIndex = 0;
-        extractAllStockFirebaseString();
-        int index = 0;
-        for (int i = 0; i < stockModels.length; i++) {
-            if (stockModels[i].name.equals(name1))
-                index = i;
-        }
-
-
-        //proceed only if the statment true
-        if (allStockInfoStringFirebase.equals("") || !stockModels[index].timeInterval.equals(timeInterval) || (System.currentTimeMillis() - stockModels[index].updateTime) > 250000) {
-            //
-            if (timeInterval.equals("day")) {
-                if (single)
-                    apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + currentStockName + "?timeseries=1&apikey=" + apiList[apiIndex];
-                else
-                    apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + currentStockName + "?apikey=" + apiList[apiIndex];
-
-            } else {
-                if (single)//make it from the current day if boolean single is true
-                {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.add(Calendar.DATE, -4);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                    String currentDate = dateFormat.format(calendar.getTime());
-
-                    apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + currentStockName + "?from=" + currentDate + "&apikey=" + apiList[apiIndex];
-                } else
-                    apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + currentStockName + "?apikey=" + apiList[apiIndex];
-
-
-            }
-            GetDataTask task = new GetDataTask();
-            try {
-                task.execute().get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-
-
-            apiIndex++;
-            if (apiIndex >= apiList.length)
-                apiIndex = 0;
-            //upload api index to firebase again
-            docData.put("indexnumber", apiIndex);
-            db.collection("Trades").document("indexapi").set(docData, SetOptions.merge());
-
-
-            String taker = allStockInfoStringFirebase;
-            stockModels[index] = saveCurrentStockModel;
-            uploadStockModelsStringFirebase();
-            return;
-
-        }
-        uploadStockModelsStringFirebase();
+    public void uploadApiIndexFirebase() {
+        if (apiIndex >= apiList.length)
+            apiIndex = 0;
+        docData.put("indexnumber", apiIndex);
+        db.collection("Trades").document("indexapi").set(docData, SetOptions.merge());
     }
 
     private class GetDataTask extends AsyncTask<Void, Void, String> {
@@ -446,10 +313,10 @@ public class InfoAll {
             try {
                 Response response = client.newCall(request).execute();
                 String responseString = Objects.requireNonNull(response.body()).string();
-                ArrayList<Double> priceList1 = extractPrices(responseString);
-                ArrayList<String> dateList1 = extractDates(responseString, timeInterval);
+                ArrayList<Double> priceList1 = extractPrices(responseString); //extract close values
+                ArrayList<String> dateList1 = extractDates(responseString);
                 saveCurrentStockModel = new StockModel(currentStockName, priceList1, dateList1, timeInterval);
-            } catch (IOException | ParseException ignored) {
+            } catch (IOException | ParseException | JSONException ignored) {
             }
             return "";
         }
@@ -501,62 +368,71 @@ public class InfoAll {
         }
     }
 
-    public ArrayList<Double> extractPrices(String info) {
-
-        //now extract prices
-        ArrayList<Double> priceList = new ArrayList<>();
-        String saveString = "";
-        int count = 0;
-        int tempIndex = info.indexOf("close");
-        while (tempIndex > -1 && count < 71) {
-            count++;
-            String takeHere1 = (info.substring(tempIndex + 9, info.indexOf(',', tempIndex + 9)));
-            //here make sure there is no infinite number like 37.00000000
-            takeHere1 = removeInfiniteNumbers(takeHere1);
-            //now convert to Double
-            priceList.add(Double.valueOf(takeHere1));
-            saveString += priceList.get(priceList.size() - 1);
-            tempIndex = info.indexOf("close", tempIndex + 1);
-            if (tempIndex != -1)
-                saveString += ",";
-        }
-        saveString = saveString.replaceAll("(\\r|\\n)", "");
-        return priceList;
-    }
-
-    public ArrayList<String> extractDates(String dataTaker, String timeInterval) throws ParseException {
-        String saveString = "";
-        int count = 0;
-        int tempIndex = 0;
-
-        ArrayList<String> dateList = new ArrayList<>();
-        saveString = ""; //!!IMPORTANT TO RESET THE SAVESTRING!!!!!!!!!!
-        tempIndex = dataTaker.indexOf("date");
-        while (tempIndex != -1 && count < 71) {
-            count++;
-            String takeDate = "";
-            if (timeInterval.equals("day")) {
-                takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 10);
-            } else {
-                takeDate = dataTaker.substring(tempIndex + 9, tempIndex + 9 + 11 + 8);
-                if (!takeDate.contains("o")) {
-                    SimpleDateFormat myDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    myDate.setTimeZone(TimeZone.getTimeZone("GMT-7:00"));
-                    Date newDate = null;
-                    newDate = myDate.parse(takeDate);
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                    takeDate = df.format(newDate); //the string result is like "2022-12-10"
+    public ArrayList<Double> extractPrices(String info) throws JSONException {
+        if(timeInterval.equals("day")){
+            ArrayList<Double> priceList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(info);
+            JSONArray jsonArray = jsonObject.getJSONArray("historical");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                if (priceList.size() >= 70) {
+                    break;
                 }
+                JSONObject historicalObject = jsonArray.getJSONObject(i);
+                priceList.add(Double.valueOf(removeInfiniteNumbers(String.valueOf(historicalObject.getDouble("close")))));
             }
-            dateList.add(takeDate);
-            saveString += dateList.get(dateList.size() - 1);
-            tempIndex = dataTaker.indexOf("date", tempIndex + 1);
-            if (tempIndex != -1)
-                saveString += ",";
+            return priceList;
         }
-        saveString = saveString.replaceAll("(\\r|\\n)", "");
-        return dateList;
+        else {
+            ArrayList<Double> priceList = new ArrayList<>();
+            JSONArray jsonArray = new JSONArray(info);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                if (priceList.size() >= 70) {
+                    break;
+                }
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                priceList.add(Double.valueOf(removeInfiniteNumbers(String.valueOf(jsonObject.getDouble("close")))));
+            }
+            return priceList;
+        }
     }
+
+    public ArrayList<String> extractDates(String info) throws ParseException, JSONException {
+        if(timeInterval.equals("day")){
+            ArrayList<String> dateList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(info);
+            JSONArray jsonArray = jsonObject.getJSONArray("historical");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                if (dateList.size() >= 70) {
+                    break;
+                }
+                JSONObject historicalObject = jsonArray.getJSONObject(i);
+                dateList.add(historicalObject.getString("date"));
+            }
+            return dateList;
+        }
+        else {
+            ArrayList<String> dateList = new ArrayList<>();
+            JSONArray jsonArray = new JSONArray(info);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                if (dateList.size() >= 70) {
+                    break;
+                }
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                dateList.add(jsonObject.getString("date"));
+            }
+            return dateList;
+        }
+
+    }
+
+    public String removeInfiniteNumbers(String price) {
+        double doublePrice = Double.parseDouble(price);
+        String roundedPrice = String.format("%.5f", doublePrice);
+        return roundedPrice;
+    }
+
+
+
 
     public void updateNews() {
         long lastUpdate = 0;
@@ -646,40 +522,186 @@ public class InfoAll {
 
     }
 
-    public String removeInfiniteNumbers(String price) {
-        //make sure the price is small and compact like 302.3656 and not 302.363573895
-        //0.12345678 ---> 0.12345
-        //1.12345678 ---> 1.1234
-        //12.12345678 --->12.123
-        //123.12345678 --->123.123
-        //1234.12345678 --->1234.123
-        //12345.12345678 --->12345.123
 
-        //first of all cut all the zeros at the end
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    public void updateAllStockInfoFirebase() {
+        db.collection("Trades").document("stockInfo").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    String uploaderTaker = String.valueOf(document.get("infoString"));
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                    myEdit.putString("infoString333", uploaderTaker);
+                    myEdit.apply();
+                }
+            }
+        });
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        allStockInfoStringFirebase = sharedPreferences.getString("infoString333", "");
+    }
+
+    public void extractAllStockFirebaseString() {
+        //before calling this method we need to update string in a different method
+        String take = allStockInfoStringFirebase;
+//        take = take.replaceAll(""+(";;"+ (char) 91), ";;");
+//        take = take.replaceAll(""+((char) 93 +";;"), ";;");
+
+        if (take.equals(""))
+            return;
 
 
-        int take1 = price.length();
-        while (price.charAt(take1 - 1) == '0') {
-            price = price.substring(0, price.length() - 1);
-            take1 = price.length();
+        //extract all and then return specific
+        String[] bigStrings = take.split("><");
+        for (int i = 0; i < bigStrings.length; i++) {
+            String[] littleString = bigStrings[i].split(";;");
+
+
+            //updateTime,name,timeInterval,priceList,dateList,analysis,gainLossPercent thats the order of strings
+            long updateTime = Long.parseLong(littleString[0]);
+            String name = littleString[1];
+            String timeInterval2 = littleString[2];
+            ArrayList<Double> priceList = new ArrayList<Double>();
+            ArrayList<String> dateList = new ArrayList<>();
+            if (take.contains(",")) {
+                for (String str : littleString[3].split(",")) {
+                    if (!str.equals(""))
+                        priceList.add(Double.parseDouble(str));
+                }
+                dateList = new ArrayList<>(Arrays.asList(littleString[4].split(",")));
+            } else {
+                priceList.add(Double.parseDouble(littleString[3]));
+                dateList.add(littleString[4]);
+            }
+            String analysis = littleString[5];
+            Double gainLossPercent = Double.valueOf(littleString[6]);
+
+
+            int tempindex = 0;
+            for (int j = 0; j < stockModels.length; j++) {
+                if (stockModels[j].name.equals(name))
+                    tempindex = j;
+            }
+            stockModels[tempindex] = new StockModel(name, priceList, dateList, timeInterval2);
+            // stockModelIndex++;
+
         }
-        if (price.charAt(price.length() - 1) == '.') {
-            price = price.substring(0, price.length() - 1);
-            return price;
+
+        // stockModelIndex = 0;
+    }
+
+    public void uploadStockModelsStringFirebase() {
+        String allmodels = "";
+        for (int i = 0; i < stockModels.length; i++) {
+            //if (!stockModels[i].name.equals("none")) {
+            //updateTime,name,timeInterval,priceList,dateList,analysis,gainLossPercent thats the order of strings
+            allmodels += stockModels[i].updateTime + ";;";
+            allmodels += stockModels[i].name + ";;";
+            allmodels += stockModels[i].timeInterval + ";;";
+//
+//            String takeNow = stockModels[i].priceList.toString();
+//            takeNow.replaceAll(String.valueOf((char) 93), "");
+//            takeNow.replaceAll(String.valueOf((char) 91), "");
+//            allmodels += takeNow + ";;";
+//            takeNow = stockModels[i].dateList.toString();
+//            takeNow.replaceAll(String.valueOf((char) 93), "");
+//            takeNow.replaceAll(String.valueOf((char) 91), "");
+//            allmodels += takeNow + ";;";
+
+            StringBuilder sb = new StringBuilder();
+            String result = sb.append(stockModels[i].priceList.stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(","))).toString();
+
+            allmodels += result + ";;";
+
+            sb = new StringBuilder();
+            result = sb.append(stockModels[i].dateList.stream()
+                    .collect(Collectors.joining(","))).toString();
+            allmodels += result + ";;";
+            // allmodels += stockModels[i].priceList+ ";;";
+            // allmodels += stockModels[i].dateList + ";;";
+            allmodels += stockModels[i].analysis + ";;";
+            allmodels += stockModels[i].gainLossPercent;
+            if (i < stockModels.length - 1)
+                allmodels += "><";
+            //}
         }
-        //now dealing with prices who are not "37.00000"
 
-        String beforePoint = price.substring(0, price.indexOf("."));
-        String afterPoint = price.substring(price.indexOf(".") + 1);
+        docData.put("infoString", allmodels);
+        db.collection("Trades").document("stockInfo").set(docData, SetOptions.merge());
+    }
+
+    public void updateAllPriceModels(String timeInterval5) {
+
+        for (int i = 0; i < allNames.length; i++) {
+            GetOnePriceModel(allNames[i], timeInterval5, false);
+        }
+
+    }
+
+    public void GetOnePriceModel(String name1, String timeinterval1, boolean single) {
+        updateApiIndexFirebase();
+        // updateAllStockInfoFirebase();
+        timeInterval = timeinterval1;
+        currentStockName = name1;
+        //also make sure more than 2 minutes have passed since last update if its the same timeInterval
+        // stockModelIndex = 0;
+        extractAllStockFirebaseString();
+        int index = 0;
+        for (int i = 0; i < stockModels.length; i++) {
+            if (stockModels[i].name.equals(name1))
+                index = i;
+        }
 
 
-        if (afterPoint.length() > 5)
-            afterPoint = afterPoint.substring(0, 5);
-        String result = beforePoint + "." + afterPoint;
+        //proceed only if the statment true
+        if (allStockInfoStringFirebase.equals("") || !stockModels[index].timeInterval.equals(timeInterval) || (System.currentTimeMillis() - stockModels[index].updateTime) > 250000) {
+            //
+            if (timeInterval.equals("day")) {
+                if (single)
+                    apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + currentStockName + "?timeseries=1&apikey=" + apiList[apiIndex];
+                else
+                    apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + currentStockName + "?apikey=" + apiList[apiIndex];
+
+            } else {
+                if (single)//make it from the current day if boolean single is true
+                {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DATE, -4);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String currentDate = dateFormat.format(calendar.getTime());
+
+                    apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + currentStockName + "?from=" + currentDate + "&apikey=" + apiList[apiIndex];
+                } else
+                    apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + currentStockName + "?apikey=" + apiList[apiIndex];
 
 
-        return result;
+            }
+            GetDataTask task = new GetDataTask();
+            try {
+                task.execute().get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
 
+
+            apiIndex++;
+            if (apiIndex >= apiList.length)
+                apiIndex = 0;
+            //upload api index to firebase again
+            docData.put("indexnumber", apiIndex);
+            db.collection("Trades").document("indexapi").set(docData, SetOptions.merge());
+
+
+            String taker = allStockInfoStringFirebase;
+            stockModels[index] = saveCurrentStockModel;
+            uploadStockModelsStringFirebase();
+            return;
+
+        }
+        uploadStockModelsStringFirebase();
     }
 
 

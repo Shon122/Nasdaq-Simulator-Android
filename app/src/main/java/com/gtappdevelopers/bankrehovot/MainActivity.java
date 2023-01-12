@@ -1,5 +1,6 @@
 package com.gtappdevelopers.bankrehovot;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import java.text.ParseException;
@@ -31,19 +32,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         firstLoad();
-
+  //      switchIntent();
         //end of oncreate
+    }
+
+    public void switchIntent() {
+        //before switich i put all the current user stats in mainactivity vars
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     public void firstLoad() {
         try {
             InfoAll info1 = new InfoAll(this);
-            info1.updateAllPriceModels("4hour");
+            info1.getAllStockModels("day");
             info1.updateNews();
-            info1.updateUsersFirebase();
+          //  info1.updateUsersFirebase();
             users = info1.users;
             news = info1.news;
-            stockModels = (ArrayList<StockModel>) Arrays.asList(info1.stockModels);
+           // stockModels = (ArrayList<StockModel>) Arrays.asList(info1.stockModels);
         } catch (ParseException e) {
             e.printStackTrace();
         }

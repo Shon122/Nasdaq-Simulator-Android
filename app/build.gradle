@@ -33,7 +33,6 @@ android {
 
 dependencies {
 
-
     implementation 'com.squareup.okhttp3:okhttp:4.9.2'
     implementation 'com.jjoe64:graphview:4.2.2'
     implementation platform('com.google.firebase:firebase-bom:31.1.0')
