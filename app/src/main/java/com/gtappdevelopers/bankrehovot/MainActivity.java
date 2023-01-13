@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         firstLoad();
-  //      switchIntent();
+       switchIntent();
         //end of oncreate
     }
 
@@ -46,8 +46,9 @@ public class MainActivity extends AppCompatActivity {
     public void firstLoad() {
         try {
             InfoAll info1 = new InfoAll(this);
-            info1.getAllStockModels("day");
-            info1.updateNews();
+            info1.firstLoadAll();
+//            info1.getAllStockModels("day");
+//            info1.updateNews();
           //  info1.updateUsersFirebase();
             users = info1.users;
             news = info1.news;

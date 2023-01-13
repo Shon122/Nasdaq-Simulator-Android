@@ -34,20 +34,8 @@ public class Trade {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     public void updateTrade() {
-        if(openClose) {
+        if (openClose) {
             updateTime = System.currentTimeMillis();
             int n = 0;
             for (StockModel s1 : MainActivity.stockModels) {
