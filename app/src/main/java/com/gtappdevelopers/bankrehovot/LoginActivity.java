@@ -27,6 +27,7 @@ import org.checkerframework.checker.units.qual.A;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText;
@@ -39,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
         TextView textView;
-        MainActivity.stockModels = null;
+
 
         usernameEditText = (EditText) findViewById(R.id.username_edit_text);
         passwordEditText = (EditText) findViewById(R.id.password_edit_text);
@@ -56,8 +57,7 @@ public class LoginActivity extends AppCompatActivity {
             if (MainActivity.users.get(i).username.equals(MainActivity.username))
                 MainActivity.currentUserIndex = i;
         }
-        MainActivity.trades = MainActivity.users.get(MainActivity.currentUserIndex).trades;
-
+        MainActivity.userStockModels = MainActivity.stockModels.get(MainActivity.currentUserIndex);
         Intent intent = new Intent(this, HomePage.class);
         startActivity(intent);
     }
@@ -70,16 +70,10 @@ public class LoginActivity extends AppCompatActivity {
             ArrayList<Trade> emptyList = new ArrayList<>();
             User newUser = new User(password, username, emptyList, 10000.00);
             MainActivity.users.add(newUser);
-            try {
-                InfoAll info1 = new InfoAll(this);
-                info1.users = MainActivity.users;
-                info1.uploadUsersFirebase();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            MainActivity.uploadUsersToFirestore(MainActivity.users);
 
             MainActivity.password = password;
-            MainActivity.username = password;
+            MainActivity.username = username;
             MainActivity.trades = emptyList;
             switchIntent();
         }
@@ -95,12 +89,14 @@ public class LoginActivity extends AppCompatActivity {
             for (User user1 : MainActivity.users) {
                 if (user1.username.equals(username)) {
                     MainActivity.trades = user1.trades;
-
+                    MainActivity.password = user1.password;
+                    MainActivity.username = user1.username;
+                    switchIntent();
                 }
             }
 
             MainActivity.password = password;
-            MainActivity.username = password;
+            MainActivity.username = username;
             MainActivity.trades = emptyList;
             switchIntent();
         }

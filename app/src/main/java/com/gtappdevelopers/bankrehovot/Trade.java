@@ -32,6 +32,9 @@ public class Trade {
         percentProfitLoss = 0.0;
         openClose = true;
     }
+    public Trade() {
+        // Empty constructor needed for deserialization
+    }
 
 
     public void updateTrade() {

@@ -16,6 +16,8 @@ public class User {
         startingBalance=startingBalance1;
         balance=startingBalance1;
     }
-
+    public User() {
+        // Empty constructor needed for deserialization
+    }
 
 }
