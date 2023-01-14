@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -156,11 +157,13 @@ public class MainActivity extends AppCompatActivity {
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-        Toast.makeText(this, "User already exists", Toast.LENGTH_LONG).show();
 
-        //switchIntent();
+
+        switchIntent();
         //end of oncreate
     }
+
+
 
     public void switchIntent() {
         Intent intent = new Intent(this, LoginActivity.class);

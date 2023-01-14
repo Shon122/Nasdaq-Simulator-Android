@@ -109,6 +109,10 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this, "Username and password should be at least 6 letters", Toast.LENGTH_SHORT).show();
             return false;
         }
+        if (!username.matches("^[a-zA-Z0-9]*$") ||!password.matches("^[a-zA-Z0-9]*$") ) {
+            Toast.makeText(LoginActivity.this, "Username and password can only contain letters and numbers", Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
 
         //TODO: Add code to authenticate the user with the variable users from mainactivity
