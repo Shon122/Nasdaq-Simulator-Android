@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -49,7 +50,6 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     //user essentials saving his data
-    public static StockModel userStockModels;
     public static String news = "";
     public static String username = "";
     public static String password = "";
@@ -59,8 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     Map<String, Object> docData;
 
-    //
-
+    ///////////////////////
     public Long currentTime;
     public String[] apiList;
     public int apiIndex;
@@ -152,16 +151,14 @@ public class MainActivity extends AppCompatActivity {
         /////////////////////////////////////
 
 
-
-
         try {
             firstLoadAll();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
+        Toast.makeText(this, "User already exists", Toast.LENGTH_LONG).show();
 
-
-        switchIntent();
+        //switchIntent();
         //end of oncreate
     }
 
@@ -169,19 +166,18 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
-
-    public void showGraph() {
-        GraphView graph = (GraphView) findViewById(R.id.graph1);
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[]{
-                new DataPoint(0, 1),
-                new DataPoint(1, 5),
-                new DataPoint(2, 3),
-                new DataPoint(3, 2),
-                new DataPoint(4, 6)
-        });
-        graph.addSeries(series);
-    }
-
+//
+//    public void showGraph() {
+//        GraphView graph = (GraphView) findViewById(R.id.graph1);
+//        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[]{
+//                new DataPoint(0, 1),
+//                new DataPoint(1, 5),
+//                new DataPoint(2, 3),
+//                new DataPoint(3, 2),
+//                new DataPoint(4, 6)
+//        });
+//        graph.addSeries(series);
+//    }
 
     public void firstLoadAll() throws ExecutionException, InterruptedException {
         getAllStockModels("4hour");
@@ -211,52 +207,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //users
-
-//
-//    public void updateUsersFirebase() {
-//        //take the current users from firebase and put it the variable "users"
-//        db.collection("Trades").document("Users").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    DocumentSnapshot document = task.getResult();
-//
-//                    allUserInfo = String.valueOf(document.get("allUsers"));
-//                    users = convertStringToArrayList(allUserInfo);
-//
-//                    //here update all user data trades
-//                    for (int i = 0; i < users.size(); i++) {
-//
-//                        for (int j = 0; j < users.get(i).trades.size(); j++) {
-//                            users.get(i).trades.get(j).updateTrade();
-//                        }
-//
-//                        //now update balance
-//                        Double temp = users.get(i).startingBalance;
-//                        for (int j = 0; j < users.get(i).trades.size(); j++) {
-//                            temp += users.get(i).trades.get(j).totalProfitLoss;
-//                        }
-//                        users.get(i).balance = temp;
-//                    }
-//                    uploadUsersFirebase();
-//
-//
-//                }
-//            }
-//        });
-//
-//    }
-//
-//    public void uploadUsersFirebase() {
-//        allUserInfo = convertArrayListToString(users);
-//        docData.put("allUsers", allUserInfo); //put back ONNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-//        db.collection("Trades").document("Users").set(docData, SetOptions.merge());
-//
-//
-//    }
-
-
     public ArrayList<User> getUsersFromFirestore() {
         ArrayList<User> users = new ArrayList<>();
         db.collection("Trades").document("Users").collection("usersAll").get().addOnCompleteListener(task -> {
@@ -274,13 +224,9 @@ public class MainActivity extends AppCompatActivity {
     public static void uploadUsersToFirestore(ArrayList<User> users) {
         for (User user : users) {
             FirebaseFirestore db1 = FirebaseFirestore.getInstance();
-//            Map<String, Object> docData1;
-//            docData1=new HashMap<>();
-//            docData1.put("1", user);
             db1.collection("Trades").document("Users").collection("usersAll").document(user.username).set(user);
         }
     }
-
 
     public void combineStockModelInfo() {
         //combine the info from the variable stockModels into the string called "allInfo"

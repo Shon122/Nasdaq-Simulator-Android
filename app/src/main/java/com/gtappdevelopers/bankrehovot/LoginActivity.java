@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
             if (MainActivity.users.get(i).username.equals(MainActivity.username))
                 MainActivity.currentUserIndex = i;
         }
-        MainActivity.userStockModels = MainActivity.stockModels.get(MainActivity.currentUserIndex);
+        MainActivity.trades = MainActivity.users.get(MainActivity.currentUserIndex).trades;
         Intent intent = new Intent(this, HomePage.class);
         startActivity(intent);
     }
@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
     public boolean authenticateRegisterUser(String username, String password) {
 
         if (username.length() < 6 || password.length() < 6) {
-            Toast.makeText(this, "Username and password should be at least 6 letters", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, "Username and password should be at least 6 letters", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
         //TODO: Add code to authenticate the user with the variable users from mainactivity
         for (User user1 : MainActivity.users) {
             if (user1.username.equals(username)) {
-                Toast.makeText(this, "User already exists", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "User already exists", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
     public boolean authenticateLoginUser(String username, String password) {
 
         if (username.length() < 6 || password.length() < 6) {
-            Toast.makeText(this, "Username and password should be at least 6 letters", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, "Username and password should be at least 6 letters", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -134,15 +134,15 @@ public class LoginActivity extends AppCompatActivity {
         //TODO: Add code to authenticate the user with the variable users from mainactivity
         for (User user1 : MainActivity.users) {
             if (user1.password.equals(password) && user1.username.equals(username)) {
-                Toast.makeText(this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
                 return true;
             }
             if ((!user1.password.equals(password)) && user1.username.equals(username)) {
-                Toast.makeText(this, "Incorrect Password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Incorrect Password", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
-        Toast.makeText(this, "User doesnt exist, please register", Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginActivity.this, "User doesnt exist, please register", Toast.LENGTH_SHORT).show();
         return false;
     }
 }
