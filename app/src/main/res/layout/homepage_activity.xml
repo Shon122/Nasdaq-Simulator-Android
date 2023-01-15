@@ -7,10 +7,32 @@
     tools:context=".HomePage">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/moving_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:text="This is a moving text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:textColor="#000"
+        />
+
+    <Button
+        android:id="@+id/investPage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="HELLO"
-        tools:layout_editor_absoluteX="141dp"
-        tools:layout_editor_absoluteY="198dp" />
+        android:layout_marginBottom="520dp"
+        android:text="invest page"
+        android:onClick="moveToInvest"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.16"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
