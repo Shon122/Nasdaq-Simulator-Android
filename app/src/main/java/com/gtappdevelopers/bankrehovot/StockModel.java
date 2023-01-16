@@ -21,12 +21,17 @@ public class StockModel {
         if (priceList1.size() > 1) {
             gainLossPercent = profitLossCalculator(priceList1.get(0), priceList1.get(priceList1.size() - 1));
             gainLossPercent = Double.valueOf(removeInfiniteNumbers(gainLossPercent.toString()));
+            gainLossPercent=roundToTwoDecimals(gainLossPercent);
         } else
             gainLossPercent = 0.0;
         if (priceList1.size() > 1)
             analysis = updateAnalysis(priceList1);
         else
             analysis = "Analysis is currently unavailable...";
+    }
+
+    public Double roundToTwoDecimals(Double value) {
+        return (double) Math.round(value * 100) / 100;
     }
 
     public Double calculateMA(ArrayList<Double> prices, int period) {

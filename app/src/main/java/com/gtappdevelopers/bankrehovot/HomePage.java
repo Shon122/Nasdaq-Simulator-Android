@@ -27,7 +27,7 @@ public class HomePage extends AppCompatActivity {
 
         movingTextView = findViewById(R.id.moving_text);
 
-        String longString = "12345678901234511111";
+        String longString = MainActivity.news;
 
         displayMovingText(longString);
     }
