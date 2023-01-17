@@ -1,5 +1,6 @@
 package com.gtappdevelopers.bankrehovot;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,8 +40,9 @@ public class InvestActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                StockModel stock = stockList.get(position);
-                //Do something with the clicked stock object
+                MainActivity.viewingStock = stockList.get(position);
+                Intent intent = new Intent(InvestActivity.this, CurrencyPage.class);
+                startActivity(intent);
             }
         });
 

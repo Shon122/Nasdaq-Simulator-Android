@@ -4,6 +4,7 @@
     android:installLocation="preferExternal"
     package="com.gtappdevelopers.bankrehovot">
 
+
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -29,9 +30,6 @@
             android:exported="false" />
         <activity
             android:name=".CurrencyPage"
-            android:exported="false" />
-        <activity
-            android:name=".MarketAnalysis"
             android:exported="false" />
         <activity
             android:name=".OngoingTrades"

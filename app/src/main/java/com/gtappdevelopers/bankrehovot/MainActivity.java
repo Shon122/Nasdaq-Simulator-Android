@@ -51,6 +51,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     //user essentials saving his data
+    public static StockModel viewingStock;
     public static String news = "";
     public static String username = "";
     public static String password = "";
@@ -169,18 +170,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
-//
-//    public void showGraph() {
-//        GraphView graph = (GraphView) findViewById(R.id.graph1);
-//        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[]{
-//                new DataPoint(0, 1),
-//                new DataPoint(1, 5),
-//                new DataPoint(2, 3),
-//                new DataPoint(3, 2),
-//                new DataPoint(4, 6)
-//        });
-//        graph.addSeries(series);
-//    }
 
     public void firstLoadAll() throws ExecutionException, InterruptedException {
         getAllStockModels("4hour");

@@ -32,8 +32,7 @@ import java.util.concurrent.ExecutionException;
 public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText;
     private EditText passwordEditText;
-    private Button loginButton;
-    private Button registerButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +43,7 @@ public class LoginActivity extends AppCompatActivity {
 
         usernameEditText = (EditText) findViewById(R.id.username_edit_text);
         passwordEditText = (EditText) findViewById(R.id.password_edit_text);
-        loginButton = (Button) findViewById(R.id.login_button);
-        registerButton = (Button) findViewById(R.id.register_button);
+      
 
 
     }
