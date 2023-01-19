@@ -43,7 +43,6 @@ public class LoginActivity extends AppCompatActivity {
 
         usernameEditText = (EditText) findViewById(R.id.username_edit_text);
         passwordEditText = (EditText) findViewById(R.id.password_edit_text);
-      
 
 
     }
@@ -52,8 +51,10 @@ public class LoginActivity extends AppCompatActivity {
         //before switich i put all the current user stats in mainactivity vars
 
         for (int i = 0; i < MainActivity.users.size(); i++) {
-            if (MainActivity.users.get(i).username.equals(MainActivity.username))
+            if (MainActivity.users.get(i).username.equals(MainActivity.username)) {
                 MainActivity.currentUserIndex = i;
+                MainActivity.currentUser = MainActivity.users.get(i);
+            }
         }
         MainActivity.trades = MainActivity.users.get(MainActivity.currentUserIndex).trades;
         Intent intent = new Intent(this, HomePage.class);
@@ -68,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
             ArrayList<Trade> emptyList = new ArrayList<>();
             User newUser = new User(password, username, emptyList, 10000.00);
             MainActivity.users.add(newUser);
-            MainActivity.uploadUsersToFirestore(MainActivity.users);
+            MainActivity.uploadUsersToFirestore();
 
             MainActivity.password = password;
             MainActivity.username = username;
@@ -107,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this, "Username and password should be at least 6 letters", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (!username.matches("^[a-zA-Z0-9]*$") ||!password.matches("^[a-zA-Z0-9]*$") ) {
+        if (!username.matches("^[a-zA-Z0-9]*$") || !password.matches("^[a-zA-Z0-9]*$")) {
             Toast.makeText(LoginActivity.this, "Username and password can only contain letters and numbers", Toast.LENGTH_SHORT).show();
             return false;
         }

@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public static String password = "";
     public static ArrayList<Trade> trades = new ArrayList<>();
     public static ArrayList<User> users = new ArrayList<>();
+    public static User currentUser;
     public static int currentUserIndex = 0;
     private FirebaseFirestore db;
     Map<String, Object> docData;
@@ -155,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             firstLoadAll();
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException | InterruptedException | ParseException e) {
             e.printStackTrace();
         }
 
@@ -164,14 +165,12 @@ public class MainActivity extends AppCompatActivity {
         //end of oncreate
     }
 
-
-
     public void switchIntent() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 
-    public void firstLoadAll() throws ExecutionException, InterruptedException {
+    public void firstLoadAll() throws ExecutionException, InterruptedException, ParseException {
         getAllStockModels("4hour");
         combineStockModelInfo();
         uploadStockModelsFirebase();
@@ -194,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //here i upload users after they were updated to latest profits
-        uploadUsersToFirestore(users);
+        uploadUsersToFirestore();
 
 
     }
@@ -213,8 +212,9 @@ public class MainActivity extends AppCompatActivity {
         return users;
     }
 
-    public static void uploadUsersToFirestore(ArrayList<User> users) {
+    public static void uploadUsersToFirestore() {
         for (User user : users) {
+
             FirebaseFirestore db1 = FirebaseFirestore.getInstance();
             db1.collection("Trades").document("Users").collection("usersAll").document(user.username).set(user);
         }

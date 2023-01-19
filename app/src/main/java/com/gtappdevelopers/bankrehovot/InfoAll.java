@@ -149,7 +149,7 @@ public class InfoAll {
 
 
 
-    public void firstLoadAll() throws ExecutionException, InterruptedException {
+    public void firstLoadAll() throws ExecutionException, InterruptedException, ParseException {
         getAllStockModels("4hour");
         combineStockModelInfo();
         uploadStockModelsFirebase();

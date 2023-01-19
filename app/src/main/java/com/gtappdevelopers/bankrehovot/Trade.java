@@ -1,5 +1,7 @@
 package com.gtappdevelopers.bankrehovot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -16,9 +18,11 @@ public class Trade {
     public Double percentProfitLoss;
     public boolean openClose; //true is active trade, false is closed trade
     public long updateTime;
+    public boolean orderHold;
+    public Double orderPrice;
 
     public Trade(String date1, String stockName1, Double startPrice1, Double currentPrice1,
-                 Double amountInvested1, Double stopLoss1, Double limitProfit1, Boolean longShort1) {
+                 Double amountInvested1, Double stopLoss1, Double limitProfit1, Boolean longShort1, Boolean orderHold1, Double orderPrice1) {
         updateTime = System.currentTimeMillis();
         date = date1;
         stockName = stockName1;
@@ -31,14 +35,17 @@ public class Trade {
         totalProfitLoss = 0.0;
         percentProfitLoss = 0.0;
         openClose = true;
+        orderHold = orderHold1;
+        orderPrice = orderPrice1;
     }
+
     public Trade() {
         // Empty constructor needed for deserialization
     }
 
 
-    public void updateTrade() {
-        if (openClose) {
+    public void updateTrade() throws ParseException {
+        if (orderHold) {
             updateTime = System.currentTimeMillis();
             int n = 0;
             for (StockModel s1 : MainActivity.stockModels) {
@@ -49,27 +56,62 @@ public class Trade {
             }
             StockModel s1 = MainActivity.stockModels.get(n);
             currentPrice = s1.priceList.get(0);
-            //assuming prices have updates and now i check if limit or stop loss got hit
-            //also update profit and user balance
             int indexTaker = -1;
-            for (int i = 0; i < s1.priceList.size(); i++) { // stops got hit somewhere
-                if (s1.priceList.get(i) <= stopLoss || s1.priceList.get(i) >= limitProfit) {
-                    indexTaker = i;
-                    break;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date d1;
+            Date d2 = sdf.parse(date);
+            for (int i = 0; i < s1.priceList.size(); i++) {
+                d1 = sdf.parse(s1.dateList.get(i));
+                if (d2.before(d1)) {
+                    if ((s1.priceList.get(i) > orderPrice && s1.priceList.get(i-1) < orderPrice)||(s1.priceList.get(i) < orderPrice && s1.priceList.get(i-1) > orderPrice) ){
+                        indexTaker = i;
+                        break;
+                    }
                 }
             }
-            if (indexTaker == -1) { //meaning stops did not get hit
-                currentPrice = s1.priceList.get(indexTaker);
-                profitLossCalculator();
-                openClose = false;
-
-            } else {
-                profitLossCalculator();
-
+            if (indexTaker != -1) {
+                startPrice=s1.priceList.get(indexTaker);
+                date=s1.dateList.get(indexTaker);
+                currentPrice=startPrice;
+                orderPrice=-1.0;
+                openClose=true;
+                orderHold=false;
             }
+
+
+        } else {
+            if (openClose) {
+                updateTime = System.currentTimeMillis();
+                int n = 0;
+                for (StockModel s1 : MainActivity.stockModels) {
+                    if (s1.name.equals(this.stockName)) {
+                        break;
+                    }
+                    n++;
+                }
+                StockModel s1 = MainActivity.stockModels.get(n);
+                currentPrice = s1.priceList.get(0);
+                //assuming prices have updates and now i check if limit or stop loss got hit
+                //also update profit and user balance
+                int indexTaker = -1;
+                for (int i = 0; i < s1.priceList.size(); i++) { // stops got hit somewhere
+                    if (s1.priceList.get(i) <= stopLoss || s1.priceList.get(i) >= limitProfit) {
+                        indexTaker = i;
+                        break;
+                    }
+                }
+                if (indexTaker != -1) {
+                    currentPrice = s1.priceList.get(indexTaker);
+                    profitLossCalculator();
+                    openClose = false;
+
+                } else {
+                    profitLossCalculator();
+
+                }
+            }
+
         }
-
-
     }
 
     public void profitLossCalculator() {
