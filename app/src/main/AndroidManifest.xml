@@ -37,13 +37,13 @@
             android:name=".OngoingTrades"
             android:exported="false" />
         <activity
-            android:name=".ClosedTrades"
+            android:name=".TradePage"
             android:exported="false" />
         <activity
             android:name=".MessagesActivity"
             android:exported="false" />
         <activity
-            android:name=".TransactionsActivity"
+            android:name=".TradesActivity"
             android:exported="false" />
         <activity
             android:name=".FundsActivity"

@@ -52,6 +52,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     //user essentials saving his data
     public static StockModel viewingStock;
+    public static Trade viewingTrade;
     public static String news = "";
     public static String username = "";
     public static String password = "";

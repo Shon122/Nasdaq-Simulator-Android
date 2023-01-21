@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="4dp"
+    tools:context=".TradesActivity">
+
+
+    <TextView
+        android:id="@+id/statusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_view"
+        android:layout_marginLeft="2dp"
+        android:minWidth="55dp"
+        android:padding="6dp"
+
+        android:text="Status"
+        android:textSize="12sp"
+
+        />
+
+
+    <TextView
+        android:id="@+id/dateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_view"
+        android:layout_toRightOf="@id/statusTextView"
+
+        android:minWidth="90dp"
+
+
+        android:padding="6dp"
+        android:text="Date"
+
+
+        android:textSize="12sp"
+
+
+        />
+
+    <TextView
+        android:id="@+id/nameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_view"
+        android:layout_toRightOf="@id/dateTextView"
+
+        android:minWidth="60dp"
+
+
+        android:padding="6dp"
+
+
+        android:text="Symbol"
+        android:textSize="12sp"
+
+        />
+
+    <TextView
+        android:id="@+id/entryTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_view"
+        android:layout_toRightOf="@id/nameTextView"
+        android:minWidth="60dp"
+
+        android:padding="6dp"
+
+
+        android:text="Entry"
+
+
+        android:textSize="12sp"
+
+        />
+
+    <TextView
+        android:id="@+id/exitTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_view"
+        android:layout_toRightOf="@id/entryTextView"
+        android:minWidth="60dp"
+        android:padding="6dp"
+
+        android:text="Exit"
+
+
+        android:textSize="12sp"
+
+
+        />
+
+    <TextView
+        android:id="@+id/returnTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+
+        android:layout_below="@id/search_view"
+
+
+        android:layout_toRightOf="@id/exitTextView"
+
+
+        android:minWidth="90dp"
+        android:padding="6dp"
+        android:text="Return $"
+        android:textSize="12sp" />
+
+
+    <SearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="Search by name" />
+
+
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/statusTextView" />
+</RelativeLayout>

@@ -18,7 +18,7 @@ public class Trade {
     public Double percentProfitLoss;
     public boolean openClose; //true is active trade, false is closed trade
     public long updateTime;
-    public boolean orderHold;
+    public boolean orderHold;//true if ordered, false if not ordered
     public Double orderPrice;
 
     public Trade(String date1, String stockName1, Double startPrice1, Double currentPrice1,

@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="green">#66FF44</color>
     <color name="greenLong">#00FF22</color>
+    <color name="greenBuy">#4CAF50</color>
+    <color name="redSell">#F15044</color>
 </resources>

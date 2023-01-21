@@ -1,0 +1,9 @@
+<!-- res/menu/toolbar_menu.xml -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/sort_by_name"
+        android:title="Sort by Name" />
+    <item
+        android:id="@+id/sort_by_profitLoss"
+        android:title="Sort by Total Profit/Loss" />
+</menu>

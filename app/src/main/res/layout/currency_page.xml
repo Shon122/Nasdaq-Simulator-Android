@@ -7,13 +7,13 @@
     tools:context=".CurrencyPage">
 
     <Button
-        android:id="@+id/longShortButton"
+        android:id="@+id/buysellButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:outlineSpotShadowColor="@color/green"
-        android:text="Long"
+        android:text="Buy"
         android:textColor="@color/green"
-        android:onClick="changeLongShort"
+        android:onClick="changebuysell"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
@@ -50,9 +50,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="304dp"
-        android:text="Your Balance: "
+        android:text="Your Balance: $10000.00"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.043"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/changeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="164dp"
+        android:text="0.00%"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

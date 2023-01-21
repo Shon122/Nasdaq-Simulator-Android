@@ -1,5 +1,6 @@
 package com.gtappdevelopers.bankrehovot;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +15,14 @@ public class StockAdapter extends ArrayAdapter<StockModel> {
     private ArrayList<StockModel> stockList;
     private ArrayList<StockModel> originalList;
 
+
     public StockAdapter(Context context, ArrayList<StockModel> stockList) {
         super(context, 0, stockList);
         this.stockList = stockList;
         this.originalList = new ArrayList<>(stockList);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position

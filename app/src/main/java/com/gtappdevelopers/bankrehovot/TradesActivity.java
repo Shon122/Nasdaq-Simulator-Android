@@ -18,10 +18,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class InvestActivity extends AppCompatActivity {
+public class TradesActivity extends AppCompatActivity {
 
-    private ArrayList<StockModel> stockList;
-    private StockAdapter adapter;
+    private ArrayList<Trade> tradeList;
+    private TradeAdapter adapter;
     private ListView listView;
     private SearchView searchView;
     int gainSort = 0; // 0 = not sorted this way ,1= sorted this way
@@ -30,10 +30,10 @@ public class InvestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_invest);
+        setContentView(R.layout.trades_activity);
         //initialize the arraylist and adapter
-        stockList = MainActivity.stockModels;
-        adapter = new StockAdapter(this, stockList);
+        tradeList = MainActivity.trades;
+        adapter = new TradeAdapter(this, tradeList);
 
         //initialize the ListView and set the adapter
         listView = findViewById(R.id.list_view);
@@ -43,8 +43,16 @@ public class InvestActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MainActivity.viewingStock = stockList.get(position);
-                Intent intent = new Intent(InvestActivity.this, CurrencyPage.class);
+                MainActivity.viewingTrade = MainActivity.trades.get(MainActivity.trades.indexOf(tradeList.get(position)));
+                String currentName = tradeList.get(position).stockName;
+                for (int i = 0; i < MainActivity.stockModels.size(); i++) {
+                    if (MainActivity.stockModels.get(i).name.equals(currentName)) {
+                        MainActivity.viewingStock = MainActivity.stockModels.get(i);
+                        break;
+                    }
+                }
+
+                Intent intent = new Intent(TradesActivity.this, TradePage.class);
                 startActivity(intent);
             }
         });
@@ -63,16 +71,17 @@ public class InvestActivity extends AppCompatActivity {
                 return false;
             }
         });
+
         sortByName(null);
     }
 
     //function to sort the list by name
     public void sortByName(View view) {
         gainSort = 0;
-        Collections.sort(stockList, new Comparator<StockModel>() {
+        Collections.sort(tradeList, new Comparator<Trade>() {
             @Override
-            public int compare(StockModel o1, StockModel o2) {
-                return o1.name.compareTo(o2.name);
+            public int compare(Trade o1, Trade o2) {
+                return o1.stockName.compareTo(o2.stockName);
             }
         });
 
@@ -80,7 +89,7 @@ public class InvestActivity extends AppCompatActivity {
             nameSort++;
             adapter.notifyDataSetChanged();
         } else {
-            Collections.reverse(stockList);
+            Collections.reverse(tradeList);
             adapter.notifyDataSetChanged();
         }
 
@@ -88,28 +97,27 @@ public class InvestActivity extends AppCompatActivity {
     }
 
     //function to sort the list by gain/loss percentage
-    public void sortByGainLossPercent(View view) {
+    public void sortByProfitLoss(View view) {
         nameSort = 0;
-        Collections.sort(stockList, new Comparator<StockModel>() {
+        Collections.sort(tradeList, new Comparator<Trade>() {
             @Override
-            public int compare(StockModel o1, StockModel o2) {
-                return Double.compare(o1.gainLossPercent, o2.gainLossPercent);
+            public int compare(Trade o1, Trade o2) {
+                return Double.compare(o1.totalProfitLoss, o2.totalProfitLoss);
             }
         });
         if (gainSort == 0) {
             gainSort++;
             adapter.notifyDataSetChanged();
         } else {
-            Collections.reverse(stockList);
+            Collections.reverse(tradeList);
             adapter.notifyDataSetChanged();
         }
-        adapter.notifyDataSetChanged();
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        getMenuInflater().inflate(R.menu.trades_menu, menu);
         return true;
     }
 
@@ -120,8 +128,8 @@ public class InvestActivity extends AppCompatActivity {
             case R.id.sort_by_name:
                 sortByName(null);
                 return true;
-            case R.id.sort_by_gainlosspercent:
-                sortByGainLossPercent(null);
+            case R.id.sort_by_profitLoss:
+                sortByProfitLoss(null);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -33,22 +33,28 @@ public class HomePage extends AppCompatActivity {
     }
 
     private void displayMovingText(String text) {
-        if (text.length() > 50) {
+//        if (text.length() > 50) {
             movingTextView.setSelected(true);
             movingTextView.setText(text);
-        } else {
-            movingTextView.setText("News are currently unavailable...");
-            TranslateAnimation animation = new TranslateAnimation(-1000, 1000, 0, 0);
-            animation.setDuration(5000);
-            animation.setRepeatCount(Animation.INFINITE);
-            animation.setRepeatMode(Animation.RESTART);
-            movingTextView.startAnimation(animation);
-        }
+//        } else {
+//            movingTextView.setText("News are currently unavailable...");
+//            TranslateAnimation animation = new TranslateAnimation(-1000, 1000, 0, 0);
+//            animation.setDuration(5000);
+//            animation.setRepeatCount(Animation.INFINITE);
+//            animation.setRepeatMode(Animation.RESTART);
+//            movingTextView.startAnimation(animation);
+//        }
     }
 
     public void moveToInvest(View view) {
 
         Intent intent = new Intent(this, InvestActivity.class);
+        startActivity(intent);
+    }
+
+    public void moveToTrades(View view) {
+
+        Intent intent = new Intent(this, TradesActivity.class);
         startActivity(intent);
     }
 
