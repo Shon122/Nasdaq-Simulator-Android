@@ -76,14 +76,10 @@ public class InvestActivity extends AppCompatActivity {
             }
         });
 
-        if (nameSort == 0) {
-            nameSort++;
-            adapter.notifyDataSetChanged();
-        } else {
+        if (nameSort != 0 && nameSort % 2 != 0) {
             Collections.reverse(stockList);
-            adapter.notifyDataSetChanged();
         }
-
+        nameSort++;
         adapter.notifyDataSetChanged();
     }
 
@@ -96,13 +92,11 @@ public class InvestActivity extends AppCompatActivity {
                 return Double.compare(o1.gainLossPercent, o2.gainLossPercent);
             }
         });
-        if (gainSort == 0) {
-            gainSort++;
-            adapter.notifyDataSetChanged();
-        } else {
+
+        if (gainSort != 0 && gainSort % 2 != 0) {
             Collections.reverse(stockList);
-            adapter.notifyDataSetChanged();
         }
+        gainSort++;
         adapter.notifyDataSetChanged();
     }
 

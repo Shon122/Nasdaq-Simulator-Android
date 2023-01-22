@@ -85,14 +85,10 @@ public class TradesActivity extends AppCompatActivity {
             }
         });
 
-        if (nameSort == 0) {
-            nameSort++;
-            adapter.notifyDataSetChanged();
-        } else {
+        if (nameSort != 0 && nameSort % 2 != 0) {
             Collections.reverse(tradeList);
-            adapter.notifyDataSetChanged();
         }
-
+        nameSort++;
         adapter.notifyDataSetChanged();
     }
 
@@ -105,13 +101,12 @@ public class TradesActivity extends AppCompatActivity {
                 return Double.compare(o1.totalProfitLoss, o2.totalProfitLoss);
             }
         });
-        if (gainSort == 0) {
-            gainSort++;
-            adapter.notifyDataSetChanged();
-        } else {
+
+        if (gainSort != 0 && gainSort % 2 != 0) {
             Collections.reverse(tradeList);
-            adapter.notifyDataSetChanged();
         }
+        gainSort++;
+        adapter.notifyDataSetChanged();
     }
 
 

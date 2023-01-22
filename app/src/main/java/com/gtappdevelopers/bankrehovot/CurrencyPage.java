@@ -11,19 +11,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
-
-import com.jjoe64.graphview.series.BarGraphSeries;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import org.tensorflow.lite.Interpreter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.Objects;
+
 
 public class CurrencyPage extends AppCompatActivity {
     //    EditText priceProfitEditText = findViewById(R.id.priceProfitEditText);
@@ -46,6 +48,7 @@ public class CurrencyPage extends AppCompatActivity {
     Double currentBalance;
     Button buysellButton;
     Double currentChange;
+    private Interpreter tflite;
     boolean buysell;//true for buy, false for sell
 
     @SuppressLint("SetTextI18n")
@@ -80,23 +83,25 @@ public class CurrencyPage extends AppCompatActivity {
             changeTextView.setTextColor(Color.GREEN);
 
         buysellButton.setTextColor(Color.GREEN);
+
+
     }
 
     @SuppressLint("SetTextI18n")
     public void createTrade(View view) {
         Double userAmount = -1.0;
-        Double orderPrice=-1.0;
+        Double orderPrice = -1.0;
         String amountTake = String.valueOf(amountInvestEditText.getText());
         String orderTake = String.valueOf(orderTradeEditText.getText());
         if (amountTake.length() > 0)
             userAmount = Double.valueOf(String.valueOf(amountInvestEditText.getText()));
         if (orderTake.length() > 0)
-      orderPrice = Double.valueOf(String.valueOf(orderTradeEditText.getText()));
-        if ( userAmount > currentBalance) {
+            orderPrice = Double.valueOf(String.valueOf(orderTradeEditText.getText()));
+        if (userAmount > currentBalance) {
             Toast.makeText(this, "You dont have enough money", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (userAmount <= 0 ) {
+        if (userAmount <= 0) {
             Toast.makeText(this, "Amount has to be more than 0", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -149,5 +154,8 @@ public class CurrencyPage extends AppCompatActivity {
             buysellButton.setTextColor(Color.RED);
         }
     }
+
+
+
 
 }

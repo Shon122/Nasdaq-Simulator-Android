@@ -79,22 +79,16 @@
 
         />
 
-    <TextView
-        android:id="@+id/exitTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/search_view"
-        android:layout_toRightOf="@id/entryTextView"
-        android:minWidth="60dp"
-        android:padding="6dp"
-
-        android:text="Exit"
-
-
-        android:textSize="12sp"
-
-
-        />
+<!--    <TextView-->
+<!--        android:id="@+id/exitTextView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/search_view"-->
+<!--        android:layout_toRightOf="@id/entryTextView"-->
+<!--        android:minWidth="60dp"-->
+<!--        android:padding="6dp"-->
+<!--        android:text="Exit"-->
+<!--        android:textSize="12sp" />-->
 
     <TextView
         android:id="@+id/returnTextView"
@@ -105,7 +99,7 @@
         android:layout_below="@id/search_view"
 
 
-        android:layout_toRightOf="@id/exitTextView"
+        android:layout_toRightOf="@id/entryTextView"
 
 
         android:minWidth="90dp"

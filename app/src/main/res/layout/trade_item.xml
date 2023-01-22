@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -47,27 +48,33 @@
         android:layout_toRightOf="@id/nameTextView"
         />
 
-    <TextView
-        android:id="@+id/exitTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="60dp"
-        android:padding="6dp"
-        android:text="5123.33"
-        android:textSize="12sp"
-        android:layout_toRightOf="@id/entryTextView"
-        />
+<!--    <TextView-->
+<!--        android:id="@+id/exitTextView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_toRightOf="@id/entryTextView"-->
+<!--        android:minWidth="60dp"-->
+<!--        android:padding="6dp"-->
+<!--        android:text="5123.33"-->
+<!--        android:textSize="12sp" />-->
 
     <TextView
         android:id="@+id/returnTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/entryTextView"
         android:minWidth="90dp"
         android:padding="6dp"
         android:text="+$1533.33"
         android:textColor="@color/greenBuy"
-        android:textSize="12sp"
-        android:layout_toRightOf="@id/exitTextView"
-        />
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/closeImageView"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/xlogo" />
+
 
 </RelativeLayout>

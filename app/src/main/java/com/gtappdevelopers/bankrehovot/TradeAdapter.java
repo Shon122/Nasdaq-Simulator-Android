@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.collection.LLRBNode;
@@ -36,11 +37,23 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.trade_item, parent, false);
         }
         // Lookup view for data population
+        if (currentTrade.openClose) {
+            ImageView closeButton = convertView.findViewById(R.id.closeImageView);
+            closeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    closeButtonClicked(position);
+                }
+            });
+        } else {
+            ImageView closeButton = convertView.findViewById(R.id.closeImageView);
+            closeButton.setVisibility(View.INVISIBLE);
+        }
         TextView statusTextView = convertView.findViewById(R.id.statusTextView);
         TextView dateTextView = convertView.findViewById(R.id.dateTextView);
         TextView nameTextView = convertView.findViewById(R.id.nameTextView);
         TextView entryTextView = convertView.findViewById(R.id.entryTextView);
-        TextView exitTextView = convertView.findViewById(R.id.exitTextView);
+        // TextView exitTextView = convertView.findViewById(R.id.exitTextView);
         TextView returnTextView = convertView.findViewById(R.id.returnTextView);
         // Populate the data into the template view using the data object
         if (currentTrade.orderHold) {
@@ -56,13 +69,12 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
         dateTextView.setText(sdf2.format(new Date()));
         nameTextView.setText(currentTrade.stockName);
         entryTextView.setText(String.valueOf(currentTrade.startPrice));
-
-        if (currentTrade.openClose) {
-            exitTextView.setText("---");
-        } else {
-            exitTextView.setText(String.valueOf(currentTrade.currentPrice));
-
-        }
+//
+//        if (currentTrade.openClose) {
+//            exitTextView.setText("---");
+//        } else {
+//            exitTextView.setText(String.valueOf(currentTrade.currentPrice));
+//        }
         if (currentTrade.totalProfitLoss < 0) {
             returnTextView.setText("-$" + String.valueOf(currentTrade.totalProfitLoss));
             returnTextView.setTextColor(Color.parseColor("#F15044"));
@@ -71,6 +83,8 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
             returnTextView.setTextColor(Color.parseColor("#4CAF50"));
 
         }
+
+
         // Return the completed view to render on screen
         return convertView;
     }
@@ -106,5 +120,22 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
         };
     }
 
-
+    public void closeButtonClicked(int position) {
+        Trade clickedTrade = getItem(position);
+        if (!clickedTrade.orderHold) {
+            int saveIndex = MainActivity.currentUser.trades.indexOf(clickedTrade);
+            clickedTrade.openClose = false;
+            MainActivity.currentUser.trades.set(saveIndex, clickedTrade);
+            MainActivity.trades = MainActivity.currentUser.trades;
+            tradeList.set(position, clickedTrade);
+        } else {
+            MainActivity.currentUser.trades.remove(clickedTrade);
+            MainActivity.trades = MainActivity.currentUser.trades;
+            tradeList.remove(clickedTrade);
+        }
+        MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
+        originalList = MainActivity.currentUser.trades;
+        MainActivity.uploadUsersToFirestore();
+        notifyDataSetChanged();
+    }
 }
