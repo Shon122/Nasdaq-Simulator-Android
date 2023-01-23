@@ -19,7 +19,6 @@ import java.util.Date;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import org.tensorflow.lite.Interpreter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
@@ -48,7 +47,6 @@ public class CurrencyPage extends AppCompatActivity {
     Double currentBalance;
     Button buysellButton;
     Double currentChange;
-    private Interpreter tflite;
     boolean buysell;//true for buy, false for sell
 
     @SuppressLint("SetTextI18n")

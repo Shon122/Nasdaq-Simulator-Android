@@ -58,5 +58,10 @@ public class HomePage extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void moveToStockGame(View view) {
+
+        Intent intent = new Intent(this, StockGame.class);
+        startActivity(intent);
+    }
 
 }

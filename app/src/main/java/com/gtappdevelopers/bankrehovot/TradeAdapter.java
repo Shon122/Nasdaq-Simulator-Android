@@ -24,7 +24,7 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
     public TradeAdapter(Context context, ArrayList<Trade> tradeList) {
         super(context, 0, tradeList);
         this.tradeList = tradeList;
-        this.originalList = new ArrayList<>(tradeList);
+        this.originalList = tradeList;
     }
 
     @SuppressLint("SetTextI18n")
@@ -126,6 +126,7 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
             int saveIndex = MainActivity.currentUser.trades.indexOf(clickedTrade);
             clickedTrade.openClose = false;
             MainActivity.currentUser.trades.set(saveIndex, clickedTrade);
+            MainActivity.currentUser.balance += clickedTrade.amountInvested + clickedTrade.totalProfitLoss;
             MainActivity.trades = MainActivity.currentUser.trades;
             tradeList.set(position, clickedTrade);
         } else {
@@ -135,6 +136,8 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
         }
         MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
         originalList = MainActivity.currentUser.trades;
+        tradeList = originalList;
+
         MainActivity.uploadUsersToFirestore();
         notifyDataSetChanged();
     }

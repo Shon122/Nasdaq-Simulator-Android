@@ -8,10 +8,27 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,29 +37,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
-import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -155,11 +149,13 @@ public class MainActivity extends AppCompatActivity {
         /////////////////////////////////////
 
 
+        news = readFromFile("saveNews.txt");
         try {
             firstLoadAll();
         } catch (ExecutionException | InterruptedException | ParseException e) {
             e.printStackTrace();
         }
+
 
 
         switchIntent();
@@ -170,6 +166,28 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
+
+
+    public String readFromFile(String fileName) {
+        StringBuilder returnString = new StringBuilder();
+        try {
+            InputStream inputStream = new FileInputStream(fileName);
+            if (inputStream != null) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+                while ((receiveString = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(receiveString);
+                }
+                inputStream.close();
+                returnString.append(stringBuilder.toString());
+            }
+        } catch (IOException ignored) {
+        }
+        return returnString.toString();
+    }
+
 
     public void firstLoadAll() throws ExecutionException, InterruptedException, ParseException {
         getAllStockModels("4hour");
@@ -461,69 +479,59 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateNews() {
-        long lastUpdate = 0;
-        //get lastUpdate data from firebase
+        //long lastUpdate = 0;
+        ////get lastUpdate data from firebase
+//        db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//
+//
+//                    String uploaderTaker = (document.get("lastNewsUpdate").toString());
+//                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+//                    myEdit.putString("dataLastUpdate", uploaderTaker);
+//                    myEdit.apply();
+//
+//                }
+//            }
+//        });
+//        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+//        String dataTaker = sharedPreferences.getString("dataLastUpdate", "5");
+//        lastUpdate = Long.parseLong((dataTaker));
+//        int diff = (int) (currentTime - lastUpdate); // 1 min = 60000 ms
+//        //make sure more than 1 day has passed since last call
+
+
+        apiLink = "https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=5&apikey=" + apiList[apiIndex];
+
+        GetDataTaskNews task = new GetDataTaskNews();
+        try {
+            task.execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        apiIndex++;
+        if (apiIndex > apiList.length)
+            apiIndex = 0;
+        docData.put("lastNewsUpdate", currentTime);
+        db.collection("Trades").document("newsAll").set(docData, SetOptions.merge());
+
+        docData.put("news", news);
+        db.collection("Trades").document("newsAll").set(docData, SetOptions.merge());
+
         db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-
-
-                    String uploaderTaker = (document.get("lastNewsUpdate").toString());
-                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                    myEdit.putString("dataLastUpdate", uploaderTaker);
-                    myEdit.apply();
-
+                    news = (document.get("news").toString());
                 }
             }
         });
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        String dataTaker = sharedPreferences.getString("dataLastUpdate", "5");
-        lastUpdate = Long.parseLong((dataTaker));
-        int diff = (int) (currentTime - lastUpdate); // 1 min = 60000 ms
-        //make sure more than 1 day has passed since last call
 
-
-        if (diff > 1000000) {
-            apiLink = "https://financialmodelingprep.com/api/v3/fmp/articles?page=0&size=5&apikey=" + apiList[apiIndex];
-            //load(apiLink);
-
-            GetDataTaskNews task = new GetDataTaskNews();
-            try {
-                task.execute().get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-
-            apiIndex++;
-            if (apiIndex > apiList.length)
-                apiIndex = 0;
-            docData.put("lastNewsUpdate", currentTime);
-            db.collection("Trades").document("newsAll").set(docData, SetOptions.merge());
-
-            docData.put("news", news);
-            db.collection("Trades").document("newsAll").set(docData, SetOptions.merge());
-        } else {
-            db.collection("Trades").document("newsAll").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-
-
-                        String uploaderTaker = (document.get("news").toString());
-                        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                        SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                        myEdit.putString("dataNews", uploaderTaker);
-                        myEdit.apply();
-
-                    }
-                }
-            });
-            news = sharedPreferences.getString("dataNews", "5");
-        }
 
     }
 

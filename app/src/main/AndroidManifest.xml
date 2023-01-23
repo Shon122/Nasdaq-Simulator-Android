@@ -46,7 +46,7 @@
             android:name=".TradesActivity"
             android:exported="false" />
         <activity
-            android:name=".FundsActivity"
+            android:name=".StockGame"
             android:exported="false" />
         <activity
             android:name=".InvestActivity"

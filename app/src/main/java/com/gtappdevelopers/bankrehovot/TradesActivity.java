@@ -94,6 +94,7 @@ public class TradesActivity extends AppCompatActivity {
 
     //function to sort the list by gain/loss percentage
     public void sortByProfitLoss(View view) {
+
         nameSort = 0;
         Collections.sort(tradeList, new Comparator<Trade>() {
             @Override
