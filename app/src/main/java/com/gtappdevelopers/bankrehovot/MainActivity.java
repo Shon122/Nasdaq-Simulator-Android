@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -33,6 +35,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     Map<String, Object> docData;
 
     ///////////////////////
+    public static int dummy = 0;
     public Long currentTime;
     public String[] apiList;
     public int apiIndex;
@@ -157,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
         switchIntent();
         //end of oncreate
     }
@@ -197,8 +200,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         //here i get existing users from firebase
-        users = getUsersFromFirestore();
+users = new ArrayList<>();
 
+        Task<List<User>> users1 = getUsersFromFirestore();
+        Tasks.await(users1);
+        users=users1;
+// users is now ready to use
+        //now in users
 
         for (int i = 0; i < users.size(); i++) {
             for (int j = 0; j < users.get(i).trades.size(); j++) {
@@ -216,9 +224,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    public Task<List<User>> getUsersFromFirestore() {
+        TaskCompletionSource<List<User>> taskCompletionSource = new TaskCompletionSource<>();
+        List<User> users = new ArrayList<>();
 
-    public ArrayList<User> getUsersFromFirestore() {
-        ArrayList<User> users = new ArrayList<>();
         db.collection("Trades").document("Users").collection("usersAll").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 QuerySnapshot querySnapshot = task.getResult();
@@ -226,10 +235,13 @@ public class MainActivity extends AppCompatActivity {
                     User user = documentSnapshot.toObject(User.class);
                     users.add(user);
                 }
+                taskCompletionSource.setResult(users);
             }
+
         });
-        return users;
+        return taskCompletionSource.getTask();
     }
+
 
     public static void uploadUsersToFirestore() {
         for (User user : users) {

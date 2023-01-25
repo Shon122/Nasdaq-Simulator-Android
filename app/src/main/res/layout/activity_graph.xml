@@ -5,13 +5,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
-
-    <com.jjoe64.graphview.GraphView
-        android:id="@+id/graph"
+    <com.anychart.AnyChartView
+        android:id="@+id/any_chart_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        app:title="Graph Title"
+        android:layout_height="match_parent"
         />
 
 </LinearLayout>

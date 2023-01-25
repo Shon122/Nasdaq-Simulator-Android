@@ -93,22 +93,13 @@ public class Trade {
                 currentPrice = s1.priceList.get(0);
                 //assuming prices have updates and now i check if limit or stop loss got hit
                 //also update profit and user balance
-                int indexTaker = -1;
-                for (int i = 0; i < s1.priceList.size(); i++) { // stops got hit somewhere
-                    if (s1.priceList.get(i) <= stopLoss || s1.priceList.get(i) >= limitProfit) {
-                        indexTaker = i;
-                        break;
-                    }
-                }
-                if (indexTaker != -1) {
-                    currentPrice = s1.priceList.get(indexTaker);
-                    profitLossCalculator();
-                    openClose = false;
 
-                } else {
+                    currentPrice = s1.priceList.get(0);
                     profitLossCalculator();
 
-                }
+
+
+
             }
 
         }

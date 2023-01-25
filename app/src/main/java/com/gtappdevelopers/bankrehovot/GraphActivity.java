@@ -3,11 +3,15 @@ package com.gtappdevelopers.bankrehovot;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import com.anychart.AnyChart;
+import com.anychart.AnyChartView;
+import com.anychart.*;
+import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.chart.common.dataentry.ValueDataEntry;
+import com.anychart.charts.Pie;
 
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,30 +26,19 @@ public class GraphActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-        if (priceList.size() > 0 && dateList.size() > 0) {
-            ArrayList<String> sortedDateList = sortDateList(dateList);
-            DataPoint[] dataPoints = new DataPoint[priceList.size()];
-            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            for (int i = 0; i < priceList.size(); i++) {
-                try {
-                    Date date = format.parse(sortedDateList.get(i));
-                    dataPoints[i] = new DataPoint(date, priceList.get(priceList.size() - 1 - i));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);
-            graph.addSeries(series);
-            graph.getViewport().setScalable(true);
-            graph.getViewport().setScalableY(true);
-            graph.getViewport().setScrollable(true);
-            graph.getViewport().setScrollableY(true);
-            graph.getViewport().setXAxisBoundsManual(true);
-            graph.getViewport().setMinX(dataPoints[0].getX());
-            graph.getViewport().setMaxX(dataPoints[dataPoints.length - dataPoints.length/2].getX());
 
-        }
+        Pie pie = AnyChart.pie();
+
+        List<DataEntry> data = new ArrayList<>();
+        data.add(new ValueDataEntry("John", 10000));
+        data.add(new ValueDataEntry("Jake", 12000));
+        data.add(new ValueDataEntry("Peter", 18000));
+
+        pie.data(data);
+
+        AnyChartView anyChartView = (AnyChartView) findViewById(R.id.any_chart_view);
+        anyChartView.setChart(pie);
+
 
 
     }
