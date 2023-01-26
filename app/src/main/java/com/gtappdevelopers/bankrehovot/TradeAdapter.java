@@ -32,6 +32,7 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
         Trade currentTrade = getItem(position);
+        currentTrade.totalProfitLoss=(double) Math.round(currentTrade.totalProfitLoss * 100) / 100;
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.trade_item, parent, false);

@@ -32,6 +32,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.jjoe64:graphview:4.2.2'
     implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
     implementation 'com.squareup.okhttp3:okhttp:4.9.2'
     implementation platform('com.google.firebase:firebase-bom:31.1.0')

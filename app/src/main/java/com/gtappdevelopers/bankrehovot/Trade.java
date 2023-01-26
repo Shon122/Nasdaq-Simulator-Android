@@ -60,22 +60,22 @@ public class Trade {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date d1;
             Date d2 = sdf.parse(date);
-            for (int i = 0; i < s1.priceList.size(); i++) {
+            for (int i = 1; i < s1.priceList.size(); i++) {
                 d1 = sdf.parse(s1.dateList.get(i));
                 if (d2.before(d1)) {
-                    if ((s1.priceList.get(i) > orderPrice && s1.priceList.get(i-1) < orderPrice)||(s1.priceList.get(i) < orderPrice && s1.priceList.get(i-1) > orderPrice) ){
+                    if ((s1.priceList.get(i) > orderPrice && s1.priceList.get(i - 1) < orderPrice) || (s1.priceList.get(i) < orderPrice && s1.priceList.get(i - 1) > orderPrice)) {
                         indexTaker = i;
                         break;
                     }
                 }
             }
             if (indexTaker != -1) {
-                startPrice=s1.priceList.get(indexTaker);
-                date=s1.dateList.get(indexTaker);
-                currentPrice=startPrice;
-                orderPrice=-1.0;
-                openClose=true;
-                orderHold=false;
+                startPrice = s1.priceList.get(indexTaker);
+                date = s1.dateList.get(indexTaker);
+                currentPrice = startPrice;
+                orderPrice = -1.0;
+                openClose = true;
+                orderHold = false;
             }
 
 
@@ -94,10 +94,8 @@ public class Trade {
                 //assuming prices have updates and now i check if limit or stop loss got hit
                 //also update profit and user balance
 
-                    currentPrice = s1.priceList.get(0);
-                    profitLossCalculator();
-
-
+                currentPrice = s1.priceList.get(0);
+                profitLossCalculator();
 
 
             }
@@ -115,9 +113,15 @@ public class Trade {
             this.totalProfitLoss = -1 * ((amountInvested + (percentProfitLoss / 100) * amountInvested) - amountInvested);
 
         }
+        percentProfitLoss = roundToTwoDecimals(percentProfitLoss);
+        totalProfitLoss = roundToTwoDecimals(totalProfitLoss);
+
 
     }
 
+    public Double roundToTwoDecimals(Double value) {
+        return (double) Math.round(value * 100) / 100;
+    }
 
     public static String FormalPerc(double num) {
         if (num == 0) {

@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
@@ -194,33 +195,45 @@ public class MainActivity extends AppCompatActivity {
 
     public void firstLoadAll() throws ExecutionException, InterruptedException, ParseException {
         getAllStockModels("4hour");
-        combineStockModelInfo();
+       // combineStockModelInfo();
         uploadStockModelsFirebase();
         updateNews();
 
 
         //here i get existing users from firebase
 users = new ArrayList<>();
+        db.collection("Trades").document("Users").collection("usersAll")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                User user = document.toObject(User.class);
+                                users.add(user);
+                            }
+                        }
 
-        Task<List<User>> users1 = getUsersFromFirestore();
-        Tasks.await(users1);
-        users=users1;
-// users is now ready to use
-        //now in users
+                        for (int i = 0; i < users.size(); i++) {
+                            for (int j = 0; j < users.get(i).trades.size(); j++) {
+                                try {
+                                    users.get(i).trades.get(j).updateTrade();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            Double temp = users.get(i).startingBalance;
+                            for (int j = 0; j < users.get(i).trades.size(); j++) {
+                                temp += users.get(i).trades.get(j).totalProfitLoss;
+                            }
+                            users.get(i).balance = temp;
+                        }
 
-        for (int i = 0; i < users.size(); i++) {
-            for (int j = 0; j < users.get(i).trades.size(); j++) {
-                users.get(i).trades.get(j).updateTrade();
-            }
-            Double temp = users.get(i).startingBalance;
-            for (int j = 0; j < users.get(i).trades.size(); j++) {
-                temp += users.get(i).trades.get(j).totalProfitLoss;
-            }
-            users.get(i).balance = temp;
-        }
+                        uploadUsersToFirestore();
 
-        //here i upload users after they were updated to latest profits
-        uploadUsersToFirestore();
+                    }
+                });
+
 
 
     }
@@ -251,20 +264,20 @@ users = new ArrayList<>();
         }
     }
 
-    public void combineStockModelInfo() {
-        //combine the info from the variable stockModels into the string called "allInfo"
-        StringBuilder sb = new StringBuilder();
-        for (StockModel model : stockModels) {
-            sb.append(model.updateTime).append("<");
-            sb.append(model.name).append("<");
-            sb.append(model.timeInterval).append("<");
-            sb.append(TextUtils.join("<", model.priceList)).append("<");
-            sb.append(TextUtils.join("<", model.dateList)).append("<");
-            sb.append(model.analysis).append("<");
-            sb.append(model.gainLossPercent).append(";");
-        }
-        allInfo = sb.toString();
-    }
+//    public void combineStockModelInfo() {
+//        //combine the info from the variable stockModels into the string called "allInfo"
+//        StringBuilder sb = new StringBuilder();
+//        for (StockModel model : stockModels) {
+//            sb.append(model.updateTime).append("<");
+//            sb.append(model.name).append("<");
+//            sb.append(model.timeInterval).append("<");
+//            sb.append(TextUtils.join("<", model.priceList)).append("<");
+//            sb.append(TextUtils.join("<", model.dateList)).append("<");
+//            sb.append(model.analysis).append("<");
+//            sb.append(model.gainLossPercent).append(";");
+//        }
+//        allInfo = sb.toString();
+//    }
 
     public void extractStockModelInfo() {
         //extract the string var "allInfo" into the var stockModels
@@ -288,8 +301,15 @@ users = new ArrayList<>();
     }
 
     public void uploadStockModelsFirebase() {
-        docData.put("infoString", allInfo);
-        db.collection("Trades").document("stockInfo").set(docData, SetOptions.merge());
+//        docData.put("infoString", allInfo);
+//        db.collection("Trades").document("stockInfo").set(docData, SetOptions.merge());
+
+        for (StockModel stock : stockModels) {
+
+            FirebaseFirestore db1 = FirebaseFirestore.getInstance();
+            db1.collection("Trades").document("stockInfo").collection("allStocks").document(stock.name).set(stock);
+        }
+
 
     }
 
