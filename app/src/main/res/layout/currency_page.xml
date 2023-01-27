@@ -6,20 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".CurrencyPage">
 
+    <com.anychart.AnyChartView
+        android:id="@+id/any_chart_view"
+        android:layout_width="342dp"
+        android:layout_height="371dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:layout_constraintVertical_bias="0.955" />
+
     <Button
         android:id="@+id/buysellButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="changebuysell"
         android:outlineSpotShadowColor="@color/green"
         android:text="Buy"
         android:textColor="@color/green"
-        android:onClick="changebuysell"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintHorizontal_bias="0.458"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.171" />
+        app:layout_constraintVertical_bias="0.007" />
 
     <EditText
         android:id="@+id/amountInvestEditText"
@@ -49,10 +61,10 @@
         android:id="@+id/predictionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="356dp"
+        android:layout_marginTop="284dp"
         android:text="Predict: 1133.33"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.739"
+        app:layout_constraintHorizontal_bias="0.73"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -82,14 +94,14 @@
         android:id="@+id/graphViewButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="View Graph"
         android:onClick="viewGraphIntent"
+        android:text="View Graph"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.547"
+        app:layout_constraintHorizontal_bias="0.943"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.942" />
+        app:layout_constraintVertical_bias="0.121" />
 
     <TextView
         android:id="@+id/currentPrice"
@@ -106,41 +118,41 @@
         android:id="@+id/orderTradeEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="180dp"
+        android:layout_marginBottom="460dp"
         android:hint="Order price"
         android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toStartOf="parent" />
+
 
     <Button
         android:id="@+id/createTradeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Trade"
         android:onClick="createTrade"
+        android:text="Create Trade"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.584"
+        app:layout_constraintHorizontal_bias="0.388"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.849" />
-
+        app:layout_constraintVertical_bias="0.121" />
 
     <CheckBox
         android:id="@+id/orderTradeCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="228dp"
-        android:text="Order Trade"
+        android:layout_marginBottom="460dp"
         android:onClick="tradeCheckBoxChange"
+        android:text="Order Trade"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.468"
+        app:layout_constraintHorizontal_bias="0.773"
         app:layout_constraintStart_toStartOf="parent" />
 
-<!--        <CheckBox-->
+    <!--        <CheckBox-->
 <!--            android:id="@+id/takeProfitCheckBox"-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->

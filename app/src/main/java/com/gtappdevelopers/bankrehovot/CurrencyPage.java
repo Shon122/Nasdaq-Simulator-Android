@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +26,23 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Objects;
 
+import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.anychart.AnyChart;
+import com.anychart.AnyChartView;
+import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.chart.common.dataentry.HighLowDataEntry;
+import com.anychart.charts.Stock;
+import com.anychart.core.stock.Plot;
+import com.anychart.data.Table;
+import com.anychart.data.TableMapping;
+import com.anychart.enums.StockSeriesType;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class CurrencyPage extends AppCompatActivity {
     //    EditText priceProfitEditText = findViewById(R.id.priceProfitEditText);
@@ -35,6 +53,14 @@ public class CurrencyPage extends AppCompatActivity {
 //    EditText percentStopEditText = findViewById(R.id.percentStopEditText);
 //    CheckBox stopLossCheckBox = findViewById(R.id.stopLossCheckBox);
 //    CheckBox takeProfitCheckBox = findViewById(R.id.takeProfitCheckBox);
+
+
+
+
+
+    ArrayList<Double> priceList = MainActivity.viewingStock.priceList;
+    ArrayList<String> dateList = MainActivity.viewingStock.dateList;
+
     EditText amountInvestEditText;
     EditText orderTradeEditText;
     CheckBox orderTradeCheckBox;
@@ -83,6 +109,65 @@ public class CurrencyPage extends AppCompatActivity {
         buysellButton.setTextColor(Color.GREEN);
 
 
+        AnyChartView anyChartView = findViewById(R.id.any_chart_view);
+
+        Table table = Table.instantiate("x");
+        table.addData(getData());
+
+        TableMapping mapping = table.mapAs("{open: 'open', high: 'high', low: 'low', close: 'close'}");
+
+        Stock stock = AnyChart.stock();
+
+        Plot plot = stock.plot(0);
+        plot.yGrid(true)
+                .xGrid(true)
+                .yMinorGrid(true)
+                .xMinorGrid(true);
+
+        plot.ema(table.mapAs("{value: 'close'}"), 20d, StockSeriesType.LINE);
+
+        plot.ohlc(mapping)
+                .name("CSCO")
+                .legendItem("{\n" +
+                        "        iconType: 'rising-falling'\n" +
+                        "      }");
+
+        stock.scroller().ohlc(mapping);
+
+        // set x axis as the datelist and y axis as the prices
+
+        anyChartView.setChart(stock);
+
+    }
+
+
+
+    private List<DataEntry> getData() {
+        List<DataEntry> data = new ArrayList<>();
+        // get the date and prices from the dateList and priceList
+        for (int i = 0; i < dateList.size(); i++) {
+            data.add(new OHCLDataEntry(dateList.get(i), priceList.get(i),priceList.get(i),priceList.get(i),priceList.get(i)));
+        }
+        return data;
+    }
+
+    private static class OHCLDataEntry extends HighLowDataEntry {
+        OHCLDataEntry(String x, Double open, Double high, Double low, Double close) {
+            super(x, high, low);
+            setValue("open", open);
+            setValue("close", close);
+        }
+    }
+    public long stringToMilliseconds(String dateString) {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+        try {
+            Date date = format.parse(dateString);
+            assert date != null;
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 641750400000L;
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -137,8 +222,8 @@ public class CurrencyPage extends AppCompatActivity {
     }
 
     public void viewGraphIntent(View view) {
-        Intent intent = new Intent(this, GraphActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, GraphActivity.class);
+//        startActivity(intent);
 
     }
 
@@ -152,7 +237,6 @@ public class CurrencyPage extends AppCompatActivity {
             buysellButton.setTextColor(Color.RED);
         }
     }
-
 
 
 
