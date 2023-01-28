@@ -8,6 +8,8 @@ import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.HighLowDataEntry;
+import com.anychart.chart.common.dataentry.ValueDataEntry;
+import com.anychart.charts.Cartesian;
 import com.anychart.charts.Stock;
 import com.anychart.core.stock.Plot;
 import com.anychart.data.Table;
@@ -29,6 +31,7 @@ public class GraphActivity extends AppCompatActivity {
 
         AnyChartView anyChartView = findViewById(R.id.any_chart_view);
 
+        Cartesian cartesian = AnyChart.line();
         Table table = Table.instantiate("x");
         table.addData(getData());
 
@@ -60,17 +63,18 @@ public class GraphActivity extends AppCompatActivity {
         for (int i = 0; i < priceList.size(); i++) {
             //from date to long
             long end=0;
-            data.add(new OHCLDataEntry(end, priceList.get(i), priceList.get(i), priceList.get(i), priceList.get(i)));
+          //  data.add(new CustomDataEntry(end, priceList.get(i), priceList.get(i), priceList.get(i), priceList.get(i)));
         }
 
         return data;
     }
 
-    private class OHCLDataEntry extends HighLowDataEntry {
-        OHCLDataEntry(Long x, Double open, Double high, Double low, Double close) {
-            super(x, high, low);
-            setValue("open", open);
-            setValue("close", close);
+    private class CustomDataEntry extends ValueDataEntry {
+
+        CustomDataEntry(String x, Number value) {
+            super(x, value);
+
         }
+
     }
 }

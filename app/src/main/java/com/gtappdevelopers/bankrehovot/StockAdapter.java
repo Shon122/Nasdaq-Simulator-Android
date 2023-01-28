@@ -19,7 +19,7 @@ public class StockAdapter extends ArrayAdapter<StockModel> {
     public StockAdapter(Context context, ArrayList<StockModel> stockList) {
         super(context, 0, stockList);
         this.stockList = stockList;
-        this.originalList = new ArrayList<>(stockList);
+        this.originalList = stockList;
     }
 
     @SuppressLint("SetTextI18n")
