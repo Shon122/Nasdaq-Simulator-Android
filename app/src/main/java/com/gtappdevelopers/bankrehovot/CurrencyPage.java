@@ -142,7 +142,7 @@ public class CurrencyPage extends AppCompatActivity {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    private class CustomDataEntry extends ValueDataEntry {
+    public static class CustomDataEntry extends ValueDataEntry {
         CustomDataEntry(String x, Number value) {
             super(x, value);
         }
