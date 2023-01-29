@@ -171,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
     public String readFromFile(String fileName) {
         StringBuilder returnString = new StringBuilder();
         try {
@@ -192,16 +191,15 @@ public class MainActivity extends AppCompatActivity {
         return returnString.toString();
     }
 
-
     public void firstLoadAll() throws ExecutionException, InterruptedException, ParseException {
         getAllStockModels("4hour");
-       // combineStockModelInfo();
-      //  uploadStockModelsFirebase();
+        // combineStockModelInfo();
+        //  uploadStockModelsFirebase();
         updateNews();
 
 
         //here i get existing users from firebase
-users = new ArrayList<>();
+        users = new ArrayList<>();
         db.collection("Trades").document("Users").collection("usersAll")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -235,8 +233,8 @@ users = new ArrayList<>();
                 });
 
 
-
     }
+
     public Task<List<User>> getUsersFromFirestore() {
         TaskCompletionSource<List<User>> taskCompletionSource = new TaskCompletionSource<>();
         List<User> users = new ArrayList<>();
@@ -336,27 +334,39 @@ users = new ArrayList<>();
 
     public void getAllStockModels(String timeinterval1) {
         //puts all the information to the var stockModels
-        updateApiIndexFirebase();
-        timeInterval = timeinterval1;
-        for (int i = 0; i < allNames.length; i++) {
-            currentStockName = allNames[i];
-            if (timeInterval.equals("day")) {
-                apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + currentStockName + "?serietype=line&apikey=" + apiList[apiIndex];
-            } else {
-                apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + currentStockName + "?apikey=" + apiList[apiIndex];
+        db.collection("Trades").document("indexapi").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    String uploaderTaker = String.valueOf(document.get("indexnumber"));
+                    apiIndex = Integer.parseInt((uploaderTaker));
+
+                    timeInterval = timeinterval1;
+                    for (int i = 0; i < allNames.length; i++) {
+                        currentStockName = allNames[i];
+                        if (timeInterval.equals("day")) {
+                            apiLink = "https://financialmodelingprep.com/api/v3/historical-price-full/" + currentStockName + "?serietype=line&apikey=" + apiList[apiIndex];
+                        } else {
+                            apiLink = "https://financialmodelingprep.com/api/v3/historical-chart/" + timeInterval + "/" + currentStockName + "?apikey=" + apiList[apiIndex];
+                        }
+                        GetDataTask task1 = new GetDataTask();
+                        try {
+                            task1.execute().get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        apiIndex++;
+                        if (apiIndex >= apiList.length)
+                            apiIndex = 0;
+                        stockModels.set(i, saveCurrentStockModel);
+                    }
+                    uploadApiIndexFirebase();
+                }
+
             }
-            GetDataTask task = new GetDataTask();
-            try {
-                task.execute().get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-            apiIndex++;
-            if (apiIndex >= apiList.length)
-                apiIndex = 0;
-            stockModels.set(i, saveCurrentStockModel);
-        }
-        uploadApiIndexFirebase();
+        });
+
     }
 
     public void updateApiIndexFirebase() {
@@ -366,15 +376,11 @@ users = new ArrayList<>();
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     String uploaderTaker = String.valueOf(document.get("indexnumber"));
-                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                    myEdit.putInt("dataIndexApi", Integer.parseInt((uploaderTaker)));
-                    myEdit.apply();
+                    apiIndex = Integer.parseInt((uploaderTaker));
                 }
             }
         });
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        apiIndex = sharedPreferences.getInt("dataIndexApi", 0);
+
     }
 
     public void uploadApiIndexFirebase() {
