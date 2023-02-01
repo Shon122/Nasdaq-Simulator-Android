@@ -1,5 +1,6 @@
 package com.gtappdevelopers.bankrehovot;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -162,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+        viewingStock = stockModels.get(0);
         switchIntent();
         //end of oncreate
     }
