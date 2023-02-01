@@ -64,4 +64,9 @@ public class HomePage extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void moveToMyProfile(View view) {
+
+        Intent intent = new Intent(this, MyProfile.class);
+        startActivity(intent);
+    }
 }

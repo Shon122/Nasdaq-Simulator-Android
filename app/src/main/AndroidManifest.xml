@@ -4,6 +4,8 @@
     package="com.gtappdevelopers.bankrehovot"
     android:installLocation="preferExternal">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -18,6 +20,9 @@
         android:theme="@style/Theme.BankRehovot"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".MyProfile"
+            android:exported="false" />
         <activity
             android:name=".GraphActivity"
             android:exported="false" />
