@@ -1,6 +1,7 @@
 package com.gtappdevelopers.bankrehovot;
 
 import android.Manifest;
+<<<<<<< HEAD
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,10 +13,14 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+=======
+import android.content.pm.PackageManager;
+>>>>>>> BankRehovot/master
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+<<<<<<< HEAD
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -25,17 +30,25 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+=======
+import android.os.Bundle;
+import android.widget.TextView;
+>>>>>>> BankRehovot/master
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+<<<<<<< HEAD
 import java.io.ByteArrayOutputStream;
+=======
+>>>>>>> BankRehovot/master
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
 public class MyProfile extends AppCompatActivity {
+<<<<<<< HEAD
     private TextView textView;
 
 
@@ -45,12 +58,18 @@ public class MyProfile extends AppCompatActivity {
     private static final int CAMERA_REQUEST = 2;
 
 
+=======
+
+    private TextView textView;
+
+>>>>>>> BankRehovot/master
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_profile);
         textView = findViewById(R.id.countryTextView);
         textView.setText("Retrieving location information...");
+<<<<<<< HEAD
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         //only here after location
 
@@ -111,10 +130,22 @@ public class MyProfile extends AppCompatActivity {
             startActivityForResult(intent, CAMERA_REQUEST);
         } else {
             Toast.makeText(MyProfile.this, "Your device doesn't have a camera!", Toast.LENGTH_SHORT).show();
+=======
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+
+>>>>>>> BankRehovot/master
         }
     }
 
     @Override
+<<<<<<< HEAD
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == this.RESULT_CANCELED) {
@@ -192,6 +223,10 @@ public class MyProfile extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
 
+=======
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+>>>>>>> BankRehovot/master
         if (requestCode == 0) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 textView.setText("handle good");
@@ -202,14 +237,25 @@ public class MyProfile extends AppCompatActivity {
 
 
                 }
+<<<<<<< HEAD
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location != null) {
+=======
+                textView.setText("handle good1");
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location != null) {
+                    textView.setText("handle good2");
+>>>>>>> BankRehovot/master
                     Geocoder geocoder = new Geocoder(this, Locale.getDefault());
                     try {
                         List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                         if (addresses.size() > 0) {
                             String country = addresses.get(0).getCountryName();
+<<<<<<< HEAD
                             textView.setText(country);
+=======
+                            textView.setText( " niceee "+country);
+>>>>>>> BankRehovot/master
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -221,5 +267,8 @@ public class MyProfile extends AppCompatActivity {
             }
         }
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> BankRehovot/master
 }
