@@ -225,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             Double temp = users.get(i).startingBalance;
                             for (int j = 0; j < users.get(i).trades.size(); j++) {
+                                if(!users.get(i).trades.get(j).openClose)
                                 temp += users.get(i).trades.get(j).totalProfitLoss;
                             }
                             users.get(i).balance = temp;

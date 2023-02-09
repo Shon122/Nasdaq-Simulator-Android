@@ -6,6 +6,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,6 +18,8 @@ public class StockGame extends AppCompatActivity {
     private float[] prices = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
     private int currentPriceIndex = 0;
     private Timer priceTimer;
+    public ArrayList<Double> sellPositions = new ArrayList<>();
+    public ArrayList<Double> buyPositions = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,16 +44,25 @@ public class StockGame extends AppCompatActivity {
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // handle buy button click
+                buyPositions.add((double) prices[currentPriceIndex]);
             }
         });
 
         sellButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // handle sell button click
+                sellPositions.add((double) prices[currentPriceIndex]);
             }
         });
+
+    }
+
+    public void updateStats() {
+
+
+    }
+
+    public void startGame(View view) {
 
         priceTimer = new Timer();
         priceTimer.scheduleAtFixedRate(new TimerTask() {
@@ -60,15 +72,18 @@ public class StockGame extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //priceTimer.cancel();
                         graphView.setPrice(prices[currentPriceIndex]);
                         currentPriceIndex++;
                         if (currentPriceIndex == prices.length) {
                             currentPriceIndex = 0;
+                            priceTimer.cancel();
                         }
                     }
                 });
             }
         }, 0, 500);
+
+
     }
+
 }

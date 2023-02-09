@@ -69,7 +69,8 @@ public class MyProfile extends AppCompatActivity {
         if (savedImage != null) {
             byte[] decodedString = Base64.decode(savedImage, Base64.DEFAULT);
             Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            imageView.setImageBitmap(decodedBitmap);
+            Bitmap circularBitmap = getCircularBitmap(decodedBitmap);
+            imageView.setImageBitmap(circularBitmap);
         }
 
 
@@ -154,6 +155,7 @@ public class MyProfile extends AppCompatActivity {
             PreferenceManager.getDefaultSharedPreferences(this).edit().putString("saved_image", encodedImage).apply();
         }
     }
+
     private Bitmap getCircularBitmap(Bitmap bitmap) {
         Bitmap output;
 
