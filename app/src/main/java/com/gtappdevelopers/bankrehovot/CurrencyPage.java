@@ -230,7 +230,7 @@ public class CurrencyPage extends AppCompatActivity {
     }
 
 
-    public class NumberPrediction {
+    private class NumberPrediction {
         private ArrayList<Double> data;
         private double[] predictors;
         private double[] parameters;

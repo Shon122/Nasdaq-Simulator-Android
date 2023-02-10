@@ -72,7 +72,7 @@ public class MyProfile extends AppCompatActivity {
             Bitmap circularBitmap = getCircularBitmap(decodedBitmap);
             imageView.setImageBitmap(circularBitmap);
         }
-
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 3);
 
     }
 
@@ -134,7 +134,11 @@ public class MyProfile extends AppCompatActivity {
                     circularBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] imageBytes = baos.toByteArray();
                     String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
                     PreferenceManager.getDefaultSharedPreferences(this).edit().putString("saved_image", encodedImage).apply();
+                    MainActivity.currentUser.savedImage = encodedImage;
+                    MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
+                    MainActivity.uploadUsersToFirestore();
                 } catch (IOException e) {
                     e.printStackTrace();
                     Toast.makeText(MyProfile.this, "Failed!", Toast.LENGTH_SHORT).show();
@@ -153,6 +157,9 @@ public class MyProfile extends AppCompatActivity {
             byte[] imageBytes = baos.toByteArray();
             String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
             PreferenceManager.getDefaultSharedPreferences(this).edit().putString("saved_image", encodedImage).apply();
+            MainActivity.currentUser.savedImage = encodedImage;
+            MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
+            MainActivity.uploadUsersToFirestore();
         }
     }
 

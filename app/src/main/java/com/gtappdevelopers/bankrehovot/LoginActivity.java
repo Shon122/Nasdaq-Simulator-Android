@@ -26,7 +26,9 @@ import android.widget.Toast;
 import org.checkerframework.checker.units.qual.A;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends AppCompatActivity {
@@ -67,7 +69,10 @@ public class LoginActivity extends AppCompatActivity {
         boolean check = authenticateRegisterUser(username, password);
         if (check) {
             ArrayList<Trade> emptyList = new ArrayList<>();
-            User newUser = new User(password, username, emptyList, 10000.00);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+            Date date = new Date();
+            String currentDate = dateFormat.format(date);
+            User newUser = new User(password, username, emptyList, 10000.00, currentDate, "nophoto","No Status");
             MainActivity.users.add(newUser);
             MainActivity.uploadUsersToFirestore();
 
@@ -102,14 +107,35 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    public  boolean containsOnlyLettersAndNumbers(String str) {
+
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+
+            if (c < 'A' || (c > 'Z' && c < 'a') || c > 'z') {
+                if (c < '0' || c > '9') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
     public boolean authenticateRegisterUser(String username, String password) {
 
         if (username.length() < 6 || password.length() < 6) {
-            Toast.makeText(LoginActivity.this, "Username and password should be at least 6 letters", Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    LoginActivity.this,
+                    "Username and password should be at least 6 letters",
+                    Toast.LENGTH_SHORT
+            ).show();
             return false;
         }
-        if (!username.matches("^[a-zA-Z0-9]*$") || !password.matches("^[a-zA-Z0-9]*$")) {
-            Toast.makeText(LoginActivity.this, "Username and password can only contain letters and numbers", Toast.LENGTH_SHORT).show();
+        if (!containsOnlyLettersAndNumbers(username) || !containsOnlyLettersAndNumbers(password)) {
+            Toast.makeText(
+                    LoginActivity.this,
+                    "Username and password can only contain letters and numbers",
+                    Toast.LENGTH_SHORT
+            ).show();
             return false;
         }
 
@@ -117,7 +143,8 @@ public class LoginActivity extends AppCompatActivity {
         //TODO: Add code to authenticate the user with the variable users from mainactivity
         for (User user1 : MainActivity.users) {
             if (user1.username.equals(username)) {
-                Toast.makeText(LoginActivity.this, "User already exists", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "User already exists", Toast.LENGTH_SHORT)
+                        .show();
                 return false;
             }
 
@@ -129,7 +156,11 @@ public class LoginActivity extends AppCompatActivity {
     public boolean authenticateLoginUser(String username, String password) {
 
         if (username.length() < 6 || password.length() < 6) {
-            Toast.makeText(LoginActivity.this, "Username and password should be at least 6 letters", Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    LoginActivity.this,
+                    "Username and password should be at least 6 letters",
+                    Toast.LENGTH_SHORT
+            ).show();
             return false;
         }
 
@@ -137,7 +168,8 @@ public class LoginActivity extends AppCompatActivity {
         //TODO: Add code to authenticate the user with the variable users from mainactivity
         for (User user1 : MainActivity.users) {
             if (user1.password.equals(password) && user1.username.equals(username)) {
-                Toast.makeText(LoginActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT)
+                        .show();
                 return true;
             }
             if ((!user1.password.equals(password)) && user1.username.equals(username)) {
@@ -145,7 +177,8 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
         }
-        Toast.makeText(LoginActivity.this, "User doesnt exist, please register", Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginActivity.this, "User doesnt exist, please register", Toast.LENGTH_SHORT)
+                .show();
         return false;
     }
 }
