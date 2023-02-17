@@ -1,17 +1,23 @@
 package com.gtappdevelopers.bankrehovot;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,12 +27,11 @@ public class StockGame extends AppCompatActivity {
     GraphView graphView;
     Button buyButton;
     Button sellButton;
-    float[] prices = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+    ArrayList<Double> prices = new ArrayList<>();
     int currentPriceIndex = 0;
     Timer priceTimer;
     ArrayList<Double> sellPositions = new ArrayList<>();
     ArrayList<Double> buyPositions = new ArrayList<>();
-    ArrayList<Double> originalPrices;
     Double amountInvest;
     int countTimes = -1;
     Double totalPNL;
@@ -35,6 +40,9 @@ public class StockGame extends AppCompatActivity {
     TextView totalPNLTextView;
     int stockNumber;
     boolean ongoingGame = false;
+    private TextView priceView;
+    private LinearLayout graphLayout;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,26 +53,159 @@ public class StockGame extends AppCompatActivity {
         totalPNLTextView = findViewById(R.id.ProfitLossTextView);
         stockNumber = -1;
         randomStock(stockNumber);
-
-        graphView = findViewById(R.id.graph_view);
+        //now i got prices
+        //graphView = (GraphView) findViewById(R.id.graph_view);
         buyButton = findViewById(R.id.buy_button);
         sellButton = findViewById(R.id.sell_button);
-
+        graphLayout = findViewById(R.id.graph_layout);
+        handler = new Handler();
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buyPositions.add((double) prices[currentPriceIndex]);
+                buyPositions.add((double) prices.get(currentPriceIndex));
             }
         });
 
         sellButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sellPositions.add((double) prices[currentPriceIndex]);
+                sellPositions.add((double) prices.get(currentPriceIndex));
             }
         });
 
 
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void updatePrice() {
+        if (currentPriceIndex < prices.size() && currentPriceIndex < 60) { //so it will be 2 minutes
+            double currentPrice = prices.get(currentPriceIndex);
+            priceView.setText(""+String.valueOf(currentPrice));
+
+            // Add a new point to the graph
+            View point = new View(this);
+            point.setBackgroundColor(getResources().getColor(R.color.green));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 20);
+            params.leftMargin = 20 * currentPriceIndex;
+            point.setLayoutParams(params);
+            graphLayout.addView(point);
+            updateStats();
+
+            ArrayList<Double> newPrices = new ArrayList<>();
+            for (int i = 0; i <= currentPriceIndex; i++) {
+                Double takeNumber = prices.get(i);
+                newPrices.add(takeNumber);
+            }
+            try {
+                NumberPrediction prediction = new NumberPrediction(newPrices);
+                Double nextPrice = roundToTwoDecimals(prediction.predictNextNumber());
+                if (nextPrice > prices.get(currentPriceIndex))
+                    predictionTextView.setText("Bot Prediction: Price Going Down");
+                else
+                    predictionTextView.setText("Bot Prediction: Price Going Up");
+            } catch (MathIllegalArgumentException e) {
+                predictionTextView.setText("Bot Prediction: Price Going Up"); // just in case
+            }
+
+            totalPNLTextView.setText("Total Profit/loss: $" + totalPNL);
+
+            currentPriceIndex++;
+        } else {
+            // All prices have been added
+
+            randomStock(stockNumber);
+            MainActivity.currentUser.balance += totalPNL;
+            MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
+            MainActivity.uploadUsersToFirestore();
+            ongoingGame = false;
+            sellPositions = new ArrayList<>();
+            buyPositions = new ArrayList<>();
+            return;
+        }
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updatePrice();
+            }
+        }, 2000);
+    }
+
+
+    public void startGame() {
+        totalPNL = 0.0;
+        countTimes = -1;
+        ongoingGame = true;
+        currentPriceIndex = 0;
+        ArrayList<Double> takeThis = new ArrayList<>();
+        takeThis.add(prices.get(0));
+        graphView.setPrices(takeThis);
+        priceTimer = new Timer();
+        priceTimer.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void run() {
+                        countTimes++;
+                        //here check if game should be stopped
+                        currentPriceIndex++;
+                        if (currentPriceIndex == prices.size() || countTimes == 120) {
+                            currentPriceIndex = 0;
+                            priceTimer.cancel();
+
+                        }
+                        updatePrices();
+                        //now continue
+
+
+                        updateStats();
+
+
+                        ArrayList<Double> newPrices = new ArrayList<>();
+                        for (int i = 0; i <= currentPriceIndex; i++) {
+                            Double takeNumber = prices.get(i);
+                            newPrices.add(takeNumber);
+                        }
+                        try {
+                            NumberPrediction prediction = new NumberPrediction(newPrices);
+                            Double nextPrice = roundToTwoDecimals(prediction.predictNextNumber());
+                            if (nextPrice > prices.get(currentPriceIndex))
+                                predictionTextView.setText("Bot Prediction: Price Going Down");
+                            else
+                                predictionTextView.setText("Bot Prediction: Price Going Up");
+                        } catch (MathIllegalArgumentException e) {
+                            predictionTextView.setText("Bot Prediction: Price Going Up"); // just in case
+                        }
+
+                        totalPNLTextView.setText("Total Profit/loss: $" + totalPNL);
+
+                    }
+                });
+            }
+        }, 0, 2000);
+
+        //after game is over change to a different stock, show results, update balance
+
+        randomStock(stockNumber);
+        MainActivity.currentUser.balance += totalPNL;
+        MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
+        MainActivity.uploadUsersToFirestore();
+        ongoingGame = false;
+        sellPositions = new ArrayList<>();
+        buyPositions = new ArrayList<>();
+    }
+
+    public void updatePrices() {
+        ArrayList<Double> convertList = new ArrayList<>();
+        for (int i = 0; i <= currentPriceIndex; i++) {
+            convertList.add(prices.get(i));
+        }
+
+
+        graphView.setPrices(convertList);
     }
 
     public void randomStock(int lastStockNumber) {
@@ -76,19 +217,13 @@ public class StockGame extends AppCompatActivity {
         }
         stockNumber = randomNumber;
         MainActivity.viewingStock = MainActivity.stockModels.get(randomNumber);
-        originalPrices = MainActivity.viewingStock.priceList;
-        int size = MainActivity.viewingStock.priceList.size();
-        float[] floatArray = new float[size];
-        for (int i = 0; i < size; i++) {
-            floatArray[i] = MainActivity.viewingStock.priceList.get(i).floatValue();
-        }
-        prices = floatArray;
+        prices = MainActivity.viewingStock.priceList;
 
     }
 
     public Double profitLossCalculator(boolean longShort, Double startPrice) {
         //gives -+16.66% percent for example
-        Double currentPrice = (double) prices[currentPriceIndex];
+        Double currentPrice = prices.get(currentPriceIndex);
         Double percentProfitLoss;
         Double totalProfitLoss;
         if (longShort) {
@@ -109,7 +244,7 @@ public class StockGame extends AppCompatActivity {
     }
 
     public void updateStats() {
-        Double currentPrice = (double) prices[currentPriceIndex];
+        totalPNL = 0.0;
         for (int i = 0; i < sellPositions.size(); i++) {
             totalPNL += profitLossCalculator(false, sellPositions.get(i));
         }
@@ -135,59 +270,16 @@ public class StockGame extends AppCompatActivity {
                 }
                 //if amount is ok
                 amountInvest = Double.parseDouble(String.valueOf(amountInvestEditText.getText()));
-                startGame();
+                totalPNL = 0.0;
+                countTimes = -1;
+                ongoingGame = true;
+                currentPriceIndex = 0;
+                //startGame();
+                updatePrice();
             }
 
         }
 
-    }
-
-    public void startGame() {
-        totalPNL = 0.0;
-        countTimes = -1;
-        ongoingGame = true;
-        priceTimer = new Timer();
-        priceTimer.scheduleAtFixedRate(new TimerTask() {
-
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        countTimes++;
-                        //here check if game should be stopped
-                        graphView.setPrice(prices[currentPriceIndex]);
-                        currentPriceIndex++;
-                        if (currentPriceIndex == prices.length || countTimes == 120) {
-                            currentPriceIndex = 0;
-                            priceTimer.cancel();
-
-                        }
-                        //now continue
-
-
-                        updateStats();
-
-                        ArrayList<Double> convertedList = new ArrayList<Double>();
-                        for(int i = 0; i < currentPriceIndex; i++){
-                            convertedList.add(originalPrices.get(i));
-                        }
-                        NumberPrediction prediction = new NumberPrediction(convertedList);
-                        double nextPrice = prediction.predictNextNumber();
-                        predictionTextView.setText("Bot Prediction: " + nextPrice);
-                        totalPNLTextView.setText("Total Profit/loss: $" + totalPNL);
-
-                    }
-                });
-            }
-        }, 0, 500);
-
-        //after game is over change to a different stock, show results, update balance
-        randomStock(stockNumber);
-        MainActivity.currentUser.balance += totalPNL;
-        MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
-        MainActivity.uploadUsersToFirestore();
-        ongoingGame = false;
     }
 
     private class NumberPrediction {

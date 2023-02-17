@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void firstLoadAll() throws ExecutionException, InterruptedException, ParseException {
+       // getStockModelsFromFirebase();
         getAllStockModels("4hour");
         // combineStockModelInfo();
         //  uploadStockModelsFirebase();

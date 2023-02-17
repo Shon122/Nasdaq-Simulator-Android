@@ -4,59 +4,70 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class GraphView extends View {
-    private float price;
-    private List<Float> prices = new ArrayList<>();
-    private Paint paint = new Paint();
+    private Paint paint;
+    private Path path;
+    private ArrayList<Float> points;
 
     public GraphView(Context context) {
         super(context);
+        init();
     }
 
-    public GraphView(Context context, AttributeSet attrs) {
+    public GraphView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
-    public GraphView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GraphView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
 
-    public void setPrice(float price) {
-        this.price = price;
-        prices.add(price);
+    private void init() {
+        paint = new Paint();
+        paint.setColor(Color.RED);
+        paint.setStrokeWidth(5f);
+        paint.setStyle(Paint.Style.STROKE);
+        path = new Path();
+    }
+
+    public void setPrices(ArrayList<Double> prices) {
+        points = new ArrayList<>();
+        for (Double price : prices) {
+            points.add(price.floatValue());
+        }
         invalidate();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        paint.setColor(Color.GREEN);
-        paint.setStrokeWidth(5);
-
-        float x = getWidth();
-        float y = getHeight();
-        float xIncrement = x/prices.size();
-        float yScale = y/100;
-
-        for (int i = 0; i < prices.size(); i++) {
-            if (i == 0) {
-                canvas.drawPoint(i * xIncrement, y - (prices.get(i) * yScale), paint);
-            } else {
-                canvas.drawLine(
-                        (i - 1) * xIncrement,
-                        y - (prices.get(i - 1) * yScale),
-                        i * xIncrement,
-                        y - (prices.get(i) * yScale),
-                        paint
-                );
+        int width = getWidth();
+        int height = getHeight();
+        if (points != null) {
+            for (int i = 0; i < points.size(); i++) {
+                float x;
+                if (points.size() - 1 == 0)
+                    x = width * i / 1;
+                else
+                    x = width * i / (points.size() - 1);
+                float y = height - (points.get(i) * height / 100);
+                if (i == 0) {
+                    path.moveTo(x, y);
+                } else {
+                    path.lineTo(x, y);
+                }
             }
+            canvas.drawPath(path, paint);
         }
     }
 }

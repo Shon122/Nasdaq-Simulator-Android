@@ -6,17 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".StockGame">
 
-    <com.gtappdevelopers.bankrehovot.GraphView
-        android:id="@+id/graph_view"
-        android:layout_width="258dp"
-        android:layout_height="248dp"
-        android:layout_above="@+id/buy_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.634" />
+<!--    <com.gtappdevelopers.bankrehovot.GraphView-->
+<!--        android:id="@+id/graph_view"-->
+<!--        android:layout_width="396dp"-->
+<!--        android:layout_height="804dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/buy_button"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <Button
         android:id="@+id/buy_button"
@@ -51,19 +48,19 @@
         android:text="Profit/Loss: $55"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintHorizontal_bias="0.151"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.217" />
+        app:layout_constraintVertical_bias="0.686" />
 
     <TextView
         android:id="@+id/botPredictionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="488dp"
         android:text="Predict: 1133.33"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.506"
+        app:layout_constraintHorizontal_bias="0.87"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -71,7 +68,7 @@
         android:id="@+id/userAmountInvestEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="468dp"
+        android:layout_marginBottom="132dp"
         android:ems="10"
         android:hint="Amount to invest"
         android:inputType="number"
@@ -81,17 +78,30 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/graph_layout"
+        android:layout_width="364dp"
+        android:layout_height="348dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="348dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <Button
         android:id="@+id/startGamebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="604dp"
-        android:text="Start Game"
+        android:layout_marginBottom="268dp"
         android:onClick="startGameCheck"
+        android:text="Start Game"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent" />
 
 
