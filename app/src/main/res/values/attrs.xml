@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GraphView">
+        <attr name="lineColor" format="color"/>
+        <attr name="lineWidth" format="dimension"/>
+        <attr name="pointColor" format="color"/>
+        <attr name="pointRadius" format="dimension"/>
+    </declare-styleable>
+</resources>
