@@ -105,17 +105,17 @@ public class Trade {
 
     public void profitLossCalculator() {
         //gives -+16.66% percent for example
+        this.percentProfitLoss = ((this.currentPrice - this.startPrice) / this.startPrice) * 100;
+        this.totalProfitLoss = (amountInvested + (percentProfitLoss / 100) * amountInvested) - amountInvested;
+
         if (longShort) {
-            this.percentProfitLoss = ((this.currentPrice - this.startPrice) / this.startPrice) * 100;
-            this.totalProfitLoss = (amountInvested + (percentProfitLoss / 100) * amountInvested) - amountInvested;
+            percentProfitLoss = roundToTwoDecimals(percentProfitLoss);
+            totalProfitLoss = roundToTwoDecimals(totalProfitLoss);
         } else {
-            this.percentProfitLoss = -1 * (((this.currentPrice - this.startPrice) / this.startPrice) * 100);
-            this.totalProfitLoss = -1 * ((amountInvested + (percentProfitLoss / 100) * amountInvested) - amountInvested);
+            percentProfitLoss = -1 * roundToTwoDecimals(percentProfitLoss);
+            totalProfitLoss = -1 * roundToTwoDecimals(totalProfitLoss);
 
         }
-        percentProfitLoss = roundToTwoDecimals(percentProfitLoss);
-        totalProfitLoss = roundToTwoDecimals(totalProfitLoss);
-
 
     }
 
