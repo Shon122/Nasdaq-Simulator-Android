@@ -51,7 +51,10 @@ public class MyProfile extends AppCompatActivity {
         setContentView(R.layout.my_profile);
         textView = findViewById(R.id.countryTextView);
         textView.setText("Retrieving location information...");
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+     //   ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+
+        String country = getIntent().getStringExtra(LocationReceiver.COUNTRY_EXTRA);
+        textView.setText(country+"asd");
         //only here after location
 
         imageView = (ImageView) findViewById(R.id.imageView);
