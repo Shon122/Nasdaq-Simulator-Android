@@ -15,6 +15,7 @@ import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,6 +35,7 @@ public class StockGame extends AppCompatActivity {
     EditText amountInvestEditText;
     TextView predictionTextView;
     TextView totalPNLTextView;
+
     ArrayList<Double> sellPositions = new ArrayList<>();
     ArrayList<Double> buyPositions = new ArrayList<>();
 
@@ -69,32 +71,31 @@ public class StockGame extends AppCompatActivity {
 
 
     public void startGame(View view) {
-
-        //check if amount is under startBalance and above 0
-        if (String.valueOf(amountInvestEditText.getText()).length() == 0) {
-            Toast.makeText(StockGame.this, "Please Enter Amount", Toast.LENGTH_SHORT).show();
-            return;
-        } else {
-            if (Double.parseDouble(String.valueOf(amountInvestEditText.getText())) <= 0.0) {
-                Toast.makeText(StockGame.this, "Amount has to be above 0", Toast.LENGTH_SHORT).show();
+        if (!ongoingGame) {
+            //check if amount is under startBalance and above 0
+            if (String.valueOf(amountInvestEditText.getText()).length() == 0) {
+                Toast.makeText(StockGame.this, "Please Enter Amount", Toast.LENGTH_SHORT).show();
                 return;
+            } else {
+                if (Double.parseDouble(String.valueOf(amountInvestEditText.getText())) <= 0.0) {
+                    Toast.makeText(StockGame.this, "Amount has to be above 0", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (Double.parseDouble(String.valueOf(amountInvestEditText.getText())) > MainActivity.currentUser.balance) {
+                    Toast.makeText(StockGame.this, "Amount has to be below your balance", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
-            if (Double.parseDouble(String.valueOf(amountInvestEditText.getText())) > 10000) {//TODO: change this after
-                Toast.makeText(StockGame.this, "Amount has to be below your balance", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
-        if(!ongoingGame) {
             amountInvest = Double.parseDouble(String.valueOf(amountInvestEditText.getText()));
             totalPNL = 0.0;
-            timeRemaining = 120;
+            timeRemaining = 30;
             ongoingGame = true;
             currentPriceIndex = 0;
             sellPositions = new ArrayList<>();
             buyPositions = new ArrayList<>();
             randomStock(stockNumber);
 
-            timeRemaining = 120;
+            timeRemaining = 30;
 
             timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -135,28 +136,37 @@ public class StockGame extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                totalPNLTextView1.setText("Total Profit/loss: $" + totalPNL);
+                                totalPNLTextView1.setText("Total Profit/loss: $" + roundToTwoDecimals(totalPNL));
                             }
                         });
 
 
-                        timeRemaining -= 2;
+                        timeRemaining -= 1;
                         currentPriceIndex++;
                     } else {
-                        //if game has ended
-                        currentPriceIndex = 0;
-                        timeRemaining = 120;
-                        randomStock(stockNumber);
-//                        MainActivity.currentUser.balance += totalPNL;
-//                        MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
-//                        MainActivity.uploadUsersToFirestore();
                         ongoingGame = false;
-                        sellPositions = new ArrayList<>();
-                        buyPositions = new ArrayList<>();
                         stopTimer();
+
+
+
                     }
                 }
-            }, 0, 2000);
+            }, 0, 100);
+            //if game has ended
+            if (!ongoingGame) {
+                currentPriceIndex = 0;
+                timeRemaining = 30;
+                randomStock(stockNumber);
+                MainActivity.currentUser.balance += totalPNL;
+                MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
+                MainActivity.uploadUsersToFirestore();
+                ongoingGame = false;
+                sellPositions = new ArrayList<>();
+                buyPositions = new ArrayList<>();
+                Toast.makeText(StockGame.this, "Game Over", Toast.LENGTH_LONG).show();
+                totalPNLTextView.setText("game Over");
+            }
+
         }
 
     }
@@ -181,39 +191,15 @@ public class StockGame extends AppCompatActivity {
 
     public void randomStock(int lastStockNumber) {
         //make sure the stock isnt the same as the last one displayed
-//        Random random = new Random();
-//        int randomNumber = lastStockNumber;
-//        while (randomNumber == lastStockNumber) {
-//            randomNumber = random.nextInt(MainActivity.stockModels.size());
-//        }
-//        stockNumber = randomNumber;
-//        MainActivity.viewingStock = MainActivity.stockModels.get(randomNumber);
-        prices = new ArrayList<>();
-        prices.add(100.33);
-        prices.add(90.33);
-        prices.add(80.33);
-        prices.add(70.33);
-        prices.add(60.33);
-        prices.add(50.33);
-        prices.add(40.33);
-        prices.add(30.33);
-        prices.add(20.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
-        prices.add(10.33);
+        Random random = new Random();
+        int randomNumber = lastStockNumber;
+        while (randomNumber == lastStockNumber) {
+            randomNumber = random.nextInt(MainActivity.stockModels.size());
+        }
+        stockNumber = randomNumber;
+        MainActivity.viewingStock = MainActivity.stockModels.get(randomNumber);
+        prices = MainActivity.viewingStock.priceList;
+        Collections.reverse(prices); // becuase pricelist is from newest price to oldest
 
 
     }
