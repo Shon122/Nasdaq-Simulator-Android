@@ -51,10 +51,13 @@ public class MyProfile extends AppCompatActivity {
         setContentView(R.layout.my_profile);
         textView = findViewById(R.id.countryTextView);
         textView.setText("Retrieving location information...");
-     //   ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-
         String country = getIntent().getStringExtra(LocationReceiver.COUNTRY_EXTRA);
-        textView.setText(country+"asd");
+        textView.setText(country);
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                0
+        );
         //only here after location
 
         imageView = (ImageView) findViewById(R.id.imageView);
@@ -71,7 +74,8 @@ public class MyProfile extends AppCompatActivity {
                 .getString("saved_image", null);
         if (savedImage != null) {
             byte[] decodedString = Base64.decode(savedImage, Base64.DEFAULT);
-            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            Bitmap decodedBitmap =
+                    BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             Bitmap circularBitmap = getCircularBitmap(decodedBitmap);
             imageView.setImageBitmap(circularBitmap);
         }
@@ -85,7 +89,8 @@ public class MyProfile extends AppCompatActivity {
         String[] pictureDialogItems = {
                 "Select photo from gallery",
                 "Capture photo from camera"};
-        pictureDialog.setItems(pictureDialogItems,
+        pictureDialog.setItems(
+                pictureDialogItems,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -98,13 +103,16 @@ public class MyProfile extends AppCompatActivity {
                                 break;
                         }
                     }
-                });
+                }
+        );
         pictureDialog.show();
     }
 
     public void choosePhotoFromGallary() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent galleryIntent = new Intent(
+                Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        );
 
         startActivityForResult(galleryIntent, GALLERY_REQUEST);
     }
@@ -114,7 +122,8 @@ public class MyProfile extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(intent, CAMERA_REQUEST);
         } else {
-            Toast.makeText(MyProfile.this, "Your device doesn't have a camera!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyProfile.this, "Your device doesn't have a camera!", Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 
@@ -129,7 +138,10 @@ public class MyProfile extends AppCompatActivity {
                 Uri contentURI = data.getData();
                 try {
                     Uri selectedImage = data.getData();
-                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+                            this.getContentResolver(),
+                            selectedImage
+                    );
                     Bitmap circularBitmap = getCircularBitmap(bitmap);
                     imageView.setImageBitmap(circularBitmap);
                     // Save the image to SharedPreferences
@@ -138,7 +150,8 @@ public class MyProfile extends AppCompatActivity {
                     byte[] imageBytes = baos.toByteArray();
                     String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 
-                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("saved_image", encodedImage).apply();
+                    PreferenceManager.getDefaultSharedPreferences(this).edit()
+                            .putString("saved_image", encodedImage).apply();
                     MainActivity.currentUser.savedImage = encodedImage;
                     MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
                     MainActivity.uploadUsersToFirestore();
@@ -159,7 +172,8 @@ public class MyProfile extends AppCompatActivity {
             circularBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
             String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-            PreferenceManager.getDefaultSharedPreferences(this).edit().putString("saved_image", encodedImage).apply();
+            PreferenceManager.getDefaultSharedPreferences(this).edit()
+                    .putString("saved_image", encodedImage).apply();
             MainActivity.currentUser.savedImage = encodedImage;
             MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
             MainActivity.uploadUsersToFirestore();
@@ -170,9 +184,15 @@ public class MyProfile extends AppCompatActivity {
         Bitmap output;
 
         if (bitmap.getWidth() > bitmap.getHeight()) {
-            output = Bitmap.createBitmap(bitmap.getHeight(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            output = Bitmap.createBitmap(bitmap.getHeight(),
+                    bitmap.getHeight(),
+                    Bitmap.Config.ARGB_8888
+            );
         } else {
-            output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getWidth(), Bitmap.Config.ARGB_8888);
+            output = Bitmap.createBitmap(bitmap.getWidth(),
+                    bitmap.getWidth(),
+                    Bitmap.Config.ARGB_8888
+            );
         }
 
         Canvas canvas = new Canvas(output);
@@ -200,7 +220,11 @@ public class MyProfile extends AppCompatActivity {
 
     //location
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
 
@@ -209,16 +233,27 @@ public class MyProfile extends AppCompatActivity {
                 textView.setText("handle good");
 
                 // permission was granted, proceed with your logic
-                LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                LocationManager locationManager =
+                        (LocationManager) getSystemService(LOCATION_SERVICE);
+                if (ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED) {
 
 
                 }
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Location location =
+                        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location != null) {
                     Geocoder geocoder = new Geocoder(this, Locale.getDefault());
                     try {
-                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),
+                                location.getLongitude(),
+                                1
+                        );
                         if (addresses.size() > 0) {
                             String country = addresses.get(0).getCountryName();
                             textView.setText(country);

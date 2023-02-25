@@ -21,13 +21,26 @@ public class LocationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager =
+                (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
 
         try {
 
-            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED) {
+
+                return;
+            }
+            Location location =
+                    locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            List<Address> addresses =
+                    geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             String country = addresses.get(0).getCountryName();
 
             Intent activityIntent = new Intent(context, MyProfile.class);

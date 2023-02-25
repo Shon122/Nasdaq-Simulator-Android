@@ -2,6 +2,10 @@ package com.gtappdevelopers.bankrehovot;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -37,7 +41,8 @@ public class StockGame extends AppCompatActivity {
     TextView totalPNLTextView;
     TextView balanceUser;
     TextView timeRemaining;
-
+    MediaPlayer mediaPlayer;
+   AudioManager audioManager;
     ArrayList<Double> sellPositions = new ArrayList<>();
     ArrayList<Double> buyPositions = new ArrayList<>();
 
@@ -94,6 +99,16 @@ public class StockGame extends AppCompatActivity {
             }
 
             //if game started so we initialize everything
+            Intent intent = new Intent(this, MusicService.class);
+            startService(intent);
+//            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+//            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+//            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
+//            mediaPlayer = MediaPlayer.create(this, R.raw.skype_sound);
+//            mediaPlayer.start();
+//            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 1);
+
+            //after music is done
             amountInvest = Double.parseDouble(String.valueOf(amountInvestEditText.getText()));
             totalPNL = 0.0;
             ongoingGame = true;
@@ -103,7 +118,7 @@ public class StockGame extends AppCompatActivity {
             randomStock(stockNumber);
 
             //start game and draw graph
-            CountDownTimer countDownTimer = new CountDownTimer(30 * 1000, 1000) {
+            CountDownTimer countDownTimer = new CountDownTimer(15 * 1000, 1000) {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
@@ -176,7 +191,7 @@ public class StockGame extends AppCompatActivity {
                 public void run() {
                     countDownTimer.cancel();
                 }
-            }, 30 * 1000);
+            }, 16 * 1000);
 
 
         }
