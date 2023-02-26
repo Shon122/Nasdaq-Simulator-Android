@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void firstLoadAll() throws ExecutionException, InterruptedException, ParseException {
-       // getStockModelsFromFirebase();
+        // getStockModelsFromFirebase();
         getAllStockModels("4hour");
         // combineStockModelInfo();
         //  uploadStockModelsFirebase();
@@ -215,21 +215,26 @@ public class MainActivity extends AppCompatActivity {
                                 users.add(user);
                             }
                         }
-
                         for (int i = 0; i < users.size(); i++) {
+                            double totalpnl = 0;
                             for (int j = 0; j < users.get(i).trades.size(); j++) {
                                 try {
+                                    totalpnl += users.get(i).trades.get(j).totalProfitLoss;
                                     users.get(i).trades.get(j).updateTrade();
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
                             }
+                            //now totalpnl + other pnl from stock game calculations
+                            double otherpnl = 0;
+                            otherpnl = -1 * (users.get(i).startingBalance - users.get(i).balance) - totalpnl;
+
                             Double temp = users.get(i).startingBalance;
                             for (int j = 0; j < users.get(i).trades.size(); j++) {
-                                if(!users.get(i).trades.get(j).openClose)
+                                //   if(!users.get(i).trades.get(j).openClose)
                                 temp += users.get(i).trades.get(j).totalProfitLoss;
                             }
-                            users.get(i).balance = temp;
+                            users.get(i).balance = temp + otherpnl;
                         }
 
                         uploadUsersToFirestore();
