@@ -5,8 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+
+import androidx.annotation.RequiresApi;
 
 public class MusicService extends Service {
     private MediaPlayer mediaPlayer;
@@ -31,17 +34,21 @@ public class MusicService extends Service {
         int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
         handler.postDelayed(new Runnable() {
+
             @Override
             public void run() {
+
                 stopSelf();
             }
         }, 15000); // stop service after 30 seconds
         return START_NOT_STICKY;
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         mediaPlayer.stop();
         mediaPlayer.release();
     }

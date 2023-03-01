@@ -42,7 +42,7 @@ public class StockGame extends AppCompatActivity {
     TextView balanceUser;
     TextView timeRemaining;
     MediaPlayer mediaPlayer;
-   AudioManager audioManager;
+    AudioManager audioManager;
     ArrayList<Double> sellPositions = new ArrayList<>();
     ArrayList<Double> buyPositions = new ArrayList<>();
 
@@ -81,6 +81,20 @@ public class StockGame extends AppCompatActivity {
     }
 
 
+    @Override //when user wants to go back
+    public void onBackPressed() {
+        // Handle back button press event here
+        if (ongoingGame) {
+            Toast.makeText(StockGame.this, "Cant go back while in a game", Toast.LENGTH_SHORT).show();
+
+        } else {
+            super.onBackPressed();
+            //goes back regularly
+        }
+
+    }
+
+
     public void startGame(View view) {
         if (!ongoingGame) {
             //check if amount is under startBalance and above 0
@@ -101,12 +115,12 @@ public class StockGame extends AppCompatActivity {
             //if game started so we initialize everything
             Intent intent = new Intent(this, MusicService.class);
             startService(intent);
-//            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-//            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-//            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
-//            mediaPlayer = MediaPlayer.create(this, R.raw.skype_sound);
-//            mediaPlayer.start();
-//            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 1);
+            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
+            mediaPlayer = MediaPlayer.create(this, R.raw.skype_sound);
+            mediaPlayer.start();
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 1);
 
             //after music is done
             amountInvest = Double.parseDouble(String.valueOf(amountInvestEditText.getText()));
