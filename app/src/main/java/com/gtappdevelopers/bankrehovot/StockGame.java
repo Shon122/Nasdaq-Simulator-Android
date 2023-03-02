@@ -118,9 +118,9 @@ public class StockGame extends AppCompatActivity {
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
-            mediaPlayer = MediaPlayer.create(this, R.raw.skype_sound);
+            mediaPlayer = MediaPlayer.create(this, R.raw.dramamusic);
             mediaPlayer.start();
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 1);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume/4, 1);
 
             //after music is done
             amountInvest = Double.parseDouble(String.valueOf(amountInvestEditText.getText()));
@@ -192,6 +192,8 @@ public class StockGame extends AppCompatActivity {
                     buyPositions = new ArrayList<>();
                     Toast.makeText(StockGame.this, "Game Over", Toast.LENGTH_LONG).show();
 
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
 
                 }
             };
