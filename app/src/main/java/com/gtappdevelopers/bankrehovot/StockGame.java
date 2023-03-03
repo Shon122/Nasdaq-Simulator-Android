@@ -11,9 +11,12 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ public class StockGame extends AppCompatActivity {
     GraphView graphView;
     Button buyButton;
     Button sellButton;
+    Button startGamebutton;
     ArrayList<Double> prices;
     Double totalPNL;
     Double amountInvest;
@@ -45,6 +49,7 @@ public class StockGame extends AppCompatActivity {
     AudioManager audioManager;
     ArrayList<Double> sellPositions = new ArrayList<>();
     ArrayList<Double> buyPositions = new ArrayList<>();
+    int time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +63,8 @@ public class StockGame extends AppCompatActivity {
         graphView = findViewById(R.id.graph_view);
         buyButton = findViewById(R.id.buy_button);
         sellButton = findViewById(R.id.sell_button);
-
-
+        startGamebutton = findViewById(R.id.startGamebutton);
+        time = 15;
         stockNumber = 0;
         randomStock(stockNumber);
 
@@ -78,8 +83,51 @@ public class StockGame extends AppCompatActivity {
             }
         });
 
+        //here i set everything before starting game
+        buyButton.setVisibility(View.INVISIBLE);
+        graphView.setVisibility(View.INVISIBLE);
+        sellButton.setVisibility(View.INVISIBLE);
+        startGamebutton.setVisibility(View.VISIBLE);
+        amountInvestEditText.setVisibility(View.VISIBLE);
+        predictionTextView.setVisibility(View.INVISIBLE);
+        totalPNLTextView.setVisibility(View.INVISIBLE);
+        balanceUser.setVisibility(View.VISIBLE);
+        timeRemaining.setVisibility(View.INVISIBLE);
+        resetStats();
+
+
+
     }
 
+
+
+
+
+
+
+
+
+public void changeVisibilityAll() {
+        buyButton.setVisibility(buyButton.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+        graphView.setVisibility(graphView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+        sellButton.setVisibility(sellButton.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+        startGamebutton.setVisibility(startGamebutton.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+        amountInvestEditText.setVisibility(amountInvestEditText.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+        predictionTextView.setVisibility(predictionTextView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+        totalPNLTextView.setVisibility(totalPNLTextView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+        balanceUser.setVisibility(balanceUser.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+        timeRemaining.setVisibility(timeRemaining.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+
+
+    }
+
+    public void resetStats() {
+        timeRemaining.setText("15s");
+        balanceUser.setText("Your Balance: " + roundToTwoDecimals(MainActivity.currentUser.balance) + "$");
+        totalPNLTextView.setText("Profit/loss: " + 0 + "$");
+        predictionTextView.setText("Bot Prediction: Price Going Up");
+        time = 15;
+    }
 
     @Override //when user wants to go back
     public void onBackPressed() {
@@ -113,6 +161,7 @@ public class StockGame extends AppCompatActivity {
             }
 
             //if game started so we initialize everything
+            changeVisibilityAll();
             Intent intent = new Intent(this, MusicService.class);
             startService(intent);
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -120,11 +169,12 @@ public class StockGame extends AppCompatActivity {
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
             mediaPlayer = MediaPlayer.create(this, R.raw.dramamusic);
             mediaPlayer.start();
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume/4, 1);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume / 4, 1);
 
             //after music is done
             amountInvest = Double.parseDouble(String.valueOf(amountInvestEditText.getText()));
             totalPNL = 0.0;
+            time = 15;
             ongoingGame = true;
             currentPriceIndex = 0;
             sellPositions = new ArrayList<>();
@@ -136,6 +186,7 @@ public class StockGame extends AppCompatActivity {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
+                    timeRemaining.setText(time + "s");
                     addPrice();
                     updateStats();
                     TextView predictionTextView1;
@@ -170,12 +221,13 @@ public class StockGame extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            totalPNLTextView1.setText("Total Profit/loss: $" + roundToTwoDecimals(totalPNL));
+                            totalPNLTextView1.setText("Profit/loss: $" + roundToTwoDecimals(totalPNL));
                         }
                     });
 
 
                     currentPriceIndex++;
+                    time--;
                 }
 
                 @Override
@@ -191,10 +243,11 @@ public class StockGame extends AppCompatActivity {
                     sellPositions = new ArrayList<>();
                     buyPositions = new ArrayList<>();
                     Toast.makeText(StockGame.this, "Game Over", Toast.LENGTH_LONG).show();
-
+                    time = 15;
                     mediaPlayer.stop();
                     mediaPlayer.release();
-
+                    changeVisibilityAll();
+                    resetStats();
                 }
             };
 
