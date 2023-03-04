@@ -2,6 +2,7 @@ package com.gtappdevelopers.bankrehovot;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -33,6 +34,7 @@ public class StockGame extends AppCompatActivity {
     GraphView graphView;
     Button buyButton;
     Button sellButton;
+    Button okayButton;
     Button startGamebutton;
     ArrayList<Double> prices;
     Double totalPNL;
@@ -42,6 +44,7 @@ public class StockGame extends AppCompatActivity {
     boolean ongoingGame = false;
     EditText amountInvestEditText;
     TextView predictionTextView;
+    TextView finalMessage;
     TextView totalPNLTextView;
     TextView balanceUser;
     TextView timeRemaining;
@@ -56,18 +59,28 @@ public class StockGame extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.stock_game);
         predictionTextView = findViewById(R.id.botPredictionTextView);
+        finalMessage = findViewById(R.id.finalMessage);
         amountInvestEditText = findViewById(R.id.userAmountInvestEditText);
         balanceUser = findViewById(R.id.balanceUser);
         timeRemaining = findViewById(R.id.timeRemaining);
         totalPNLTextView = findViewById(R.id.ProfitLossTextView);
         graphView = findViewById(R.id.graph_view);
         buyButton = findViewById(R.id.buy_button);
+        okayButton = findViewById(R.id.okay_button);
         sellButton = findViewById(R.id.sell_button);
         startGamebutton = findViewById(R.id.startGamebutton);
         time = 15;
         stockNumber = 0;
         randomStock(stockNumber);
 
+        okayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                regularVisibility();
+
+
+            }
+        });
 
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,63 +97,28 @@ public class StockGame extends AppCompatActivity {
         });
 
         //here i set everything before starting game
-        buyButton.setVisibility(View.INVISIBLE);
-        graphView.setVisibility(View.INVISIBLE);
-        sellButton.setVisibility(View.INVISIBLE);
-        startGamebutton.setVisibility(View.VISIBLE);
-        amountInvestEditText.setVisibility(View.VISIBLE);
-        predictionTextView.setVisibility(View.INVISIBLE);
-        totalPNLTextView.setVisibility(View.INVISIBLE);
-        balanceUser.setVisibility(View.VISIBLE);
-        timeRemaining.setVisibility(View.INVISIBLE);
-        resetStats();
-
+        regularVisibility();
+        resetText();
 
 
     }
 
 
-
-
-
-
-
-
-
-public void changeVisibilityAll() {
-        buyButton.setVisibility(buyButton.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-        graphView.setVisibility(graphView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-        sellButton.setVisibility(sellButton.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-        startGamebutton.setVisibility(startGamebutton.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-        amountInvestEditText.setVisibility(amountInvestEditText.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-        predictionTextView.setVisibility(predictionTextView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-        totalPNLTextView.setVisibility(totalPNLTextView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-        balanceUser.setVisibility(balanceUser.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-        timeRemaining.setVisibility(timeRemaining.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-
-
-    }
-
-    public void resetStats() {
-        timeRemaining.setText("15s");
-        balanceUser.setText("Your Balance: " + roundToTwoDecimals(MainActivity.currentUser.balance) + "$");
-        totalPNLTextView.setText("Profit/loss: " + 0 + "$");
-        predictionTextView.setText("Bot Prediction: Price Going Up");
-        time = 15;
-    }
-
-    @Override //when user wants to go back
-    public void onBackPressed() {
-        // Handle back button press event here
-        if (ongoingGame) {
-            Toast.makeText(StockGame.this, "Cant go back while in a game", Toast.LENGTH_SHORT).show();
-
-        } else {
-            super.onBackPressed();
-            //goes back regularly
-        }
-
-    }
+//
+//    public void changeVisibilityAll() {
+//        buyButton.setVisibility(buyButton.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+//        graphView.setVisibility(graphView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+//        sellButton.setVisibility(sellButton.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+//        startGamebutton.setVisibility(startGamebutton.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+//        amountInvestEditText.setVisibility(amountInvestEditText.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+//        predictionTextView.setVisibility(predictionTextView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+//        totalPNLTextView.setVisibility(totalPNLTextView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+//        balanceUser.setVisibility(balanceUser.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+//        timeRemaining.setVisibility(timeRemaining.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+//        finalMessage.setVisibility(finalMessage.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+//
+//
+//    }
 
 
     public void startGame(View view) {
@@ -161,15 +139,15 @@ public void changeVisibilityAll() {
             }
 
             //if game started so we initialize everything
-            changeVisibilityAll();
+            duringGameVisibility();
+            finalMessage.setVisibility(View.INVISIBLE);
             Intent intent = new Intent(this, MusicService.class);
             startService(intent);
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
+           // audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume / 4, 1);
             mediaPlayer = MediaPlayer.create(this, R.raw.dramamusic);
             mediaPlayer.start();
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume / 4, 1);
 
             //after music is done
             amountInvest = Double.parseDouble(String.valueOf(amountInvestEditText.getText()));
@@ -230,10 +208,10 @@ public void changeVisibilityAll() {
                     time--;
                 }
 
+                @SuppressLint("SetTextI18n")
                 @Override
                 public void onFinish() {
                     // This method will be called when the countdown is finished or cancelled.
-                    // Perform your desired action here.
                     currentPriceIndex = 0;
                     randomStock(stockNumber);
                     MainActivity.currentUser.balance += totalPNL;
@@ -246,8 +224,15 @@ public void changeVisibilityAll() {
                     time = 15;
                     mediaPlayer.stop();
                     mediaPlayer.release();
-                    changeVisibilityAll();
-                    resetStats();
+                    afterGameVisibility();
+                    resetText();
+                    //now show only the final message
+                    if (totalPNL >= 0)
+                        finalMessage.setText("You Won +" + roundToTwoDecimals(totalPNL) + "$");
+                    else
+                        finalMessage.setText("You Lost " + roundToTwoDecimals(totalPNL) + "$");
+
+
                 }
             };
 
@@ -267,8 +252,81 @@ public void changeVisibilityAll() {
 
     }
 
+
     //other methods///////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public void regularVisibility() {
+        okayButton.setVisibility(View.INVISIBLE);
+        buyButton.setVisibility(View.INVISIBLE);
+        graphView.setVisibility(View.INVISIBLE);
+        sellButton.setVisibility(View.INVISIBLE);
+        timeRemaining.setVisibility(View.INVISIBLE);
+        finalMessage.setVisibility(View.INVISIBLE);
+        predictionTextView.setVisibility(View.INVISIBLE);
+        totalPNLTextView.setVisibility(View.INVISIBLE);
+        //
+        startGamebutton.setVisibility(View.VISIBLE);
+        amountInvestEditText.setVisibility(View.VISIBLE);
+        balanceUser.setVisibility(View.VISIBLE);
+
+
+    }
+
+    public void duringGameVisibility() {
+        okayButton.setVisibility(View.INVISIBLE);
+        finalMessage.setVisibility(View.INVISIBLE);
+        startGamebutton.setVisibility(View.INVISIBLE);
+        balanceUser.setVisibility(View.INVISIBLE);
+        amountInvestEditText.setVisibility(View.INVISIBLE);
+        //
+        predictionTextView.setVisibility(View.VISIBLE);
+        totalPNLTextView.setVisibility(View.VISIBLE);
+        buyButton.setVisibility(View.VISIBLE);
+        graphView.setVisibility(View.VISIBLE);
+        sellButton.setVisibility(View.VISIBLE);
+        timeRemaining.setVisibility(View.VISIBLE);
+
+
+    }
+
+    public void afterGameVisibility() {
+        startGamebutton.setVisibility(View.INVISIBLE);
+        balanceUser.setVisibility(View.INVISIBLE);
+        amountInvestEditText.setVisibility(View.INVISIBLE);
+        predictionTextView.setVisibility(View.INVISIBLE);
+        totalPNLTextView.setVisibility(View.INVISIBLE);
+        buyButton.setVisibility(View.INVISIBLE);
+        graphView.setVisibility(View.INVISIBLE);
+        sellButton.setVisibility(View.INVISIBLE);
+        timeRemaining.setVisibility(View.INVISIBLE);
+        //
+        okayButton.setVisibility(View.VISIBLE);
+        finalMessage.setVisibility(View.VISIBLE);
+
+    }
+
+
+    public void resetText() {
+        timeRemaining.setText("15s");
+        balanceUser.setText("Your Balance: " + roundToTwoDecimals(MainActivity.currentUser.balance) + "$");
+        totalPNLTextView.setText("Profit/loss: " + 0 + "$");
+        predictionTextView.setText("Bot Prediction: Price Going Up");
+    }
+
+    @Override //when user wants to go back
+    public void onBackPressed() {
+        // Handle back button press event here
+        if (ongoingGame) {
+            Toast.makeText(StockGame.this, "Cant go back while in a game", Toast.LENGTH_SHORT).show();
+
+        } else {
+            super.onBackPressed();
+            //goes back regularly
+        }
+
+    }
+
     private void addPrice() {
         ArrayList<Double> shownPrices = new ArrayList<>();
         for (int i = 0; i <= currentPriceIndex; i++) {

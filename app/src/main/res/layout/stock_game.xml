@@ -54,6 +54,17 @@
             app:layout_constraintVertical_bias="0.335" />
 
         <TextView
+            android:id="@+id/finalMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="You Won 63.31$"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.633"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/botPredictionTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -112,5 +123,17 @@
             android:text="Sell"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/okay_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:layout_marginBottom="324dp"
+
+            android:text="Okay"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

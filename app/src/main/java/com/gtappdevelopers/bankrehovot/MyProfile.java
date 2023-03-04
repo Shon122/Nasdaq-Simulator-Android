@@ -50,7 +50,7 @@ public class MyProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_profile);
         textView = findViewById(R.id.countryTextView);
-        textView.setText("Retrieving location information...");
+        //  textView.setText("Retrieving location information...");
         String country = getIntent().getStringExtra(LocationReceiver.COUNTRY_EXTRA);
         textView.setText(country);
         ActivityCompat.requestPermissions(
@@ -70,9 +70,13 @@ public class MyProfile extends AppCompatActivity {
 
 
         // Load the saved image from SharedPreferences
+        String firebaseSaveImage = MainActivity.currentUser.savedImage;
         String savedImage = PreferenceManager.getDefaultSharedPreferences(this)
                 .getString("saved_image", null);
-        if (savedImage != null) {
+        if (!firebaseSaveImage.equals(savedImage))
+            savedImage = firebaseSaveImage;
+
+        if (savedImage != null && !savedImage.equals("null")) {
             byte[] decodedString = Base64.decode(savedImage, Base64.DEFAULT);
             Bitmap decodedBitmap =
                     BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -230,7 +234,7 @@ public class MyProfile extends AppCompatActivity {
 
         if (requestCode == 0) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                textView.setText("handle good");
+                textView.setText("Israel");// just in case
 
                 // permission was granted, proceed with your logic
                 LocationManager locationManager =
@@ -264,7 +268,7 @@ public class MyProfile extends AppCompatActivity {
                 }
             } else {
                 // permission was denied, handle accordingly
-                textView.setText("handle bad");
+                textView.setText("Israel"); // just in case
             }
         }
     }

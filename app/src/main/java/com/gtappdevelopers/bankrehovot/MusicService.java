@@ -32,7 +32,7 @@ public class MusicService extends Service {
         mediaPlayer.start();
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
+        //audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
         handler.postDelayed(new Runnable() {
 
             @Override

@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     //user essentials saving his data
     public static StockModel viewingStock;
     public static Trade viewingTrade;
+    public static User viewingUser;
     public static String news = "";
     public static String username = "";
     public static String password = "";
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
+        viewingUser = users.get(0);
         viewingStock = stockModels.get(0);
         switchIntent();
         //end of oncreate
