@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/name_view"
+        android:id="@+id/nameOfUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"
@@ -15,19 +15,12 @@
         android:padding="8dp" />
 
     <TextView
-        android:id="@+id/price_view"
+        android:id="@+id/balanceOfUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Price: 123.22"
         android:textSize="14sp"
         android:padding="8dp" />
 
-    <TextView
-        android:id="@+id/gainloss_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Change: 5.33%"
-        android:textSize="14sp"
-        android:padding="8dp" />
 
 </LinearLayout>

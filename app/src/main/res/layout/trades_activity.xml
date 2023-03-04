@@ -13,7 +13,7 @@
         android:id="@+id/statusTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_view"
+        android:layout_below="@id/search_view_trades"
         android:layout_marginLeft="2dp"
         android:minWidth="55dp"
         android:padding="6dp"
@@ -28,7 +28,7 @@
         android:id="@+id/dateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_view"
+        android:layout_below="@id/search_view_trades"
         android:layout_toRightOf="@id/statusTextView"
 
         android:minWidth="90dp"
@@ -47,7 +47,7 @@
         android:id="@+id/nameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_view"
+        android:layout_below="@id/search_view_trades"
         android:layout_toRightOf="@id/dateTextView"
 
         android:minWidth="60dp"
@@ -65,7 +65,7 @@
         android:id="@+id/entryTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_view"
+        android:layout_below="@id/search_view_trades"
         android:layout_toRightOf="@id/nameTextView"
         android:minWidth="60dp"
 
@@ -96,7 +96,7 @@
         android:layout_height="wrap_content"
 
 
-        android:layout_below="@id/search_view"
+        android:layout_below="@id/search_view_trades"
 
 
         android:layout_toRightOf="@id/entryTextView"
@@ -109,7 +109,7 @@
 
 
     <SearchView
-        android:id="@+id/search_view"
+        android:id="@+id/search_view_trades"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:queryHint="Search by name" />

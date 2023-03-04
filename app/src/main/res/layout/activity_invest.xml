@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".InvestActivity">
     <SearchView
-        android:id="@+id/search_view"
+        android:id="@+id/search_view_invest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:queryHint="Search by name" />

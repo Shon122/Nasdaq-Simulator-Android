@@ -163,8 +163,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (ExecutionException | InterruptedException | ParseException e) {
             e.printStackTrace();
         }
-
-        viewingUser = users.get(0);
+        if (users.size() > 0)
+            viewingUser = users.get(0);
         viewingStock = stockModels.get(0);
         switchIntent();
         //end of oncreate

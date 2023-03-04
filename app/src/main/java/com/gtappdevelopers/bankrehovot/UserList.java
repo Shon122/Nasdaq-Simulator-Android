@@ -35,12 +35,12 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class UserList extends AppCompatActivity {
-
+    private ArrayList<User> saveUserList;
     private ArrayList<User> userList;
     private UserAdapter adapter;
     private ListView listView;
     private SearchView searchView;
-    int gainSort = 0; // 0 = not sorted this way ,1= sorted this way
+    int balanceSort = 0; // 0 = not sorted this way ,1= sorted this way
     int nameSort = 0; // 0 = not sorted this way ,1= sorted this way
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,7 @@ public class UserList extends AppCompatActivity {
         setContentView(R.layout.userlist);
         //initialize the arraylist and adapter
         userList = MainActivity.users;
+        saveUserList=userList;
         adapter = new UserAdapter(this, userList);
 
         //initialize the ListView and set the adapter
@@ -59,21 +60,26 @@ public class UserList extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MainActivity.viewingUser = userList.get(position);
-                Intent intent = new Intent(UserList.this, CurrencyPage.class);
+                Intent intent = new Intent(UserList.this, MyProfile.class);
                 startActivity(intent);
             }
         });
 
         //initialize the SearchView and set the listener
-        searchView = findViewById(R.id.search_view);
+        searchView = findViewById(R.id.search_view_users);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                userList=saveUserList;
+                adapter.notifyDataSetChanged();
+                adapter.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                userList=saveUserList;
+                adapter.notifyDataSetChanged();
                 adapter.getFilter().filter(newText);
                 return false;
             }
@@ -83,7 +89,7 @@ public class UserList extends AppCompatActivity {
 
     //function to sort the list by name
     public void sortByName(View view) {
-        gainSort = 0;
+        balanceSort = 0;
         Collections.sort(userList, new Comparator<User>() {
             @Override
             public int compare(User o1, User o2) {
@@ -108,10 +114,10 @@ public class UserList extends AppCompatActivity {
             }
         });
 
-        if (gainSort != 0 && gainSort % 2 != 0) {
+        if (balanceSort != 0 && balanceSort % 2 != 0) {
             Collections.reverse(userList);
         }
-        gainSort++;
+        balanceSort++;
         adapter.notifyDataSetChanged();
     }
 

@@ -58,7 +58,7 @@ public class TradesActivity extends AppCompatActivity {
         });
 
         //initialize the SearchView and set the listener
-        searchView = findViewById(R.id.search_view);
+        searchView = findViewById(R.id.search_view_trades);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

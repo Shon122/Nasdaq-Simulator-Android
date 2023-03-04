@@ -143,6 +143,7 @@ public class StockGame extends AppCompatActivity {
             finalMessage.setVisibility(View.INVISIBLE);
             Intent intent = new Intent(this, MusicService.class);
             startService(intent);
+
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
            // audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume / 4, 1);

@@ -12,33 +12,33 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class UserAdapter extends ArrayAdapter<User> {
-    private ArrayList<User> stockList;
+    private ArrayList<User> userList;
     private ArrayList<User> originalList;
 
 
-    public UserAdapter(Context context, ArrayList<User> stockList) {
-        super(context, 0, stockList);
-        this.stockList = stockList;
-        this.originalList = stockList;
+    public UserAdapter(Context context, ArrayList<User> userList) {
+        super(context, 0, userList);
+        this.userList = userList;
+        this.originalList = MainActivity.users;
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
-        User stock = getItem(position);
+        User user = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.user_item, parent, false);
         }
         // Lookup view for data population
-//        TextView nameView = convertView.findViewById(R.id.name_view);
-//        TextView priceView = convertView.findViewById(R.id.price_view);
-//        TextView gainlossView = convertView.findViewById(R.id.gainloss_view);
+        TextView nameView = convertView.findViewById(R.id.nameOfUser);
+        TextView balanceView = convertView.findViewById(R.id.balanceOfUser);
+
         // Populate the data into the template view using the data object
-        //nameView.setText(stock.username);
-//        priceView.setText("Price: " + stock.priceList.get(0));
-//        gainlossView.setText("Change: " + stock.gainLossPercent + "%");
+        nameView.setText(user.username);
+        balanceView.setText(user.balance + "$");
+
         // Return the completed view to render on screen
         return convertView;
     }
@@ -50,13 +50,15 @@ public class UserAdapter extends ArrayAdapter<User> {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 ArrayList<User> filteredList = new ArrayList<>();
+                originalList=MainActivity.users;
+                filteredList.addAll(originalList);
                 if (constraint == null || constraint.length() == 0) {
-                    filteredList.addAll(originalList);
+                   // filteredList.addAll(originalList);
                 } else {
                     String filterPattern = constraint.toString().toLowerCase().trim();
-                    for (User stock : originalList) {
-                        if (stock.username.toLowerCase().startsWith(filterPattern)) {
-                            filteredList.add(stock);
+                    for (User user : originalList) {
+                        if (!user.username.toLowerCase().startsWith(filterPattern)) {
+                            filteredList.remove(user);
                         }
                     }
                 }
