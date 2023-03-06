@@ -1,6 +1,7 @@
 package com.gtappdevelopers.bankrehovot;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,7 +23,9 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,27 +35,72 @@ import androidx.core.app.ActivityCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
 public class MyProfile extends AppCompatActivity {
-    private TextView textView;
-
-
+    public TextView countryTextView;
+    public TextView creationDateTextView;
+    public TextView balanceTextView;
+    public TextView nameTextView;
+    public Button logoutButton;
+    public int mainUserIndex;
+    public User currentUser;
+    //trades show
+    private ArrayList<Trade> saveTradeList;
+    private ArrayList<Trade> tradeList;
+    private TradeAdapter adapter;
+    private ListView listView;
     //this after location
-    private ImageView imageView;
+    public ImageView imageView;
     private static final int GALLERY_REQUEST = 1;
     private static final int CAMERA_REQUEST = 2;
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_profile);
-        textView = findViewById(R.id.countryTextView);
-        //  textView.setText("Retrieving location information...");
+        //find index in Mainactivity
+        currentUser = MainActivity.viewingUser;
+        for (int i = 0; i < MainActivity.users.size(); i++) {
+            if (currentUser.username.equals(MainActivity.users.get(i).username)) {
+                mainUserIndex = i;
+                break;
+            }
+        }
+        //initialize the arraylist and adapter
+        tradeList = currentUser.trades;
+        saveTradeList = currentUser.trades;
+        adapter = new TradeAdapter(this, tradeList);
+
+        //initialize the ListView and set the adapter
+        listView = findViewById(R.id.list_view_profile);
+        listView.setAdapter(adapter);
+        sortByProfitLoss();
+
+        //now views init
+        countryTextView = findViewById(R.id.countryTextView);
+        creationDateTextView = findViewById(R.id.creationDateTextView);
+        balanceTextView = findViewById(R.id.balanceTextView);
+        nameTextView = findViewById(R.id.nameUserTextView);
+        logoutButton = findViewById(R.id.logoutButton);
+        //now put values
+        nameTextView.setText(currentUser.username);
+        countryTextView.setText("Retrieving Country...");
+        String dateString =currentUser.creationDate.substring(0,10);
+        dateString=dateString.replaceAll(":","/");
+        creationDateTextView.setText("Creation Date: " + dateString);
+        balanceTextView.setText("Balance: " + roundToTwoDecimals(currentUser.balance) + "$");
+
+        //get country
         String country = getIntent().getStringExtra(LocationReceiver.COUNTRY_EXTRA);
-        textView.setText(country);
+        countryTextView.setText(country);
         ActivityCompat.requestPermissions(
                 this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -61,29 +109,36 @@ public class MyProfile extends AppCompatActivity {
         //only here after location
 
         imageView = (ImageView) findViewById(R.id.imageView);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectImage();
-            }
-        });
+        if (currentUser.username.equals(MainActivity.currentUser.username)) {
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectImage();
+                }
+            });
+        }
 
-
-        // Load the saved image from SharedPreferences
-        String firebaseSaveImage = MainActivity.currentUser.savedImage;
-        String savedImage = PreferenceManager.getDefaultSharedPreferences(this)
-                .getString("saved_image", null);
-        if (!firebaseSaveImage.equals(savedImage))
-            savedImage = firebaseSaveImage;
-
-        if (savedImage != null && !savedImage.equals("null")) {
+        // Load the saved image from firebase
+        String savedImage = currentUser.savedImage;
+        if (savedImage != null && !savedImage.equals("null") && savedImage.length() > 10) {
             byte[] decodedString = Base64.decode(savedImage, Base64.DEFAULT);
-            Bitmap decodedBitmap =
-                    BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             Bitmap circularBitmap = getCircularBitmap(decodedBitmap);
             imageView.setImageBitmap(circularBitmap);
         }
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 3);
+
+        //on click logout and check if the user is the current phone's user
+        if (!currentUser.username.equals(MainActivity.currentUser.username)) {
+            logoutButton.setVisibility(View.INVISIBLE);
+        }
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MyProfile.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -156,8 +211,9 @@ public class MyProfile extends AppCompatActivity {
 
                     PreferenceManager.getDefaultSharedPreferences(this).edit()
                             .putString("saved_image", encodedImage).apply();
-                    MainActivity.currentUser.savedImage = encodedImage;
-                    MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
+                    MainActivity.viewingUser.savedImage = encodedImage;
+                    currentUser.savedImage = encodedImage;
+                    MainActivity.users.set(mainUserIndex, currentUser);
                     MainActivity.uploadUsersToFirestore();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -178,8 +234,9 @@ public class MyProfile extends AppCompatActivity {
             String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
             PreferenceManager.getDefaultSharedPreferences(this).edit()
                     .putString("saved_image", encodedImage).apply();
-            MainActivity.currentUser.savedImage = encodedImage;
-            MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
+            MainActivity.viewingUser.savedImage = encodedImage;
+            currentUser.savedImage = encodedImage;
+            MainActivity.users.set(mainUserIndex, currentUser);
             MainActivity.uploadUsersToFirestore();
         }
     }
@@ -234,7 +291,7 @@ public class MyProfile extends AppCompatActivity {
 
         if (requestCode == 0) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                textView.setText("Israel");// just in case
+                countryTextView.setText("Israel");// just in case
 
                 // permission was granted, proceed with your logic
                 LocationManager locationManager =
@@ -260,7 +317,7 @@ public class MyProfile extends AppCompatActivity {
                         );
                         if (addresses.size() > 0) {
                             String country = addresses.get(0).getCountryName();
-                            textView.setText(country);
+                            countryTextView.setText(country);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -268,9 +325,23 @@ public class MyProfile extends AppCompatActivity {
                 }
             } else {
                 // permission was denied, handle accordingly
-                textView.setText("Israel"); // just in case
+                countryTextView.setText("Israel"); // just in case
             }
         }
     }
 
+    public void sortByProfitLoss() {
+
+        Collections.sort(tradeList, new Comparator<Trade>() {
+            @Override
+            public int compare(Trade o1, Trade o2) {
+                return Double.compare(o1.totalProfitLoss, o2.totalProfitLoss);
+            }
+        });
+        adapter.notifyDataSetChanged();
+    }
+
+    public Double roundToTwoDecimals(Double value) {
+        return (double) Math.round(value * 100) / 100;
+    }
 }

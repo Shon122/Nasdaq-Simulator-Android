@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:queryHint="Search by name" />
     <ListView
-        android:id="@+id/list_view"
+        android:id="@+id/list_view_invest"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>

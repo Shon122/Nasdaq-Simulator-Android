@@ -44,37 +44,6 @@ public class UserAdapter extends ArrayAdapter<User> {
     }
 
 
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                ArrayList<User> filteredList = new ArrayList<>();
-                originalList=MainActivity.users;
-                filteredList.addAll(originalList);
-                if (constraint == null || constraint.length() == 0) {
-                   // filteredList.addAll(originalList);
-                } else {
-                    String filterPattern = constraint.toString().toLowerCase().trim();
-                    for (User user : originalList) {
-                        if (!user.username.toLowerCase().startsWith(filterPattern)) {
-                            filteredList.remove(user);
-                        }
-                    }
-                }
-                FilterResults results = new FilterResults();
-                results.values = filteredList;
-                return results;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                clear();
-                addAll((ArrayList<User>) results.values);
-                notifyDataSetChanged();
-            }
-        };
-    }
 
 
 }

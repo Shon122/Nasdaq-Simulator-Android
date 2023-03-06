@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
             Date date = new Date();
             String currentDate = dateFormat.format(date);
-            User newUser = new User(password, username, emptyList, 10000.00, currentDate, "null","No Status");
+            User newUser = new User(password, username, emptyList, 10000.00, currentDate, "null",null);
             MainActivity.users.add(newUser);
             MainActivity.uploadUsersToFirestore();
             MainActivity.password = password;

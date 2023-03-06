@@ -34,8 +34,8 @@ public class HomePage extends AppCompatActivity {
 
     private void displayMovingText(String text) {
 //        if (text.length() > 50) {
-            movingTextView.setSelected(true);
-            movingTextView.setText(text);
+        movingTextView.setSelected(true);
+        movingTextView.setText(text);
 //        } else {
 //            movingTextView.setText("News are currently unavailable...");
 //            TranslateAnimation animation = new TranslateAnimation(-1000, 1000, 0, 0);
@@ -71,7 +71,7 @@ public class HomePage extends AppCompatActivity {
     }
 
     public void moveToMyProfile(View view) {
-
+        MainActivity.viewingUser = MainActivity.currentUser;
         Intent intent = new Intent(this, MyProfile.class);
         startActivity(intent);
     }

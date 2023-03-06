@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class TradesActivity extends AppCompatActivity {
-
+    private ArrayList<Trade> saveTradeList;
     private ArrayList<Trade> tradeList;
     private TradeAdapter adapter;
     private ListView listView;
@@ -33,10 +33,11 @@ public class TradesActivity extends AppCompatActivity {
         setContentView(R.layout.trades_activity);
         //initialize the arraylist and adapter
         tradeList = MainActivity.trades;
+        saveTradeList=MainActivity.trades;
         adapter = new TradeAdapter(this, tradeList);
 
         //initialize the ListView and set the adapter
-        listView = findViewById(R.id.list_view);
+        listView = findViewById(R.id.list_view_trades);
         listView.setAdapter(adapter);
 
         //set onItemClickListener for the ListView
@@ -67,12 +68,28 @@ public class TradesActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                return false;
+                filter(newText);
+                return true;
             }
         });
 
         sortByName(null);
+    }
+
+    public void filter(String text) {
+        ArrayList<Trade> filteredList = new ArrayList<>();
+        if (text.isEmpty()) {
+            filteredList = saveTradeList;
+        } else {
+            for (Trade trade : saveTradeList) {
+                if (trade.stockName.toLowerCase().contains(text.toLowerCase())) {
+                    filteredList.add(trade);
+                }
+            }
+        }
+        tradeList = filteredList;
+        adapter = new TradeAdapter(this, tradeList);
+        listView.setAdapter(adapter);
     }
 
     //function to sort the list by name

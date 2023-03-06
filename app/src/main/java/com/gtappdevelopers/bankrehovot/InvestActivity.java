@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class InvestActivity extends AppCompatActivity {
-
+    private ArrayList<StockModel> saveStockList;
     private ArrayList<StockModel> stockList;
     private StockAdapter adapter;
     private ListView listView;
@@ -33,10 +33,11 @@ public class InvestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_invest);
         //initialize the arraylist and adapter
         stockList = MainActivity.stockModels;
+        saveStockList=MainActivity.stockModels;
         adapter = new StockAdapter(this, stockList);
 
         //initialize the ListView and set the adapter
-        listView = findViewById(R.id.list_view);
+        listView = findViewById(R.id.list_view_invest);
         listView.setAdapter(adapter);
 
         //set onItemClickListener for the ListView
@@ -59,11 +60,26 @@ public class InvestActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                adapter.getFilter().filter(newText);
-                return false;
+                filter(newText);
+                return true;
             }
         });
         sortByName(null);
+    }
+    public void filter(String text) {
+        ArrayList<StockModel> filteredList = new ArrayList<>();
+        if (text.isEmpty()) {
+            filteredList = saveStockList;
+        } else {
+            for (StockModel stockModel : saveStockList) {
+                if (stockModel.name.toLowerCase().contains(text.toLowerCase())) {
+                    filteredList.add(stockModel);
+                }
+            }
+        }
+        stockList = filteredList;
+        adapter = new StockAdapter(this, stockList);
+        listView.setAdapter(adapter);
     }
 
     //function to sort the list by name

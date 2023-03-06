@@ -42,17 +42,18 @@ public class UserList extends AppCompatActivity {
     private SearchView searchView;
     int balanceSort = 0; // 0 = not sorted this way ,1= sorted this way
     int nameSort = 0; // 0 = not sorted this way ,1= sorted this way
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.userlist);
         //initialize the arraylist and adapter
         userList = MainActivity.users;
-        saveUserList=userList;
+        saveUserList = userList;
         adapter = new UserAdapter(this, userList);
 
         //initialize the ListView and set the adapter
-        listView = findViewById(R.id.list_view);
+        listView = findViewById(R.id.list_view_users);
         listView.setAdapter(adapter);
 
         //set onItemClickListener for the ListView
@@ -65,27 +66,40 @@ public class UserList extends AppCompatActivity {
             }
         });
 
-        //initialize the SearchView and set the listener
         searchView = findViewById(R.id.search_view_users);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                userList=saveUserList;
-                adapter.notifyDataSetChanged();
-                adapter.getFilter().filter(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                userList=saveUserList;
-                adapter.notifyDataSetChanged();
-                adapter.getFilter().filter(newText);
-                return false;
+                filter(newText);
+                return true;
             }
         });
+
         sortByName(null);
     }
+
+
+    public void filter(String text) {
+        ArrayList<User> filteredList = new ArrayList<>();
+        if (text.isEmpty()) {
+            filteredList = saveUserList;
+        } else {
+            for (User user : saveUserList) {
+                if (user.username.toLowerCase().contains(text.toLowerCase())) {
+                    filteredList.add(user);
+                }
+            }
+        }
+        userList = filteredList;
+        adapter = new UserAdapter(this, userList);
+        listView.setAdapter(adapter);
+    }
+
 
     //function to sort the list by name
     public void sortByName(View view) {
