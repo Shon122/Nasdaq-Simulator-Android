@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,7 +40,8 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
         }
         // Lookup view for data population
         if (currentTrade.openClose) {
-            ImageView closeButton = convertView.findViewById(R.id.closeImageView);
+
+            Button closeButton = convertView.findViewById(R.id.buttonClose);
             closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -47,7 +49,7 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
                 }
             });
         } else {
-            ImageView closeButton = convertView.findViewById(R.id.closeImageView);
+            Button closeButton = convertView.findViewById(R.id.buttonClose);
             closeButton.setVisibility(View.INVISIBLE);
         }
         TextView statusTextView = convertView.findViewById(R.id.statusTextView);

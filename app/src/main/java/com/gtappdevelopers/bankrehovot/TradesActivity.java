@@ -106,7 +106,8 @@ public class TradesActivity extends AppCompatActivity {
             Collections.reverse(tradeList);
         }
         nameSort++;
-        adapter.notifyDataSetChanged();
+        adapter = new TradeAdapter(this, tradeList);
+        listView.setAdapter(adapter);
     }
 
     //function to sort the list by gain/loss percentage
@@ -124,7 +125,8 @@ public class TradesActivity extends AppCompatActivity {
             Collections.reverse(tradeList);
         }
         gainSort++;
-        adapter.notifyDataSetChanged();
+        adapter = new TradeAdapter(this, tradeList);
+        listView.setAdapter(adapter);
     }
 
 

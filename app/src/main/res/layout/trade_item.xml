@@ -69,12 +69,19 @@
         android:textColor="@color/greenBuy"
         android:textSize="12sp" />
 
-    <ImageView
-        android:id="@+id/closeImageView"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+    <Button
+        android:id="@+id/buttonClose"
+        android:layout_width="150dp"
+        android:layout_below="@id/entryTextView"
+
+        android:layout_height="62dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/xlogo" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="249dp"
+        android:text="Close" />
 
 
 </RelativeLayout>
