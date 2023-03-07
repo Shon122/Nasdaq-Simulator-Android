@@ -1,0 +1,74 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/statusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="55dp"
+        android:padding="6dp"
+        android:text="Closed"
+        android:textSize="12sp"
+
+        />
+
+
+    <TextView
+        android:id="@+id/dateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/statusTextView"
+        android:minWidth="90dp"
+        android:padding="6dp"
+        android:text="Sep 18, 2022"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/nameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/dateTextView"
+        android:minWidth="60dp"
+        android:padding="6dp"
+        android:text="TSLAAA"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/entryTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="60dp"
+        android:padding="6dp"
+        android:text="1305.33"
+        android:textSize="12sp"
+        android:layout_toRightOf="@id/nameTextView"
+        />
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/exitTextView"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_toRightOf="@id/entryTextView"-->
+    <!--        android:minWidth="60dp"-->
+    <!--        android:padding="6dp"-->
+    <!--        android:text="5123.33"-->
+    <!--        android:textSize="12sp" />-->
+
+    <TextView
+        android:id="@+id/returnTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/entryTextView"
+        android:minWidth="90dp"
+        android:padding="6dp"
+        android:text="+$1533.33"
+        android:textColor="@color/greenBuy"
+        android:textSize="12sp" />
+
+
+
+</RelativeLayout>

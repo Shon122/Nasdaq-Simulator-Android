@@ -72,9 +72,9 @@
     <Button
         android:id="@+id/buttonClose"
         android:layout_width="150dp"
-        android:layout_below="@id/entryTextView"
-
         android:layout_height="62dp"
+
+        android:layout_below="@id/entryTextView"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"

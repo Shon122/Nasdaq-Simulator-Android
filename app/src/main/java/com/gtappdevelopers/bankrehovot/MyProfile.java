@@ -53,7 +53,7 @@ public class MyProfile extends AppCompatActivity {
     //trades show
     private ArrayList<Trade> saveTradeList;
     private ArrayList<Trade> tradeList;
-    private TradeAdapter adapter;
+    private TradeAdapterProfile adapter;
     private ListView listView;
     //this after location
     public ImageView imageView;
@@ -77,7 +77,7 @@ public class MyProfile extends AppCompatActivity {
         //initialize the arraylist and adapter
         tradeList = currentUser.trades;
         saveTradeList = currentUser.trades;
-        adapter = new TradeAdapter(this, tradeList);
+        adapter = new TradeAdapterProfile(MyProfile.this, tradeList);
 
         //initialize the ListView and set the adapter
         listView = findViewById(R.id.list_view_profile);

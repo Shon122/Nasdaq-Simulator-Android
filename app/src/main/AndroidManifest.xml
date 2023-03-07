@@ -25,31 +25,19 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".TradePage"
+            android:exported="false" />
+        <activity
             android:name=".UserList"
             android:exported="false" />
         <activity
             android:name=".MyProfile"
             android:exported="false" />
         <activity
-            android:name=".GraphActivity"
-            android:exported="false" />
-        <activity
             android:name=".HomePage"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".RegisterAccount"
-            android:exported="false" />
-        <activity
             android:name=".CurrencyPage"
-            android:exported="false" />
-        <activity
-            android:name=".OngoingTrades"
-            android:exported="false" />
-        <activity
-            android:name=".TradePage"
             android:exported="false" />
         <activity
             android:name=".TradesActivity"
@@ -62,7 +50,9 @@
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

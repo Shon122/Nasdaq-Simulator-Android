@@ -23,7 +23,7 @@ public class MusicService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mediaPlayer = MediaPlayer.create(this, R.raw.skype_sound);
+        mediaPlayer = MediaPlayer.create(this, R.raw.dramamusic);
         handler = new Handler();
     }
 
