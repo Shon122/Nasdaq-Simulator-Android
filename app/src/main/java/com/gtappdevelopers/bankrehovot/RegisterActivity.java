@@ -1,5 +1,6 @@
 package com.gtappdevelopers.bankrehovot;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
-public class LoginActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
     private EditText usernameEditText;
     private EditText passwordEditText;
 
@@ -39,12 +40,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_activity);
+        setContentView(R.layout.register_activity);
         TextView textView;
 
 
-        usernameEditText = (EditText) findViewById(R.id.usernameEditText);
-        passwordEditText = (EditText) findViewById(R.id.passwordEditText);
+        usernameEditText = (EditText) findViewById(R.id.usernameEditTextRegister);
+        passwordEditText = (EditText) findViewById(R.id.passwordEditTextRegister);
 
 
     }
@@ -80,8 +81,6 @@ public class LoginActivity extends AppCompatActivity {
             MainActivity.trades = emptyList;
             switchIntent();
         }
-
-
     }
 
 
@@ -125,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (username.length() < 6 || password.length() < 6) {
             Toast.makeText(
-                    LoginActivity.this,
+                    RegisterActivity.this,
                     "Username and password should be at least 6 letters",
                     Toast.LENGTH_SHORT
             ).show();
@@ -133,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         if (!containsOnlyLettersAndNumbers(username) || !containsOnlyLettersAndNumbers(password)) {
             Toast.makeText(
-                    LoginActivity.this,
+                    RegisterActivity.this,
                     "Username and password can only contain letters and numbers",
                     Toast.LENGTH_SHORT
             ).show();
@@ -144,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
         //TODO: Add code to authenticate the user with the variable users from mainactivity
         for (User user1 : MainActivity.users) {
             if (user1.username.equals(username)) {
-                Toast.makeText(LoginActivity.this, "User already exists", Toast.LENGTH_SHORT)
+                Toast.makeText(RegisterActivity.this, "User already exists", Toast.LENGTH_SHORT)
                         .show();
                 return false;
             }
@@ -158,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (username.length() < 6 || password.length() < 6) {
             Toast.makeText(
-                    LoginActivity.this,
+                    RegisterActivity.this,
                     "Username and password should be at least 6 letters",
                     Toast.LENGTH_SHORT
             ).show();
@@ -169,16 +168,16 @@ public class LoginActivity extends AppCompatActivity {
         //TODO: Add code to authenticate the user with the variable users from mainactivity
         for (User user1 : MainActivity.users) {
             if (user1.password.equals(password) && user1.username.equals(username)) {
-                Toast.makeText(LoginActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT)
+                Toast.makeText(RegisterActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT)
                         .show();
                 return true;
             }
             if ((!user1.password.equals(password)) && user1.username.equals(username)) {
-                Toast.makeText(LoginActivity.this, "Incorrect Password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "Incorrect Password", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
-        Toast.makeText(LoginActivity.this, "User doesnt exist, please register", Toast.LENGTH_SHORT)
+        Toast.makeText(RegisterActivity.this, "User doesnt exist, please register", Toast.LENGTH_SHORT)
                 .show();
         return false;
     }

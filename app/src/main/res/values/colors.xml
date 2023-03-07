@@ -7,8 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="purple">#8692f7</color>
     <color name="green">#66FF44</color>
     <color name="greenLong">#00FF22</color>
     <color name="greenBuy">#4CAF50</color>
+
+    <color name="lavender">#8692f7</color>
     <color name="redSell">#F15044</color>
 </resources>
