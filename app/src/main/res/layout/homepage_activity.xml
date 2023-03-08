@@ -1,23 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomePage">
+
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/constraintLayout"
         android:layout_marginTop="20dp">
 
 
         <TextView
+            android:id="@+id/amazonName1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Bank"
+            android:textColor="@color/lavender"
+            android:textSize="50sp"
+            app:layout_constraintEnd_toStartOf="@+id/amazonImage"
+            app:layout_constraintHorizontal_bias="0.362"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/amazonName"
-            android:layout_width="223dp"
-            android:layout_height="68dp"
-            android:layout_marginStart="18dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
             android:fontFamily="@font/poppins_semibold"
             android:text="Rehovot"
@@ -27,53 +40,39 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/amazonName1"
-            android:layout_width="186dp"
-            android:layout_height="83dp"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/poppins_semibold"
-            android:text="Bank"
-            android:textColor="@color/lavender"
-            android:textSize="50sp"
-            app:layout_constraintEnd_toStartOf="@+id/amazonImage"
-            app:layout_constraintHorizontal_bias="0.776"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <ImageView
             android:id="@+id/amazonImage"
             android:layout_width="128dp"
             android:layout_height="143dp"
-            android:layout_marginEnd="16dp"
             android:src="@drawable/bank"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/amazonName"
             app:layout_constraintTop_toTopOf="parent" />
+
         <LinearLayout
+            android:id="@+id/row1"
             android:layout_width="0dp"
             android:layout_height="175dp"
-            android:id="@+id/row1"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
             android:padding="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/amazonImage">
+
             <androidx.cardview.widget.CardView
+                android:id="@+id/clothingCard"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:id="@+id/clothingCard"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                app:cardElevation="20dp"
-                app:cardCornerRadius="20dp">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:onClick="moveToUserList"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:onClick="moveToUserList">
 
                     <TextView
                         android:id="@+id/clothingName"
@@ -96,17 +95,19 @@
                         android:src="@drawable/users" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                app:cardElevation="20dp"
-                app:cardCornerRadius="20dp">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:onClick="moveToTrades"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:onClick="moveToTrades">
 
                     <TextView
                         android:id="@+id/elecName"
@@ -130,28 +131,31 @@
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
+
         <LinearLayout
+            android:id="@+id/row2"
             android:layout_width="0dp"
             android:layout_height="175dp"
-            android:id="@+id/row2"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
+
             android:padding="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/row1">
+
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                app:cardElevation="20dp"
-                app:cardCornerRadius="20dp">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:onClick="moveToInvest"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:onClick="moveToInvest">
 
                     <TextView
                         android:id="@+id/homeName"
@@ -174,17 +178,21 @@
                         android:src="@drawable/stocks" />
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
+
                 android:layout_weight="1"
-                app:cardElevation="20dp"
-                app:cardCornerRadius="20dp">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp">
+
                 <RelativeLayout
+
                     android:layout_width="match_parent"
-                    android:onClick="moveToMyProfile"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:onClick="moveToMyProfile">
 
                     <TextView
                         android:id="@+id/beautyName"
@@ -211,27 +219,27 @@
 
         <LinearLayout
             android:id="@+id/row3"
-            android:layout_width="340dp"
-            android:layout_height="167dp"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal"
+            android:layout_width="337dp"
+            android:layout_height="192dp"
 
+            android:orientation="horizontal"
             android:padding="5dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.492"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/row2">
+            app:layout_constraintTop_toBottomOf="@+id/row2">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
+
                 android:layout_weight="1"
                 app:cardCornerRadius="20dp"
-                app:cardElevation="20dp">
+                app:cardElevation="5dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
+
                     android:layout_height="match_parent"
                     android:onClick="moveToStockGame">
 
@@ -239,6 +247,7 @@
                         android:id="@+id/pharmName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+
                         android:layout_below="@+id/pharmImage"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"

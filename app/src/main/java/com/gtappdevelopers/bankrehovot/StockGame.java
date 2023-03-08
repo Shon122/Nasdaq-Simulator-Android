@@ -24,8 +24,10 @@ import android.widget.Toast;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -213,9 +215,15 @@ public class StockGame extends AppCompatActivity {
                 @Override
                 public void onFinish() {
                     // This method will be called when the countdown is finished or cancelled.
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy HH:mm:ss");
+                    Date currentDate = new Date();
+                    String formattedDate = dateFormat.format(currentDate);
+                    boolean win= totalPNL >= 0;
+                    Game game1= new Game(formattedDate,totalPNL,win);
                     currentPriceIndex = 0;
                     randomStock(stockNumber);
                     MainActivity.currentUser.balance += totalPNL;
+                    MainActivity.currentUser.games.add(game1);
                     MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
                     MainActivity.uploadUsersToFirestore();
                     ongoingGame = false;
