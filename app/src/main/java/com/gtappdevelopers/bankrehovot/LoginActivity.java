@@ -2,6 +2,7 @@ package com.gtappdevelopers.bankrehovot;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -32,16 +33,21 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends AppCompatActivity {
-    private EditText usernameEditText;
-    private EditText passwordEditText;
-
+    public EditText usernameEditText;
+    public EditText passwordEditText;
+    boolean loginScreen;
+    public TextView signupTextView;
+    public TextView loginTextView;
+    public Button loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-        TextView textView;
-
+        loginScreen = true;
+        signupTextView = findViewById(R.id.signupText);
+        loginTextView = findViewById(R.id.loginText);
+        loginButton = findViewById(R.id.loginButton);
 
         usernameEditText = (EditText) findViewById(R.id.usernameEditText);
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
@@ -63,7 +69,38 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void clickContinueButton(View view) {
+        if(loginScreen)
+            onClickLogin(view);
+        else
+            onClickRegister(view);
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void clickedSignup(View view) {
+        passwordEditText.setText("");
+        passwordEditText.setHint(" Password");
+        usernameEditText.setText("");
+        usernameEditText.setHint(" Username");
+
+        if (loginScreen) { //if it is showing login stuff
+            loginScreen = false;
+            signupTextView.setText("Already Have an account? Login Now");
+            loginTextView.setText("Register");
+            loginButton.setText("Create Account");
+        } else //if it is showing register stuff
+        {
+            loginScreen = true;
+            signupTextView.setText("Not yet registered? Sign Up Now");
+            loginTextView.setText("Login");
+            loginButton.setText("Login");
+
+        }
+    }
+
     public void onClickRegister(View view) {
+
         String username = usernameEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         boolean check = authenticateRegisterUser(username, password);
@@ -72,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
             Date date = new Date();
             String currentDate = dateFormat.format(date);
-            User newUser = new User(password, username, emptyList, 10000.00, currentDate, "null",null);
+            User newUser = new User(password, username, emptyList, 10000.00, currentDate, "null", null);
             MainActivity.users.add(newUser);
             MainActivity.uploadUsersToFirestore();
             MainActivity.password = password;
@@ -86,6 +123,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void onClickLogin(View view) {
+
+
         String username = usernameEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         boolean check = authenticateLoginUser(username, password);
@@ -105,10 +144,12 @@ public class LoginActivity extends AppCompatActivity {
             MainActivity.trades = emptyList;
             switchIntent();
         }
+
+
     }
 
 
-    public  boolean containsOnlyLettersAndNumbers(String str) {
+    public boolean containsOnlyLettersAndNumbers(String str) {
 
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
@@ -121,6 +162,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         return true;
     }
+
     public boolean authenticateRegisterUser(String username, String password) {
 
         if (username.length() < 6 || password.length() < 6) {

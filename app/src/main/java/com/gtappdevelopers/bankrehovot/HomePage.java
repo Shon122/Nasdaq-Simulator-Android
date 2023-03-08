@@ -24,12 +24,10 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage_activity);
-
-        movingTextView = findViewById(R.id.moving_text);
-
-        String longString = MainActivity.news;
-
-        displayMovingText(longString);
+//
+//        movingTextView = findViewById(R.id.moving_text);
+//        String longString = MainActivity.news;
+//        displayMovingText(longString);
     }
 
     private void displayMovingText(String text) {
