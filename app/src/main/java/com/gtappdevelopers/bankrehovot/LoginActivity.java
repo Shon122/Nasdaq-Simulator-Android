@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void clickContinueButton(View view) {
-        if(loginScreen)
+        if (loginScreen)
             onClickLogin(view);
         else
             onClickRegister(view);
@@ -165,10 +165,10 @@ public class LoginActivity extends AppCompatActivity {
 
     public boolean authenticateRegisterUser(String username, String password) {
 
-        if (username.length() < 6 || password.length() < 6) {
+        if (username.length() < 6 || password.length() < 6 || username.length() > 10 || password.length() > 10) {
             Toast.makeText(
                     LoginActivity.this,
-                    "Username and password should be at least 6 letters",
+                    "Username and password should be between 6-10 letters",
                     Toast.LENGTH_SHORT
             ).show();
             return false;
@@ -198,12 +198,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public boolean authenticateLoginUser(String username, String password) {
 
-        if (username.length() < 6 || password.length() < 6) {
-            Toast.makeText(
-                    LoginActivity.this,
-                    "Username and password should be at least 6 letters",
-                    Toast.LENGTH_SHORT
-            ).show();
+        if (username.length() < 6 || password.length() < 6 || username.length() > 10 || password.length() > 10) {
+            Toast.makeText(LoginActivity.this, "Username and password should be between 6-10 letters", Toast.LENGTH_SHORT).show();
             return false;
         }
 

@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+
     tools:context=".HomePage">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,6 +54,7 @@
         <LinearLayout
             android:id="@+id/row1"
             android:layout_width="0dp"
+            android:layout_marginTop="20dp"
             android:layout_height="175dp"
             android:orientation="horizontal"
             android:padding="5dp"
@@ -81,8 +84,8 @@
                         android:layout_below="@+id/clothingImage"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
-                        android:fontFamily="@font/poppins_semibold"
                         android:text="Users"
+                        android:fontFamily="@font/poppins_semibold"
                         android:textColor="@color/lavender"
                         android:textSize="20sp" />
 
@@ -135,6 +138,7 @@
         <LinearLayout
             android:id="@+id/row2"
             android:layout_width="0dp"
+            android:layout_marginTop="20dp"
             android:layout_height="175dp"
             android:orientation="horizontal"
 
@@ -221,8 +225,8 @@
             android:id="@+id/row3"
             android:layout_width="337dp"
             android:layout_height="192dp"
-
             android:orientation="horizontal"
+            android:layout_marginTop="20dp"
             android:padding="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
