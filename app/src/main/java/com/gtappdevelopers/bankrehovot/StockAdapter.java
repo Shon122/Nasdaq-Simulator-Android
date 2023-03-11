@@ -2,11 +2,13 @@ package com.gtappdevelopers.bankrehovot;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -32,13 +34,26 @@ public class StockAdapter extends ArrayAdapter<StockModel> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.stock_item, parent, false);
         }
         // Lookup view for data population
+        ImageView imageViewdown = convertView.findViewById(R.id.imageViewdown);
+        ImageView imageViewup = convertView.findViewById(R.id.imageViewup);
         TextView nameView = convertView.findViewById(R.id.name_view);
         TextView priceView = convertView.findViewById(R.id.price_view);
         TextView gainlossView = convertView.findViewById(R.id.gainloss_view);
         // Populate the data into the template view using the data object
         nameView.setText(stock.name);
-        priceView.setText("Price: " + stock.priceList.get(0));
-        gainlossView.setText("Change: " + stock.gainLossPercent + "%");
+        priceView.setText("" + stock.priceList.get(0));
+        if (stock.gainLossPercent >= 0) {
+            gainlossView.setText("+" + stock.gainLossPercent + "%");
+            imageViewdown.setVisibility(View.INVISIBLE);
+            imageViewup.setVisibility(View.VISIBLE);
+            gainlossView.setTextColor(Color.parseColor("#FF148A45"));
+        } else {
+            imageViewdown.setVisibility(View.VISIBLE);
+            imageViewup.setVisibility(View.INVISIBLE);
+            gainlossView.setText("-" + stock.gainLossPercent + "%");
+            gainlossView.setTextColor(Color.parseColor("#D50000"));
+
+        }
         // Return the completed view to render on screen
         return convertView;
     }

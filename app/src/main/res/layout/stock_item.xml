@@ -88,8 +88,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.17" />
 
+
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/imageViewup"
                 android:layout_width="20dp"
                 android:layout_height="17dp"
 
@@ -100,6 +101,19 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.615"
                 app:srcCompat="@drawable/triangleup" />
+
+            <ImageView
+                android:id="@+id/imageViewdown"
+                android:layout_width="20dp"
+                android:layout_height="17dp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.685"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.615"
+                app:srcCompat="@drawable/triangledown" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

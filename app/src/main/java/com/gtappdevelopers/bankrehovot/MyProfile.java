@@ -51,10 +51,10 @@ public class MyProfile extends AppCompatActivity {
     public int mainUserIndex;
     public User currentUser;
     //trades show
-    private ArrayList<Trade> saveTradeList;
-    private ArrayList<Trade> tradeList;
-    private TradeAdapterProfile adapter;
-    private ListView listView;
+  //  private ArrayList<Trade> saveTradeList;
+    //private ArrayList<Trade> tradeList;
+   // private TradeAdapterProfile adapter;
+   // private ListView listView;
     //this after location
     public ImageView imageView;
     private static final int GALLERY_REQUEST = 1;
@@ -75,21 +75,19 @@ public class MyProfile extends AppCompatActivity {
             }
         }
         //initialize the arraylist and adapter
-        tradeList = currentUser.trades;
-        saveTradeList = currentUser.trades;
-        adapter = new TradeAdapterProfile(MyProfile.this, tradeList);
+//        tradeList = currentUser.trades;
+//        saveTradeList = currentUser.trades;
+//        adapter = new TradeAdapterProfile(MyProfile.this, tradeList);
 
         //initialize the ListView and set the adapter
-        listView = findViewById(R.id.list_view_profile);
-        listView.setAdapter(adapter);
-        sortByProfitLoss();
+//        listView = findViewById(R.id.list_view_profile);
+//        listView.setAdapter(adapter);
+//        sortByProfitLoss();
 
         //now views init
-        countryTextView = findViewById(R.id.countryTextView);
-        creationDateTextView = findViewById(R.id.creationDateTextView);
-        balanceTextView = findViewById(R.id.balanceTextView);
-        nameTextView = findViewById(R.id.nameUserTextView);
-        logoutButton = findViewById(R.id.logoutButton);
+        balanceTextView = findViewById(R.id.balance_text);
+        nameTextView = findViewById(R.id.profile_name);
+        logoutButton = findViewById(R.id.button_logout1);
         //now put values
         nameTextView.setText(currentUser.username);
         countryTextView.setText("Retrieving Country...");
@@ -108,7 +106,7 @@ public class MyProfile extends AppCompatActivity {
         );
         //only here after location
 
-        imageView = (ImageView) findViewById(R.id.imageView);
+        imageView = (ImageView) findViewById(R.id.profile_image);
         if (currentUser.username.equals(MainActivity.currentUser.username)) {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -329,17 +327,17 @@ public class MyProfile extends AppCompatActivity {
             }
         }
     }
-
-    public void sortByProfitLoss() {
-
-        Collections.sort(tradeList, new Comparator<Trade>() {
-            @Override
-            public int compare(Trade o1, Trade o2) {
-                return Double.compare(o1.totalProfitLoss, o2.totalProfitLoss);
-            }
-        });
-        adapter.notifyDataSetChanged();
-    }
+//
+//    public void sortByProfitLoss() {
+//
+//        Collections.sort(tradeList, new Comparator<Trade>() {
+//            @Override
+//            public int compare(Trade o1, Trade o2) {
+//                return Double.compare(o1.totalProfitLoss, o2.totalProfitLoss);
+//            }
+//        });
+//        adapter.notifyDataSetChanged();
+//    }
 
     public Double roundToTwoDecimals(Double value) {
         return (double) Math.round(value * 100) / 100;
