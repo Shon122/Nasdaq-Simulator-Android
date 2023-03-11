@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromDegrees="180"
+    android:pivotX="50%"
+    android:pivotY="50%">
+    <vector
+        android:width="100dp"
+        android:height="100dp"
+        android:viewportWidth="100"
+        android:viewportHeight="100">
+        <group android:name="triableGroup">
+
+            <path
+                android:name="triangle"
+                android:fillColor="@color/material_red_700"
+                android:pathData="m 50,0 l 50,70 -100,0 z" />
+        </group>
+    </vector>
+</rotate>

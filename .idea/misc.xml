@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable-v24/bottom_nav_item_colour_selected.xml" value="0.1" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable-v24/circleyellowfil.xml" value="0.371" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable-v24/circular_grey_bordersolid.xml" value="0.371" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable-v24/circularbordersolid.xml" value="0.371" />
@@ -28,11 +29,14 @@
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable/edittext_bkg.xml" value="0.166" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable/ic_launcher_background.xml" value="0.166" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable/tab_bkg.xml" value="0.166" />
+        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable/triangle.xml" value="0.323" />
+        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable/triangledown.xml" value="0.323" />
+        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable/triangleup.xml" value="0.323" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable/viewpager_bkg.xml" value="0.166" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout-v28/currency_page.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/activity_funds.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/activity_graph.xml" value="0.37864583333333335" />
-        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/activity_invest.xml" value="0.17134831460674158" />
+        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/activity_invest.xml" value="0.33" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/activity_messages.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/closed_positions.xml" value="0.35260416666666666" />
@@ -48,6 +52,7 @@
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/registeractivity.xml" value="0.26444091149973503" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/stock_game.xml" value="0.33" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/stock_item.xml" value="0.37864583333333335" />
+        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/testdesign.xml" value="0.33" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/trade_item.xml" value="0.33" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/trade_item_profile.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/trade_page.xml" value="0.37864583333333335" />

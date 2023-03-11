@@ -12,7 +12,22 @@
     <color name="greenLong">#00FF22</color>
     <color name="greenBuy">#4CAF50</color>
     <color name="blueclean">#4E64DA</color>
-
+    <color name="material_blue_700">#1976D2</color>
+    <color name="material_blue_500">#2196F3</color>
+    <color name="material_red_700">#D50000</color>
+    <color name="material_green_700">#00C853</color>
+    <color name="primary_color">#76C2AF</color>
+    <color name="green_700">#388E3C</color>
+    <color name="green_accent_200">#69F0AE</color>
+    <color name="primary_color_dark">#5e9b8c</color>
+    <color name="transparent_white">#44FFFFFF</color>
+    <color name="dark_grey">#212121</color>
+    <color name="grey">#3d3d3d</color>
+    <color name="light_grey">#5b5b5b</color>
+    <color name="darker_grey">#1d1d1d</color>
+    <color name="purple_400">#D500F9</color>
+    <color name="special_blue">#18FFFF</color>
+    <color name="teal_accent">#64FFDA</color>
     <color name="lavender">#8692f7</color>
     <color name="redSell">#F15044</color>
 </resources>
