@@ -81,51 +81,33 @@
 
                 <!--                </com.google.android.material.card.MaterialCardView>-->
 
-                <com.google.android.material.imageview.ShapeableImageView
+                <ImageView
                     android:id="@+id/profile_image"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/waves"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.126"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.038"
-                    app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
+                    app:layout_constraintVertical_bias="0.038" />
 
                 <TextView
                     android:id="@+id/profile_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="230dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_semibold"
+                    android:minWidth="230dp"
                     android:padding="5dp"
                     android:text="YosiNahman, Israel"
                     android:textColor="@color/blueclean"
                     android:textSize="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.78"
+                    app:layout_constraintHorizontal_bias="0.883"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.055" />
-
-                <TextView
-                    android:id="@+id/balance_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:fontFamily="@font/montserrat_semibold"
-                    android:text="15315$"
-                    android:textColor="@color/lavender"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.476"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.129" />
+                    app:layout_constraintVertical_bias="0.057" />
 
 
                 <!--                <TextView-->
@@ -145,6 +127,23 @@
                 <!--                    app:layout_constraintTop_toTopOf="parent"-->
                 <!--                    app:layout_constraintVertical_bias="0.259" />-->
 
+
+                <TextView
+                    android:id="@+id/balance_text"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:minWidth="130dp"
+                    android:text="15315$"
+                    android:textColor="@color/lavender"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.597"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.129" />
 
                 <TextView
                     android:id="@+id/games_title"

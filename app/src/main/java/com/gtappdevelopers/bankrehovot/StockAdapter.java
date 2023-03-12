@@ -50,7 +50,7 @@ public class StockAdapter extends ArrayAdapter<StockModel> {
         } else {
             imageViewdown.setVisibility(View.VISIBLE);
             imageViewup.setVisibility(View.INVISIBLE);
-            gainlossView.setText("-" + stock.gainLossPercent + "%");
+            gainlossView.setText(stock.gainLossPercent + "%");
             gainlossView.setTextColor(Color.parseColor("#D50000"));
 
         }

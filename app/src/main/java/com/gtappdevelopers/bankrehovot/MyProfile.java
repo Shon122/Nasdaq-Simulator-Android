@@ -43,18 +43,20 @@ import java.util.List;
 import java.util.Locale;
 
 public class MyProfile extends AppCompatActivity {
-    public TextView countryTextView;
-    public TextView creationDateTextView;
     public TextView balanceTextView;
     public TextView nameTextView;
+    public TextView gamesPlayed;
+    public TextView gamesWon;
+    public TextView gamesLost;
+    public TextView winratePercent;
     public Button logoutButton;
     public int mainUserIndex;
     public User currentUser;
     //trades show
-  //  private ArrayList<Trade> saveTradeList;
+    //  private ArrayList<Trade> saveTradeList;
     //private ArrayList<Trade> tradeList;
-   // private TradeAdapterProfile adapter;
-   // private ListView listView;
+    // private TradeAdapterProfile adapter;
+    // private ListView listView;
     //this after location
     public ImageView imageView;
     private static final int GALLERY_REQUEST = 1;
@@ -84,21 +86,42 @@ public class MyProfile extends AppCompatActivity {
 //        listView.setAdapter(adapter);
 //        sortByProfitLoss();
 
+        int played = 0;
+        int lost = 0;
+        int won = 0;
+        int winrate = 0;
+        for (Game game : currentUser.games) {
+            played++;
+            if (game.win)
+                won++;
+            else
+                lost++;
+        }
+        if (won > 0)
+            winrate = ((won / played) * 100);
         //now views init
         balanceTextView = findViewById(R.id.balance_text);
         nameTextView = findViewById(R.id.profile_name);
         logoutButton = findViewById(R.id.button_logout1);
+        gamesPlayed = findViewById(R.id.games_played);
+        gamesWon = findViewById(R.id.games_won);
+        gamesLost = findViewById(R.id.games_lost);
+        winratePercent = findViewById(R.id.winrate_text);
         //now put values
+        gamesPlayed.setText("Games Played: " + played);
+        gamesWon.setText("Games Won: " + won);
+        gamesLost.setText("Games Lost: " + lost);
+        winratePercent.setText(winrate + "% Winrate");
+
         nameTextView.setText(currentUser.username);
-        countryTextView.setText("Retrieving Country...");
-        String dateString =currentUser.creationDate.substring(0,10);
-        dateString=dateString.replaceAll(":","/");
-        creationDateTextView.setText("Creation Date: " + dateString);
-        balanceTextView.setText("Balance: " + roundToTwoDecimals(currentUser.balance) + "$");
+        String dateString = currentUser.creationDate.substring(0, 10);
+        dateString = dateString.replaceAll(":", "/");
+        //   creationDateTextView.setText("Creation Date: " + dateString);
+        balanceTextView.setText(roundToTwoDecimals(currentUser.balance) + "$");
 
         //get country
         String country = getIntent().getStringExtra(LocationReceiver.COUNTRY_EXTRA);
-        countryTextView.setText(country);
+        nameTextView.setText(currentUser.username + ", " + country); // just in case
         ActivityCompat.requestPermissions(
                 this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -199,6 +222,7 @@ public class MyProfile extends AppCompatActivity {
                             this.getContentResolver(),
                             selectedImage
                     );
+
                     Bitmap circularBitmap = getCircularBitmap(bitmap);
                     imageView.setImageBitmap(circularBitmap);
                     // Save the image to SharedPreferences
@@ -206,9 +230,7 @@ public class MyProfile extends AppCompatActivity {
                     circularBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] imageBytes = baos.toByteArray();
                     String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-
-                    PreferenceManager.getDefaultSharedPreferences(this).edit()
-                            .putString("saved_image", encodedImage).apply();
+                   PreferenceManager.getDefaultSharedPreferences(this).edit().putString("saved_image", encodedImage).apply();
                     MainActivity.viewingUser.savedImage = encodedImage;
                     currentUser.savedImage = encodedImage;
                     MainActivity.users.set(mainUserIndex, currentUser);
@@ -222,16 +244,15 @@ public class MyProfile extends AppCompatActivity {
 
         } else if (requestCode == CAMERA_REQUEST) {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+
             Bitmap circularBitmap = getCircularBitmap(bitmap);
             imageView.setImageBitmap(circularBitmap);
-
             // Save the image to SharedPreferences
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             circularBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
             String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-            PreferenceManager.getDefaultSharedPreferences(this).edit()
-                    .putString("saved_image", encodedImage).apply();
+          PreferenceManager.getDefaultSharedPreferences(this).edit().putString("saved_image", encodedImage).apply();
             MainActivity.viewingUser.savedImage = encodedImage;
             currentUser.savedImage = encodedImage;
             MainActivity.users.set(mainUserIndex, currentUser);
@@ -278,6 +299,7 @@ public class MyProfile extends AppCompatActivity {
     }
 
     //location
+    @SuppressLint("SetTextI18n")
     @Override
     public void onRequestPermissionsResult(
             int requestCode,
@@ -289,7 +311,7 @@ public class MyProfile extends AppCompatActivity {
 
         if (requestCode == 0) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                countryTextView.setText("Israel");// just in case
+                nameTextView.setText(currentUser.username + ", Israel"); // just in case
 
                 // permission was granted, proceed with your logic
                 LocationManager locationManager =
@@ -315,7 +337,7 @@ public class MyProfile extends AppCompatActivity {
                         );
                         if (addresses.size() > 0) {
                             String country = addresses.get(0).getCountryName();
-                            countryTextView.setText(country);
+                            nameTextView.setText(currentUser.username + ", " + country); // just in case
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -323,7 +345,7 @@ public class MyProfile extends AppCompatActivity {
                 }
             } else {
                 // permission was denied, handle accordingly
-                countryTextView.setText("Israel"); // just in case
+                nameTextView.setText(currentUser.username + ", Israel"); // just in case
             }
         }
     }
