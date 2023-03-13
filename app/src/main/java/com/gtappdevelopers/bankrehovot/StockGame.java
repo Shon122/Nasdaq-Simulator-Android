@@ -11,13 +11,9 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,8 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class StockGame extends AppCompatActivity {
     GraphView graphView;
@@ -148,7 +142,7 @@ public class StockGame extends AppCompatActivity {
 
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-           // audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume / 4, 1);
+            // audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume / 4, 1);
             mediaPlayer = MediaPlayer.create(this, R.raw.dramamusic);
             mediaPlayer.start();
 
@@ -218,12 +212,17 @@ public class StockGame extends AppCompatActivity {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd:MM:yyyy HH:mm:ss");
                     Date currentDate = new Date();
                     String formattedDate = dateFormat.format(currentDate);
-                    boolean win= totalPNL >= 0;
-                    Game game1= new Game(formattedDate,totalPNL,win);
+                    boolean win = totalPNL >= 0;
+                    GameStock game1 = new GameStock(formattedDate, totalPNL, win);
                     currentPriceIndex = 0;
                     randomStock(stockNumber);
                     MainActivity.currentUser.balance += totalPNL;
-                    MainActivity.currentUser.games.add(game1);
+                    if (MainActivity.currentUser.games != null)
+                        MainActivity.currentUser.games.add(game1);
+                    else {
+                        MainActivity.currentUser.games = new ArrayList<GameStock>();
+                        MainActivity.currentUser.games.add(game1);
+                    }
                     MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
                     MainActivity.uploadUsersToFirestore();
                     ongoingGame = false;

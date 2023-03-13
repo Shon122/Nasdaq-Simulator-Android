@@ -11,7 +11,7 @@ public class User {
     public String creationDate;
     public Double balance;
     public String status;
-    public ArrayList<Game> games;
+    public ArrayList<GameStock> games;
 
     public User(
             String password1,
@@ -30,7 +30,7 @@ public class User {
         trades = trades1;
         startingBalance = startingBalance1;
         balance = startingBalance1;
-        games = new ArrayList<>();
+        games = new ArrayList<GameStock>();
     }
 
     public User() {

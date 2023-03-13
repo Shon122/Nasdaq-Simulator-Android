@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -25,7 +26,6 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,10 +35,6 @@ import androidx.core.app.ActivityCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -90,7 +86,7 @@ public class MyProfile extends AppCompatActivity {
         int lost = 0;
         int won = 0;
         int winrate = 0;
-        for (Game game : currentUser.games) {
+        for (GameStock game : currentUser.games) {
             played++;
             if (game.win)
                 won++;
@@ -145,6 +141,7 @@ public class MyProfile extends AppCompatActivity {
             byte[] decodedString = Base64.decode(savedImage, Base64.DEFAULT);
             Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             Bitmap circularBitmap = getCircularBitmap(decodedBitmap);
+            imageView.setBackgroundColor(Color.WHITE);
             imageView.setImageBitmap(circularBitmap);
         }
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 3);
@@ -224,6 +221,7 @@ public class MyProfile extends AppCompatActivity {
                     );
 
                     Bitmap circularBitmap = getCircularBitmap(bitmap);
+                    imageView.setBackgroundColor(Color.WHITE);
                     imageView.setImageBitmap(circularBitmap);
                     // Save the image to SharedPreferences
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -246,6 +244,7 @@ public class MyProfile extends AppCompatActivity {
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
 
             Bitmap circularBitmap = getCircularBitmap(bitmap);
+            imageView.setBackgroundColor(Color.WHITE);
             imageView.setImageBitmap(circularBitmap);
             // Save the image to SharedPreferences
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -48,7 +48,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
                     android:fontFamily="@font/robregular"
-
                     android:text="+53.33%"
                     android:textColor="#148A45"
                     android:textSize="25sp" />

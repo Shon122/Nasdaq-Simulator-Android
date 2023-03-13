@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<User> users = new ArrayList<>();
     public static User currentUser;
     public static int currentUserIndex = 0;
+    public static String defaultImage;
     private FirebaseFirestore db;
     Map<String, Object> docData;
 
@@ -158,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         news = readFromFile("saveNews.txt");
+        defaultImage = readFromFile("defaultimage.txt");
         try {
             firstLoadAll();
         } catch (ExecutionException | InterruptedException | ParseException e) {
