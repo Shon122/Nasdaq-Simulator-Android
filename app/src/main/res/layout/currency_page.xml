@@ -8,323 +8,340 @@
 
     <com.anychart.AnyChartView
         android:id="@+id/any_chart_view"
-        android:layout_width="342dp"
-        android:layout_height="371dp"
+        android:layout_width="351dp"
+        android:layout_height="251dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
 
         app:layout_constraintVertical_bias="0.955" />
 
-    <Button
-        android:id="@+id/buysellButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="changebuysell"
-        android:outlineSpotShadowColor="@color/green"
-        android:text="Buy"
-        android:textColor="@color/green"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.458"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.007" />
 
     <EditText
         android:id="@+id/amountInvestEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="520dp"
-        android:ems="10"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_edittext"
+        android:drawablePadding="8dp"
+        android:fontFamily="@font/montserrat_semibold"
+        android:gravity="center"
+
+        android:hint="Enter Amount"
         android:inputType="number"
-        android:hint="Amount to invest"
+        android:padding="8dp"
+        android:textColor="@color/black"
+        android:textColorHighlight="@color/cardview_dark_background"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.512"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.493" />
 
     <TextView
         android:id="@+id/stockName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="112dp"
-        android:text="name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.085"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/predictionTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="284dp"
-        android:text="Predict: 1133.33"
+        android:fontFamily="@font/montserrat_semibold"
+        android:padding="5dp"
+        android:text="TSLA"
+        android:textColor="@color/blueclean"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.73"
+        app:layout_constraintHorizontal_bias="0.55"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.024" />
 
-    <TextView
-        android:id="@+id/userBalance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="304dp"
-        android:text="Your Balance: $10000.00"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.043"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/changeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="164dp"
-        android:text="0.00%"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/graphViewButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="viewGraphIntent"
-        android:text="View Graph"
+        android:fontFamily="@font/montserrat_semibold"
+        android:text="Change: +15.46%"
+        android:textColor="#000000"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.943"
+        app:layout_constraintHorizontal_bias="0.125"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.121" />
+        app:layout_constraintVertical_bias="0.137" />
 
     <TextView
-        android:id="@+id/currentPrice"
+        android:id="@+id/userBalance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
-        android:text="1234.555"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.054"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/orderTradeEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="460dp"
-        android:hint="Order price"
-        android:inputType="number"
+        android:fontFamily="@font/montserrat_semibold"
+        android:text="Balance: $10000"
+        android:textColor="@color/black"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.25"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
-    <Button
-        android:id="@+id/createTradeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="createTrade"
-        android:text="Create Trade"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.388"
+        app:layout_constraintHorizontal_bias="0.123"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.121" />
+        app:layout_constraintVertical_bias="0.229" />
+
+    <Button
+        android:id="@+id/buysellButton"
+
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:onClick="changebuysell"
+        android:text="Type: Buy"
+        android:textColor="#FFFFFF"
+        android:textSize="15dp"
+        app:cornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.103"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.29" />
 
     <CheckBox
         android:id="@+id/orderTradeCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="460dp"
+        android:fontFamily="@font/montserrat_semibold"
         android:onClick="tradeCheckBoxChange"
-        android:text="Order Trade"
+        android:text="Order"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.773"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.089"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.363" />
+
+    <EditText
+        android:id="@+id/orderTradeEditText"
+        android:layout_width="125dp"
+        android:layout_height="50dp"
+        android:background="@drawable/rounded_edittext"
+        android:drawablePadding="8dp"
+        android:fontFamily="@font/montserrat_semibold"
+        android:gravity="center"
+        android:hint="Order Price"
+        android:inputType="number"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.419"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.364" />
+
+    <TextView
+        android:id="@+id/currentPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_semibold"
+        android:text="Price: 312.81"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.103"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.182" />
+
+    <Button
+        android:id="@+id/createTradeButton"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:onClick="createTrade"
+        android:text="Create Trade"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:cornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.575" />
 
     <!--        <CheckBox-->
-<!--            android:id="@+id/takeProfitCheckBox"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="448dp"-->
-<!--            android:text="Take Profit"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.032"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
+    <!--            android:id="@+id/takeProfitCheckBox"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginBottom="448dp"-->
+    <!--            android:text="Take Profit"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.032"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-<!--        <TextView-->
-<!--            android:id="@+id/PriceText"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="412dp"-->
-<!--            android:text="Price"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.459"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/PriceText"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginBottom="412dp"-->
+    <!--            android:text="Price"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.459"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-<!--        <EditText-->
-<!--            android:id="@+id/percentStopEditText"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="300dp"-->
-<!--            android:hint="0.00"-->
-<!--            android:inputType="textPersonName"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.964"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
+    <!--        <EditText-->
+    <!--            android:id="@+id/percentStopEditText"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginBottom="300dp"-->
+    <!--            android:hint="0.00"-->
+    <!--            android:inputType="textPersonName"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.964"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-<!--        <Button-->
-<!--            android:id="@+id/minusStop"-->
-<!--            android:layout_width="40dp"-->
-<!--            android:layout_height="38dp"-->
-<!--            android:layout_marginBottom="448dp"-->
-<!--            android:text="-"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.706"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-
-<!--        <EditText-->
-<!--            android:id="@+id/percentProfitEditText"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="308dp"-->
-<!--            android:hint="0.00"-->
-<!--            android:inputType="textPersonName"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.024"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/PercentText"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="324dp"-->
-<!--            android:text="Percent"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.479"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-<!--        <EditText-->
-<!--            android:id="@+id/priceStopEditText"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="396dp"-->
-<!--            android:hint="0.00"-->
-<!--            android:inputType="textPersonName"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.964"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
+    <!--        <Button-->
+    <!--            android:id="@+id/minusStop"-->
+    <!--            android:layout_width="40dp"-->
+    <!--            android:layout_height="38dp"-->
+    <!--            android:layout_marginBottom="448dp"-->
+    <!--            android:text="-"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.706"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
 
-<!--        <Button-->
-<!--            android:id="@+id/plusProfit"-->
-<!--            android:layout_width="42dp"-->
-<!--            android:layout_height="37dp"-->
-<!--            android:layout_marginBottom="484dp"-->
-<!--            android:text="+"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.298"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
+    <!--        <EditText-->
+    <!--            android:id="@+id/percentProfitEditText"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginBottom="308dp"-->
+    <!--            android:hint="0.00"-->
+    <!--            android:inputType="textPersonName"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.024"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-<!--        <EditText-->
-<!--            android:id="@+id/ilsProfitEditText"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="356dp"-->
-<!--            android:hint="0.00"-->
-<!--            android:inputType="textPersonName"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.024"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/PercentText"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginBottom="324dp"-->
+    <!--            android:text="Percent"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.479"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-<!--        <EditText-->
-<!--            android:id="@+id/priceProfitEditText"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="400dp"-->
-<!--            android:hint="0.00"-->
-<!--            android:inputType="textPersonName"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.024"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
+    <!--        <EditText-->
+    <!--            android:id="@+id/priceStopEditText"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginBottom="396dp"-->
+    <!--            android:hint="0.00"-->
+    <!--            android:inputType="textPersonName"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.964"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
 
-<!--        <TextView-->
-<!--            android:id="@+id/ILSText"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="356dp"-->
-<!--            android:text="ILS"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.47"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
+    <!--        <Button-->
+    <!--            android:id="@+id/plusProfit"-->
+    <!--            android:layout_width="42dp"-->
+    <!--            android:layout_height="37dp"-->
+    <!--            android:layout_marginBottom="484dp"-->
+    <!--            android:text="+"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.298"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-<!--        <Button-->
-<!--            android:id="@+id/minusProfit"-->
-<!--            android:layout_width="40dp"-->
-<!--            android:layout_height="38dp"-->
-<!--            android:layout_marginBottom="448dp"-->
-<!--            android:text="-"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.296"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
+    <!--        <EditText-->
+    <!--            android:id="@+id/ilsProfitEditText"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginBottom="356dp"-->
+    <!--            android:hint="0.00"-->
+    <!--            android:inputType="textPersonName"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.024"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-<!--        <Button-->
-<!--            android:id="@+id/plusStop"-->
-<!--            android:layout_width="42dp"-->
-<!--            android:layout_height="37dp"-->
-<!--            android:layout_marginBottom="484dp"-->
-<!--            android:text="+"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.71"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
+    <!--        <EditText-->
+    <!--            android:id="@+id/priceProfitEditText"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginBottom="400dp"-->
+    <!--            android:hint="0.00"-->
+    <!--            android:inputType="textPersonName"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.024"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-<!--        <EditText-->
-<!--            android:id="@+id/ilsStopEditText"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="348dp"-->
-<!--            android:hint="0.00"-->
-<!--            android:inputType="textPersonName"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.964"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
 
-<!--        <CheckBox-->
-<!--            android:id="@+id/stopLossCheckBox"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="444dp"-->
-<!--            android:text="Stop Loss"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.958"-->
-<!--            app:layout_constraintStart_toStartOf="parent" />-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/ILSText"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginBottom="356dp"-->
+    <!--            android:text="ILS"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.47"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
+
+    <!--        <Button-->
+    <!--            android:id="@+id/minusProfit"-->
+    <!--            android:layout_width="40dp"-->
+    <!--            android:layout_height="38dp"-->
+    <!--            android:layout_marginBottom="448dp"-->
+    <!--            android:text="-"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.296"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
+
+    <!--        <Button-->
+    <!--            android:id="@+id/plusStop"-->
+    <!--            android:layout_width="42dp"-->
+    <!--            android:layout_height="37dp"-->
+    <!--            android:layout_marginBottom="484dp"-->
+    <!--            android:text="+"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.71"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
+
+    <!--        <EditText-->
+    <!--            android:id="@+id/ilsStopEditText"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginBottom="348dp"-->
+    <!--            android:hint="0.00"-->
+    <!--            android:inputType="textPersonName"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.964"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
+
+    <!--        <CheckBox-->
+    <!--            android:id="@+id/stopLossCheckBox"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginBottom="444dp"-->
+    <!--            android:text="Stop Loss"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintHorizontal_bias="0.958"-->
+    <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

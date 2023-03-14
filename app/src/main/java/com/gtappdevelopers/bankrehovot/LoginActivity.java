@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
             Date date = new Date();
             String currentDate = dateFormat.format(date);
-            User newUser = new User(password, username, emptyList, 10000.00, currentDate, MainActivity.defaultImage, null);
+            User newUser = new User(password, username, emptyList, 10000.00, currentDate, MainActivity.defaultImage, null,new ArrayList<GameStock>());
             MainActivity.users.add(newUser);
             MainActivity.uploadUsersToFirestore();
             MainActivity.password = password;
@@ -220,4 +220,11 @@ public class LoginActivity extends AppCompatActivity {
                 .show();
         return false;
     }
+
+    @Override //when user wants to go back
+    public void onBackPressed() {
+        // Handle back button press event here
+
+    }
+
 }

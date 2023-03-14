@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public static String news = "";
     public static String username = "";
     public static String password = "";
+    public static int backToUsers=0;//if zero you came from homepage and if one you came from userlist
     public static ArrayList<Trade> trades = new ArrayList<>();
     public static ArrayList<User> users = new ArrayList<>();
     public static User currentUser;

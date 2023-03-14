@@ -53,9 +53,7 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
             closeButton.setVisibility(View.INVISIBLE);
         }
         TextView statusTextView = convertView.findViewById(R.id.statusTextView);
-        TextView dateTextView = convertView.findViewById(R.id.dateTextView);
         TextView nameTextView = convertView.findViewById(R.id.nameTextView);
-        TextView entryTextView = convertView.findViewById(R.id.entryTextView);
         // TextView exitTextView = convertView.findViewById(R.id.exitTextView);
         TextView returnTextView = convertView.findViewById(R.id.returnTextView);
         // Populate the data into the template view using the data object
@@ -69,9 +67,7 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
                 statusTextView.setText("Closed");
         }
         DateFormat sdf2 = DateFormat.getDateInstance(DateFormat.MEDIUM);
-        dateTextView.setText(sdf2.format(new Date()));
         nameTextView.setText(currentTrade.stockName);
-        entryTextView.setText(String.valueOf(currentTrade.startPrice));
 //
 //        if (currentTrade.openClose) {
 //            exitTextView.setText("---");

@@ -20,7 +20,8 @@ public class User {
             Double startingBalance1,
             String creationDate1,
             String savedImage1,
-            String status1
+            String status1,
+            ArrayList<GameStock> game1
     ) {
         password = password1;
         status = status1;
@@ -30,7 +31,7 @@ public class User {
         trades = trades1;
         startingBalance = startingBalance1;
         balance = startingBalance1;
-        games = new ArrayList<GameStock>();
+        games=game1;
     }
 
     public User() {

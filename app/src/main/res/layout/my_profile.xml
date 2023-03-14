@@ -6,13 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".MyProfile">
 
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.6"
+        android:alpha="0.8"
 
         android:scaleType="centerCrop"
         android:src="@drawable/waves" />
+
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -33,6 +35,20 @@
 
                 >
 
+
+                <ImageView
+                    android:id="@+id/goBack33StockGame"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="12dp"
+                    android:onClick="goBackProfile"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.011"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.967"
+                    app:srcCompat="@drawable/gobacknormal" />
 
                 <Button
                     android:id="@+id/button_logout1"
@@ -97,8 +113,8 @@
                     android:id="@+id/profile_name"
                     android:layout_width="230dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_semibold"
                     android:minWidth="230dp"
+                    android:fontFamily="@font/montserrat_semibold"
                     android:padding="5dp"
                     android:text="YosiNahman, Israel"
                     android:textColor="@color/blueclean"

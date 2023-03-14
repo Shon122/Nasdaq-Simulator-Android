@@ -24,6 +24,7 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage_activity);
+        MainActivity.backToUsers=0;
 //
 //        movingTextView = findViewById(R.id.moving_text);
 //        String longString = MainActivity.news;
@@ -73,4 +74,12 @@ public class HomePage extends AppCompatActivity {
         Intent intent = new Intent(this, MyProfile.class);
         startActivity(intent);
     }
+
+    @Override //when user wants to go back
+    public void onBackPressed() {
+        // Handle back button press event here
+
+    }
+
+
 }

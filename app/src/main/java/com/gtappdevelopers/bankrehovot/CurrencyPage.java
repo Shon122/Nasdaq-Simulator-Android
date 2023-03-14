@@ -1,6 +1,7 @@
 package com.gtappdevelopers.bankrehovot;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -76,7 +77,6 @@ public class CurrencyPage extends AppCompatActivity {
         Collections.reverse(reversedDateList);
         Collections.reverse(reversedPriceList);
         changeTextView = findViewById(R.id.changeTextView);
-        predictionTextView = findViewById(R.id.predictionTextView);
         amountInvestEditText = findViewById(R.id.amountInvestEditText);
         orderTradeEditText = findViewById(R.id.orderTradeEditText);
         orderTradeCheckBox = findViewById(R.id.orderTradeCheckBox);
@@ -105,9 +105,9 @@ public class CurrencyPage extends AppCompatActivity {
         buysellButton.setTextColor(Color.GREEN);
 
 
-        NumberPrediction prediction = new NumberPrediction(priceList);
-        double nextPrice = prediction.predictNextNumber();
-        predictionTextView.setText("" + nextPrice);
+//        NumberPrediction prediction = new NumberPrediction(priceList);
+//        double nextPrice = prediction.predictNextNumber();
+//        predictionTextView.setText("" + nextPrice);
 
 
         AnyChartView anyChartView = findViewById(R.id.any_chart_view);
@@ -260,5 +260,16 @@ public class CurrencyPage extends AppCompatActivity {
             double nextIndex = data.size();
             return parameters[0] + parameters[1] * nextIndex;
         }
+    }
+
+    @Override //when user wants to go back
+    public void onBackPressed() {
+        // Handle back button press event here
+        goBackCurrenyPage(null);
+    }
+
+    public void goBackCurrenyPage(View view) {
+        Intent intent = new Intent(this, InvestActivity.class);
+        startActivity(intent);
     }
 }

@@ -33,6 +33,7 @@ public class StockGame extends AppCompatActivity {
     Button okayButton;
     Button startGamebutton;
     ArrayList<Double> prices;
+    //ArrayList<Double> beforePrices;
     Double totalPNL;
     Double amountInvest;
     int currentPriceIndex = 0;
@@ -40,12 +41,14 @@ public class StockGame extends AppCompatActivity {
     boolean ongoingGame = false;
     EditText amountInvestEditText;
     TextView predictionTextView;
+    TextView totalPositions;
     TextView finalMessage;
     TextView totalPNLTextView;
+
     TextView balanceUser;
     TextView timeRemaining;
+    int totalpos;
     MediaPlayer mediaPlayer;
-    AudioManager audioManager;
     ArrayList<Double> sellPositions = new ArrayList<>();
     ArrayList<Double> buyPositions = new ArrayList<>();
     int time;
@@ -56,6 +59,7 @@ public class StockGame extends AppCompatActivity {
         setContentView(R.layout.stock_game);
         predictionTextView = findViewById(R.id.botPredictionTextView);
         finalMessage = findViewById(R.id.finalMessage);
+        totalPositions = findViewById(R.id.totalpositions);
         amountInvestEditText = findViewById(R.id.userAmountInvestEditText);
         balanceUser = findViewById(R.id.balanceUser);
         timeRemaining = findViewById(R.id.timeRemaining);
@@ -67,6 +71,8 @@ public class StockGame extends AppCompatActivity {
         startGamebutton = findViewById(R.id.startGamebutton);
         time = 15;
         stockNumber = 0;
+        totalpos = 0;
+        //beforePrices=new ArrayList<>();
         randomStock(stockNumber);
 
         okayButton.setOnClickListener(new View.OnClickListener() {
@@ -79,9 +85,19 @@ public class StockGame extends AppCompatActivity {
         });
 
         buyButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onClick(View view) {
                 buyPositions.add((double) prices.get(currentPriceIndex));
+                int total = buyPositions.size() + sellPositions.size();
+                runOnUiThread(new Runnable() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void run() {
+                        totalPositions.setText("Total Positions: " + total);
+                    }
+                });
+
             }
         });
 
@@ -98,23 +114,6 @@ public class StockGame extends AppCompatActivity {
 
 
     }
-
-
-//
-//    public void changeVisibilityAll() {
-//        buyButton.setVisibility(buyButton.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-//        graphView.setVisibility(graphView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-//        sellButton.setVisibility(sellButton.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-//        startGamebutton.setVisibility(startGamebutton.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-//        amountInvestEditText.setVisibility(amountInvestEditText.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-//        predictionTextView.setVisibility(predictionTextView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-//        totalPNLTextView.setVisibility(totalPNLTextView.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-//        balanceUser.setVisibility(balanceUser.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-//        timeRemaining.setVisibility(timeRemaining.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-//        finalMessage.setVisibility(finalMessage.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-//
-//
-//    }
 
 
     public void startGame(View view) {
@@ -149,9 +148,10 @@ public class StockGame extends AppCompatActivity {
             //after music is done
             amountInvest = Double.parseDouble(String.valueOf(amountInvestEditText.getText()));
             totalPNL = 0.0;
+            totalpos = 0;
             time = 15;
             ongoingGame = true;
-            currentPriceIndex = 0;
+            currentPriceIndex = 20;
             sellPositions = new ArrayList<>();
             buyPositions = new ArrayList<>();
             randomStock(stockNumber);
@@ -161,7 +161,7 @@ public class StockGame extends AppCompatActivity {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    timeRemaining.setText(time + "s");
+                    timeRemaining.setText("Time Remaining: " + time + "s");
                     addPrice();
                     updateStats();
                     TextView predictionTextView1;
@@ -177,26 +177,32 @@ public class StockGame extends AppCompatActivity {
                         NumberPrediction prediction = new NumberPrediction(newPrices);
                         Double nextPrice = roundToTwoDecimals(prediction.predictNextNumber());
                         runOnUiThread(new Runnable() {
+                            @SuppressLint("SetTextI18n")
                             @Override
                             public void run() {
                                 if (nextPrice > prices.get(currentPriceIndex))
-                                    predictionTextView1.setText("Bot Prediction: Price Going Down");
+                                    predictionTextView1.setText("Bot Prediction: Down");
                                 else
-                                    predictionTextView1.setText("Bot Prediction: Price Going Up");
+                                    predictionTextView1.setText("Bot Prediction: up");
                             }
                         });
                     } catch (MathIllegalArgumentException e) {
                         runOnUiThread(new Runnable() {
+                            @SuppressLint("SetTextI18n")
                             @Override
                             public void run() {
-                                predictionTextView1.setText("Bot Prediction: Price Going Up"); // just in case
+                                predictionTextView1.setText("Bot Prediction: up"); // just in case
                             }
                         });
                     }
                     runOnUiThread(new Runnable() {
+                        @SuppressLint("SetTextI18n")
                         @Override
                         public void run() {
-                            totalPNLTextView1.setText("Profit/loss: $" + roundToTwoDecimals(totalPNL));
+                            if (totalPNL > 0)
+                                totalPNLTextView1.setText("+" + roundToTwoDecimals(totalPNL) + "$");
+                            else
+                                totalPNLTextView1.setText(roundToTwoDecimals(totalPNL) + "$");
                         }
                     });
 
@@ -226,6 +232,7 @@ public class StockGame extends AppCompatActivity {
                     MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
                     MainActivity.uploadUsersToFirestore();
                     ongoingGame = false;
+                    totalpos = sellPositions.size() + buyPositions.size();
                     sellPositions = new ArrayList<>();
                     buyPositions = new ArrayList<>();
                     Toast.makeText(StockGame.this, "Game Over", Toast.LENGTH_LONG).show();
@@ -236,11 +243,11 @@ public class StockGame extends AppCompatActivity {
                     resetText();
                     //now show only the final message
                     if (totalPNL >= 0)
-                        finalMessage.setText("You Won +" + roundToTwoDecimals(totalPNL) + "$");
+                        finalMessage.setText("Congratulations! You Won +" + roundToTwoDecimals(totalPNL) + "$");
                     else
-                        finalMessage.setText("You Lost " + roundToTwoDecimals(totalPNL) + "$");
-
-
+                        finalMessage.setText("Unfortunately, You Lost " + roundToTwoDecimals(totalPNL) + "$");
+                    totalPositions.setText("Total Positions: " + totalpos);
+                    balanceUser.setText("Balance: " + roundToTwoDecimals(MainActivity.currentUser.balance) + "$");
                 }
             };
 
@@ -273,6 +280,7 @@ public class StockGame extends AppCompatActivity {
         finalMessage.setVisibility(View.INVISIBLE);
         predictionTextView.setVisibility(View.INVISIBLE);
         totalPNLTextView.setVisibility(View.INVISIBLE);
+        totalPositions.setVisibility(View.INVISIBLE);
         //
         startGamebutton.setVisibility(View.VISIBLE);
         amountInvestEditText.setVisibility(View.VISIBLE);
@@ -290,6 +298,7 @@ public class StockGame extends AppCompatActivity {
         //
         predictionTextView.setVisibility(View.VISIBLE);
         totalPNLTextView.setVisibility(View.VISIBLE);
+        totalPositions.setVisibility(View.VISIBLE);
         buyButton.setVisibility(View.VISIBLE);
         graphView.setVisibility(View.VISIBLE);
         sellButton.setVisibility(View.VISIBLE);
@@ -300,7 +309,6 @@ public class StockGame extends AppCompatActivity {
 
     public void afterGameVisibility() {
         startGamebutton.setVisibility(View.INVISIBLE);
-        balanceUser.setVisibility(View.INVISIBLE);
         amountInvestEditText.setVisibility(View.INVISIBLE);
         predictionTextView.setVisibility(View.INVISIBLE);
         totalPNLTextView.setVisibility(View.INVISIBLE);
@@ -311,15 +319,18 @@ public class StockGame extends AppCompatActivity {
         //
         okayButton.setVisibility(View.VISIBLE);
         finalMessage.setVisibility(View.VISIBLE);
-
+        balanceUser.setVisibility(View.VISIBLE);
+        totalPositions.setVisibility(View.VISIBLE);
     }
 
 
+    @SuppressLint("SetTextI18n")
     public void resetText() {
-        timeRemaining.setText("15s");
-        balanceUser.setText("Your Balance: " + roundToTwoDecimals(MainActivity.currentUser.balance) + "$");
-        totalPNLTextView.setText("Profit/loss: " + 0 + "$");
-        predictionTextView.setText("Bot Prediction: Price Going Up");
+        timeRemaining.setText("Time Remaining: 15s");
+        balanceUser.setText("Balance: " + roundToTwoDecimals(MainActivity.currentUser.balance) + "$");
+        totalPNLTextView.setText("+0.00$");
+        predictionTextView.setText("Bot Prediction: up");
+        totalPositions.setText("Total Positions: 0");
     }
 
     @Override //when user wants to go back
@@ -329,8 +340,7 @@ public class StockGame extends AppCompatActivity {
             Toast.makeText(StockGame.this, "Cant go back while in a game", Toast.LENGTH_SHORT).show();
 
         } else {
-            super.onBackPressed();
-            //goes back regularly
+            goBackStockGame(null);
         }
 
     }
@@ -340,6 +350,10 @@ public class StockGame extends AppCompatActivity {
         for (int i = 0; i <= currentPriceIndex; i++) {
             shownPrices.add(prices.get(i));
         }
+        // ArrayList<Double> finalShownPrices = new ArrayList<>();
+        //   finalShownPrices.addAll(beforePrices);
+        //  finalShownPrices.addAll(shownPrices);
+
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
@@ -359,6 +373,12 @@ public class StockGame extends AppCompatActivity {
         MainActivity.viewingStock = MainActivity.stockModels.get(randomNumber);
         prices = MainActivity.viewingStock.priceList;
         Collections.reverse(prices); // becuase pricelist is from newest price to oldest
+//        //now split it into two
+//        for(int i=0;i<=20;i++)
+//        {
+//            beforePrices.add(prices.get(i));
+//            prices.remove(i);
+//        }
 
 
     }
@@ -423,6 +443,17 @@ public class StockGame extends AppCompatActivity {
         public double predictNextNumber() {
             double nextIndex = data.size();
             return parameters[0] + parameters[1] * nextIndex;
+        }
+    }
+
+    public void goBackStockGame(View view) {
+
+        if (ongoingGame) {
+            Toast.makeText(StockGame.this, "Cant go back while in a game", Toast.LENGTH_SHORT).show();
+
+        } else {
+            Intent intent = new Intent(this, HomePage.class);
+            startActivity(intent);
         }
     }
 }

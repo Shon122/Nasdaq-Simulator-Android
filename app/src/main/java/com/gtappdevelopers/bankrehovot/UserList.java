@@ -47,6 +47,7 @@ public class UserList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.userlist);
+        MainActivity.backToUsers=1;
         //initialize the arraylist and adapter
         userList = MainActivity.users;
         saveUserList = userList;
@@ -157,6 +158,17 @@ public class UserList extends AppCompatActivity {
         }
     }
 
+
+    @Override //when user wants to go back
+    public void onBackPressed() {
+        // Handle back button press event here
+        goBackUserList(null);
+    }
+
+    public void goBackUserList(View view) {
+        Intent intent = new Intent(this, HomePage.class);
+        startActivity(intent);
+    }
 
 }
 

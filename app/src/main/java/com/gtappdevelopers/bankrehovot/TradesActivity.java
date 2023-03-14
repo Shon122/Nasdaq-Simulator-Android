@@ -53,8 +53,6 @@ public class TradesActivity extends AppCompatActivity {
                     }
                 }
 
-                Intent intent = new Intent(TradesActivity.this, TradePage.class);
-                startActivity(intent);
             }
         });
 
@@ -151,6 +149,16 @@ public class TradesActivity extends AppCompatActivity {
         }
     }
 
+    @Override //when user wants to go back
+    public void onBackPressed() {
+        // Handle back button press event here
+        goBackTradesList(null);
+    }
+
+    public void goBackTradesList(View view) {
+        Intent intent = new Intent(this, HomePage.class);
+        startActivity(intent);
+    }
 
 }
 

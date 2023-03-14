@@ -1,123 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="4dp"
     tools:context=".TradesActivity">
 
 
-    <TextView
-        android:id="@+id/statusTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/search_view_trades"
-        android:layout_marginLeft="2dp"
-        android:minWidth="55dp"
-        android:padding="6dp"
-
-        android:text="Status"
-        android:textSize="12sp"
-
-        />
-
-
-    <TextView
-        android:id="@+id/dateTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/search_view_trades"
-        android:layout_toRightOf="@id/statusTextView"
-
-        android:minWidth="90dp"
-
-
-        android:padding="6dp"
-        android:text="Date"
-
-
-        android:textSize="12sp"
-
-
-        />
-
-    <TextView
-        android:id="@+id/nameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/search_view_trades"
-        android:layout_toRightOf="@id/dateTextView"
-
-        android:minWidth="60dp"
-
-
-        android:padding="6dp"
-
-
-        android:text="Symbol"
-        android:textSize="12sp"
-
-        />
-
-    <TextView
-        android:id="@+id/entryTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/search_view_trades"
-        android:layout_toRightOf="@id/nameTextView"
-        android:minWidth="60dp"
-
-        android:padding="6dp"
-
-
-        android:text="Entry"
-
-
-        android:textSize="12sp"
-
-        />
-
-<!--    <TextView-->
-<!--        android:id="@+id/exitTextView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/search_view"-->
-<!--        android:layout_toRightOf="@id/entryTextView"-->
-<!--        android:minWidth="60dp"-->
-<!--        android:padding="6dp"-->
-<!--        android:text="Exit"-->
-<!--        android:textSize="12sp" />-->
-
-    <TextView
-        android:id="@+id/returnTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-
-        android:layout_below="@id/search_view_trades"
-
-
-        android:layout_toRightOf="@id/entryTextView"
-
-
-        android:minWidth="90dp"
-        android:padding="6dp"
-        android:text="Return $"
-        android:textSize="12sp" />
-
-
-    <SearchView
-        android:id="@+id/search_view_trades"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:queryHint="Search by name" />
+        android:padding="6dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/goBackInvestList1"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:onClick="goBackTradesList"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.043"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.285"
+            app:srcCompat="@drawable/gobacknormal" />
+
+        <ImageView
+            android:id="@+id/sortaztrades"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:onClick="sortByName"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.827"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.357"
+            app:srcCompat="@drawable/azsortsign" />
+
+        <ImageView
+            android:id="@+id/sortChangeInvest"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:onClick="sortByProfitLoss"
+            android:padding="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.956"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.357"
+            app:srcCompat="@drawable/dollarsign" />
+
+        <SearchView
+            android:id="@+id/search_view_trades"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_edittext"
+            android:queryHint="Search by name"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.445"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.571" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
     <ListView
         android:id="@+id/list_view_trades"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/statusTextView" />
-</RelativeLayout>
+        android:layout_height="match_parent" />
+</LinearLayout>

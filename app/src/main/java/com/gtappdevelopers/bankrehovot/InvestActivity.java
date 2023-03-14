@@ -31,7 +31,7 @@ public class InvestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_invest);
         //initialize the arraylist and adapter
         stockList = MainActivity.stockModels;
-        saveStockList=MainActivity.stockModels;
+        saveStockList = MainActivity.stockModels;
         adapter = new StockAdapter(this, stockList);
 
         //initialize the ListView and set the adapter
@@ -64,6 +64,7 @@ public class InvestActivity extends AppCompatActivity {
         });
         sortByName(null);
     }
+
     public void filter(String text) {
         ArrayList<StockModel> filteredList = new ArrayList<>();
         if (text.isEmpty()) {
@@ -137,6 +138,16 @@ public class InvestActivity extends AppCompatActivity {
     }
 
 
+    @Override //when user wants to go back
+    public void onBackPressed() {
+        // Handle back button press event here
+        goBackInvestList(null);
+    }
+
+    public void goBackInvestList(View view) {
+        Intent intent = new Intent(this, HomePage.class);
+        startActivity(intent);
+    }
 }
 
 

@@ -228,7 +228,7 @@ public class MyProfile extends AppCompatActivity {
                     circularBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                     byte[] imageBytes = baos.toByteArray();
                     String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-                   PreferenceManager.getDefaultSharedPreferences(this).edit().putString("saved_image", encodedImage).apply();
+                    PreferenceManager.getDefaultSharedPreferences(this).edit().putString("saved_image", encodedImage).apply();
                     MainActivity.viewingUser.savedImage = encodedImage;
                     currentUser.savedImage = encodedImage;
                     MainActivity.users.set(mainUserIndex, currentUser);
@@ -251,7 +251,7 @@ public class MyProfile extends AppCompatActivity {
             circularBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageBytes = baos.toByteArray();
             String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-          PreferenceManager.getDefaultSharedPreferences(this).edit().putString("saved_image", encodedImage).apply();
+            PreferenceManager.getDefaultSharedPreferences(this).edit().putString("saved_image", encodedImage).apply();
             MainActivity.viewingUser.savedImage = encodedImage;
             currentUser.savedImage = encodedImage;
             MainActivity.users.set(mainUserIndex, currentUser);
@@ -362,5 +362,24 @@ public class MyProfile extends AppCompatActivity {
 
     public Double roundToTwoDecimals(Double value) {
         return (double) Math.round(value * 100) / 100;
+    }
+
+
+    @Override //when user wants to go back
+    public void onBackPressed() {
+        // Handle back button press event here
+        goBackProfile(null);
+    }
+
+    public void goBackProfile(View view) {
+        if (MainActivity.backToUsers == 0) {
+            Intent intent = new Intent(this, HomePage.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, UserList.class);
+            startActivity(intent);
+
+
+        }
     }
 }
