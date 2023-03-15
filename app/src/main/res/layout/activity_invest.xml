@@ -14,8 +14,8 @@
 
     <ImageView
         android:id="@+id/goBackInvestList"
-        android:layout_width="45dp"
-        android:layout_height="44dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:onClick="goBackInvestList"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,8 +28,8 @@
 
     <ImageView
         android:id="@+id/sortazinvest"
-        android:layout_width="45dp"
-        android:layout_height="44dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:onClick="sortByName"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -42,8 +42,8 @@
 
     <ImageView
         android:id="@+id/sortChangeInvest"
-        android:layout_width="45dp"
-        android:layout_height="44dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:onClick="sortByGainLossPercent"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -68,7 +68,6 @@
         app:layout_constraintVertical_bias="0.571" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout/>
     <ListView
         android:id="@+id/list_view_invest"
         android:layout_width="match_parent"

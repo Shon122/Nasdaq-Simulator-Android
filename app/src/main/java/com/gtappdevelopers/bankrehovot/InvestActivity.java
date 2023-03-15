@@ -95,7 +95,8 @@ public class InvestActivity extends AppCompatActivity {
             Collections.reverse(stockList);
         }
         nameSort++;
-        adapter.notifyDataSetChanged();
+        adapter = new StockAdapter(this, stockList);
+        listView.setAdapter(adapter);
     }
 
     //function to sort the list by gain/loss percentage
@@ -112,30 +113,10 @@ public class InvestActivity extends AppCompatActivity {
             Collections.reverse(stockList);
         }
         gainSort++;
-        adapter.notifyDataSetChanged();
+        adapter = new StockAdapter(this, stockList);
+        listView.setAdapter(adapter);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.stock_menu, menu);
-        return true;
-    }
-
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.sort_by_name:
-                sortByName(null);
-                return true;
-            case R.id.sort_by_gainlosspercent:
-                sortByGainLossPercent(null);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
 
     @Override //when user wants to go back

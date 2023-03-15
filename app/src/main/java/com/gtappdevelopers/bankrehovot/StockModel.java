@@ -13,7 +13,7 @@ public class StockModel {
     public Double gainLossPercent;
 
     public StockModel(String name1, ArrayList<Double> priceList1, ArrayList<String> dateList1, String timeInterval1) {
-        updateTime=System.currentTimeMillis();
+        updateTime = System.currentTimeMillis();
         name = name1;
         priceList = priceList1;
         timeInterval = timeInterval1;
@@ -21,13 +21,16 @@ public class StockModel {
         if (priceList1.size() > 1) {
             gainLossPercent = profitLossCalculator(priceList1.get(0), priceList1.get(priceList1.size() - 1));
             gainLossPercent = Double.valueOf(removeInfiniteNumbers(gainLossPercent.toString()));
-            gainLossPercent=roundToTwoDecimals(gainLossPercent);
+            gainLossPercent = roundToTwoDecimals(gainLossPercent);
         } else
             gainLossPercent = 0.0;
         if (priceList1.size() > 1)
             analysis = updateAnalysis(priceList1);
         else
             analysis = "Analysis is currently unavailable...";
+    }
+
+    public StockModel() {
     }
 
     public Double roundToTwoDecimals(Double value) {
@@ -85,7 +88,7 @@ public class StockModel {
 
         //now put in a string
         //verbal:
-        analysis.append("Analysis for "+name+":"+"\n");
+        analysis.append("Analysis for " + name + ":" + "\n");
         if (standardDeviation > averagePrice * 0.1) {
             analysis.append("The stock has had high volatility.\n");
         } else {

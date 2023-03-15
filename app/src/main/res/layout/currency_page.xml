@@ -59,7 +59,7 @@
         app:layout_constraintVertical_bias="0.024" />
 
 
-    <TextView
+    **<TextView
         android:id="@+id/changeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -169,179 +169,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.575" />
 
-    <!--        <CheckBox-->
-    <!--            android:id="@+id/takeProfitCheckBox"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginBottom="448dp"-->
-    <!--            android:text="Take Profit"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.032"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
+    <ImageView
+        android:id="@+id/goBackCurrenyPage"
+        android:onClick="goBackCurrenyPage"
+        android:layout_width="41dp"
+        android:layout_height="33dp"
 
-    <!--        <TextView-->
-    <!--            android:id="@+id/PriceText"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginBottom="412dp"-->
-    <!--            android:text="Price"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.459"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-    <!--        <EditText-->
-    <!--            android:id="@+id/percentStopEditText"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginBottom="300dp"-->
-    <!--            android:hint="0.00"-->
-    <!--            android:inputType="textPersonName"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.964"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-    <!--        <Button-->
-    <!--            android:id="@+id/minusStop"-->
-    <!--            android:layout_width="40dp"-->
-    <!--            android:layout_height="38dp"-->
-    <!--            android:layout_marginBottom="448dp"-->
-    <!--            android:text="-"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.706"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-
-    <!--        <EditText-->
-    <!--            android:id="@+id/percentProfitEditText"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginBottom="308dp"-->
-    <!--            android:hint="0.00"-->
-    <!--            android:inputType="textPersonName"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.024"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/PercentText"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginBottom="324dp"-->
-    <!--            android:text="Percent"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.479"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-    <!--        <EditText-->
-    <!--            android:id="@+id/priceStopEditText"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginBottom="396dp"-->
-    <!--            android:hint="0.00"-->
-    <!--            android:inputType="textPersonName"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.964"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-
-    <!--        <Button-->
-    <!--            android:id="@+id/plusProfit"-->
-    <!--            android:layout_width="42dp"-->
-    <!--            android:layout_height="37dp"-->
-    <!--            android:layout_marginBottom="484dp"-->
-    <!--            android:text="+"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.298"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-    <!--        <EditText-->
-    <!--            android:id="@+id/ilsProfitEditText"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginBottom="356dp"-->
-    <!--            android:hint="0.00"-->
-    <!--            android:inputType="textPersonName"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.024"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-    <!--        <EditText-->
-    <!--            android:id="@+id/priceProfitEditText"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginBottom="400dp"-->
-    <!--            android:hint="0.00"-->
-    <!--            android:inputType="textPersonName"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.024"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-
-    <!--        <TextView-->
-    <!--            android:id="@+id/ILSText"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginBottom="356dp"-->
-    <!--            android:text="ILS"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.47"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-    <!--        <Button-->
-    <!--            android:id="@+id/minusProfit"-->
-    <!--            android:layout_width="40dp"-->
-    <!--            android:layout_height="38dp"-->
-    <!--            android:layout_marginBottom="448dp"-->
-    <!--            android:text="-"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.296"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-    <!--        <Button-->
-    <!--            android:id="@+id/plusStop"-->
-    <!--            android:layout_width="42dp"-->
-    <!--            android:layout_height="37dp"-->
-    <!--            android:layout_marginBottom="484dp"-->
-    <!--            android:text="+"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.71"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-    <!--        <EditText-->
-    <!--            android:id="@+id/ilsStopEditText"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginBottom="348dp"-->
-    <!--            android:hint="0.00"-->
-    <!--            android:inputType="textPersonName"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.964"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
-    <!--        <CheckBox-->
-    <!--            android:id="@+id/stopLossCheckBox"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginBottom="444dp"-->
-    <!--            android:text="Stop Loss"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintHorizontal_bias="0.958"-->
-    <!--            app:layout_constraintStart_toStartOf="parent" />-->
-
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.005"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.021"
+        app:srcCompat="@drawable/gobacknormal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

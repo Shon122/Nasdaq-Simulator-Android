@@ -116,7 +116,8 @@ public class UserList extends AppCompatActivity {
             Collections.reverse(userList);
         }
         nameSort++;
-        adapter.notifyDataSetChanged();
+        adapter = new UserAdapter(this, userList);
+        listView.setAdapter(adapter);
     }
 
     //function to sort the list by gain/loss percentage
@@ -133,7 +134,8 @@ public class UserList extends AppCompatActivity {
             Collections.reverse(userList);
         }
         balanceSort++;
-        adapter.notifyDataSetChanged();
+        adapter = new UserAdapter(this, userList);
+        listView.setAdapter(adapter);
     }
 
 

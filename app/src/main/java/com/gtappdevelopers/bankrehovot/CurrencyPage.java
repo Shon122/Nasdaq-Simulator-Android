@@ -90,24 +90,17 @@ public class CurrencyPage extends AppCompatActivity {
         buysellButton = findViewById(R.id.buysellButton);
         buysell = true;//true for buy, false for sell
 
-        priceTextView.setText(String.valueOf(currentPrice));
+        priceTextView.setText("Price: " + roundToTwoDecimals(currentPrice));
         stockNameTextView.setText(currentStock.name);
-        userBalanceTextView.setText("Your Balance: $" + currentBalance);
+        userBalanceTextView.setText("Balance: $" + roundToTwoDecimals(currentBalance));
         orderTradeEditText.setVisibility(View.INVISIBLE);
 
 
-        changeTextView.setText("" + currentChange + "%");
-        if (currentChange < 0)
-            changeTextView.setTextColor(Color.RED);
-        else
-            changeTextView.setTextColor(Color.GREEN);
+        if (currentChange > 0) {
+            changeTextView.setText("Change: +" + roundToTwoDecimals(currentChange) + "%");
+        } else
+            changeTextView.setText("Change: " + roundToTwoDecimals(currentChange) + "%");
 
-        buysellButton.setTextColor(Color.GREEN);
-
-
-//        NumberPrediction prediction = new NumberPrediction(priceList);
-//        double nextPrice = prediction.predictNextNumber();
-//        predictionTextView.setText("" + nextPrice);
 
 
         AnyChartView anyChartView = findViewById(R.id.any_chart_view);
@@ -141,6 +134,9 @@ public class CurrencyPage extends AppCompatActivity {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public Double roundToTwoDecimals(Double value) {
+        return (double) Math.round(value * 100) / 100;
+    }
 
     public static class CustomDataEntry extends ValueDataEntry {
         CustomDataEntry(String x, Number value) {
@@ -197,7 +193,7 @@ public class CurrencyPage extends AppCompatActivity {
                     currentStock.priceList.get(0), userAmount, -1.0, -1.0, buysell, true, orderPrice);
             Toast.makeText(this, "Trade Ordered", Toast.LENGTH_SHORT).show();
         }
-        userBalanceTextView.setText("Your Balance: $" + (MainActivity.currentUser.balance - userAmount));
+        userBalanceTextView.setText("Balance: $" + roundToTwoDecimals((MainActivity.currentUser.balance - userAmount)));
         MainActivity.currentUser.balance = MainActivity.currentUser.balance - userAmount;
         MainActivity.currentUser.trades.add(newTrade);
         MainActivity.users.set(MainActivity.currentUserIndex, MainActivity.currentUser);
@@ -221,11 +217,9 @@ public class CurrencyPage extends AppCompatActivity {
     public void changebuysell(View view) {
         buysell = !buysell;
         if (buysell) {
-            buysellButton.setText("buy");
-            buysellButton.setTextColor(Color.GREEN);
+            buysellButton.setText("Type: Buy");
         } else {
-            buysellButton.setText("sell");
-            buysellButton.setTextColor(Color.RED);
+            buysellButton.setText("Type: Sell");
         }
     }
 

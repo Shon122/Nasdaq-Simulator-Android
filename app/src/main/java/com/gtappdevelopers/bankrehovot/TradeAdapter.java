@@ -17,6 +17,7 @@ import com.google.firebase.database.collection.LLRBNode;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 
 public class TradeAdapter extends ArrayAdapter<Trade> {
     private ArrayList<Trade> tradeList;
@@ -24,6 +25,7 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
 
     public TradeAdapter(Context context, ArrayList<Trade> tradeList) {
         super(context, 0, tradeList);
+
         this.tradeList = tradeList;
         this.originalList = tradeList;
     }
@@ -33,7 +35,7 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
         Trade currentTrade = getItem(position);
-        currentTrade.totalProfitLoss=(double) Math.round(currentTrade.totalProfitLoss * 100) / 100;
+        currentTrade.totalProfitLoss = (double) Math.round(currentTrade.totalProfitLoss * 100) / 100;
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.trade_item, parent, false);
@@ -75,10 +77,10 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
 //            exitTextView.setText(String.valueOf(currentTrade.currentPrice));
 //        }
         if (currentTrade.totalProfitLoss < 0) {
-            returnTextView.setText("-$" + String.valueOf(currentTrade.totalProfitLoss));
+            returnTextView.setText(roundToTwoDecimals(currentTrade.totalProfitLoss) + "$");
             returnTextView.setTextColor(Color.parseColor("#F15044"));
         } else {
-            returnTextView.setText("+$" + String.valueOf(currentTrade.totalProfitLoss));
+            returnTextView.setText("+" + roundToTwoDecimals(currentTrade.totalProfitLoss) + "$");
             returnTextView.setTextColor(Color.parseColor("#4CAF50"));
 
         }
@@ -139,5 +141,9 @@ public class TradeAdapter extends ArrayAdapter<Trade> {
 
         MainActivity.uploadUsersToFirestore();
         notifyDataSetChanged();
+    }
+
+    public Double roundToTwoDecimals(Double value) {
+        return (double) Math.round(value * 100) / 100;
     }
 }

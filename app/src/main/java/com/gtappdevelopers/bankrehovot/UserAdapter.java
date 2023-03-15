@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class UserAdapter extends ArrayAdapter<User> {
     private ArrayList<User> userList;
@@ -29,8 +30,9 @@ public class UserAdapter extends ArrayAdapter<User> {
 
     public UserAdapter(Context context, ArrayList<User> userList) {
         super(context, 0, userList);
+
         this.userList = userList;
-        this.originalList = MainActivity.users;
+        this.originalList = userList;
     }
 
     @SuppressLint("SetTextI18n")
@@ -48,7 +50,7 @@ public class UserAdapter extends ArrayAdapter<User> {
         ImageView profile = convertView.findViewById(R.id.profile_image_item);
         // Populate the data into the template view using the data object
         nameView.setText(user.username);
-        balanceView.setText(user.balance + "$");
+        balanceView.setText(roundToTwoDecimals(user.balance) + "$");
         String savedImage = user.savedImage;
         if (savedImage != null && !savedImage.equals("null") && savedImage.length() > 10) {
             byte[] decodedString = Base64.decode(savedImage, Base64.DEFAULT);
@@ -99,5 +101,8 @@ public class UserAdapter extends ArrayAdapter<User> {
         return output;
     }
 
+    public Double roundToTwoDecimals(Double value) {
+        return (double) Math.round(value * 100) / 100;
+    }
 
 }

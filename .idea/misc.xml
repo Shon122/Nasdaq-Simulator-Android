@@ -12,6 +12,7 @@
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable-v24/ic_call_24dp.xml" value="0.371" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable-v24/ic_email_24dp.xml" value="0.371" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable-v24/ic_launcher_background.xml" value="0.371" />
+        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.375" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable-v24/ic_location_24dp.xml" value="0.371" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable-v24/ic_notifications_white_24dp.xml" value="0.371" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/drawable-v24/icon_camera.xml" value="0.371" />
@@ -51,14 +52,14 @@
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/register_account.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/register_activity.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/registeractivity.xml" value="0.26444091149973503" />
-        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/stock_game.xml" value="0.33" />
+        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/stock_game.xml" value="0.5" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/stock_item.xml" value="0.33" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/testdesign.xml" value="0.33" />
-        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/trade_item.xml" value="0.5" />
+        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/trade_item.xml" value="0.33" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/trade_item_profile.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/trade_page.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/trades_activity.xml" value="0.5" />
-        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/user_item.xml" value="0.33" />
+        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/user_item.xml" value="0.25" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/layout/userlist.xml" value="0.5" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/menu/menu_main.xml" value="0.37864583333333335" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/menu/popup_menu.xml" value="0.2351851851851852" />
@@ -66,6 +67,8 @@
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/menu/toolbar_menu.xml" value="0.2351851851851852" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/menu/trades_menu.xml" value="0.6666666666666666" />
         <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/menu/user_menu.xml" value="0.37864583333333335" />
+        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.245" />
+        <entry key="..\:/Users/user1/AndroidStudioProjects/BankRehovot/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.245" />
       </map>
     </option>
   </component>

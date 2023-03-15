@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.content.Intent;
@@ -17,6 +19,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -32,6 +36,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 public class LoginActivity extends AppCompatActivity {
     public EditText usernameEditText;
     public EditText passwordEditText;
@@ -39,6 +53,9 @@ public class LoginActivity extends AppCompatActivity {
     public TextView signupTextView;
     public TextView loginTextView;
     public Button loginButton;
+
+    private static final int REQUEST_CAMERA_PERMISSION = 1;
+    private static final int REQUEST_LOCATION_PERMISSION = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +69,23 @@ public class LoginActivity extends AppCompatActivity {
         usernameEditText = (EditText) findViewById(R.id.usernameEditText);
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
 
+        // Request camera permission
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    REQUEST_CAMERA_PERMISSION);
+        }
+
+        // Request location permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_LOCATION_PERMISSION);
+            }
+        }
 
     }
 
@@ -109,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
             Date date = new Date();
             String currentDate = dateFormat.format(date);
-            User newUser = new User(password, username, emptyList, 10000.00, currentDate, MainActivity.defaultImage, null,new ArrayList<GameStock>());
+            User newUser = new User(password, username, emptyList, 10000.00, currentDate,null, null, new ArrayList<GameStock>());
             MainActivity.users.add(newUser);
             MainActivity.uploadUsersToFirestore();
             MainActivity.password = password;
@@ -227,4 +261,25 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case REQUEST_CAMERA_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Camera permission granted
+                } else {
+                    // Camera permission denied
+                }
+                break;
+            case REQUEST_LOCATION_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Location permission granted
+                } else {
+                    // Location permission denied
+                }
+                break;
+        }
+    }
 }

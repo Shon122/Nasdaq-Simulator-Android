@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class StockAdapter extends ArrayAdapter<StockModel> {
     private ArrayList<StockModel> stockList;
@@ -20,6 +21,7 @@ public class StockAdapter extends ArrayAdapter<StockModel> {
 
     public StockAdapter(Context context, ArrayList<StockModel> stockList) {
         super(context, 0, stockList);
+
         this.stockList = stockList;
         this.originalList = stockList;
     }
@@ -41,16 +43,16 @@ public class StockAdapter extends ArrayAdapter<StockModel> {
         TextView gainlossView = convertView.findViewById(R.id.gainloss_view);
         // Populate the data into the template view using the data object
         nameView.setText(stock.name);
-        priceView.setText("" + stock.priceList.get(0));
+        priceView.setText("" + roundToTwoDecimals(stock.priceList.get(0)));
         if (stock.gainLossPercent >= 0) {
-            gainlossView.setText("+" + stock.gainLossPercent + "%");
+            gainlossView.setText("+" + roundToTwoDecimals(stock.gainLossPercent) + "%");
             imageViewdown.setVisibility(View.INVISIBLE);
             imageViewup.setVisibility(View.VISIBLE);
             gainlossView.setTextColor(Color.parseColor("#FF148A45"));
         } else {
             imageViewdown.setVisibility(View.VISIBLE);
             imageViewup.setVisibility(View.INVISIBLE);
-            gainlossView.setText(stock.gainLossPercent + "%");
+            gainlossView.setText(roundToTwoDecimals(stock.gainLossPercent) + "%");
             gainlossView.setTextColor(Color.parseColor("#D50000"));
 
         }
@@ -90,4 +92,7 @@ public class StockAdapter extends ArrayAdapter<StockModel> {
     }
 
 
+    public Double roundToTwoDecimals(Double value) {
+        return (double) Math.round(value * 100) / 100;
+    }
 }

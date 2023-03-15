@@ -48,11 +48,7 @@ public class MyProfile extends AppCompatActivity {
     public Button logoutButton;
     public int mainUserIndex;
     public User currentUser;
-    //trades show
-    //  private ArrayList<Trade> saveTradeList;
-    //private ArrayList<Trade> tradeList;
-    // private TradeAdapterProfile adapter;
-    // private ListView listView;
+
     //this after location
     public ImageView imageView;
     private static final int GALLERY_REQUEST = 1;
@@ -72,19 +68,11 @@ public class MyProfile extends AppCompatActivity {
                 break;
             }
         }
-        //initialize the arraylist and adapter
-//        tradeList = currentUser.trades;
-//        saveTradeList = currentUser.trades;
-//        adapter = new TradeAdapterProfile(MyProfile.this, tradeList);
 
-        //initialize the ListView and set the adapter
-//        listView = findViewById(R.id.list_view_profile);
-//        listView.setAdapter(adapter);
-//        sortByProfitLoss();
 
-        int played = 0;
-        int lost = 0;
-        int won = 0;
+        Double played = 0.0;
+        Double lost = 0.0;
+        Double won = 0.0;
         int winrate = 0;
         for (GameStock game : currentUser.games) {
             played++;
@@ -93,8 +81,12 @@ public class MyProfile extends AppCompatActivity {
             else
                 lost++;
         }
-        if (won > 0)
-            winrate = ((won / played) * 100);
+        if (won > 0) {
+            Double num123 = (won / played);
+            num123 *= 100;
+            winrate = num123.intValue();
+
+        }
         //now views init
         balanceTextView = findViewById(R.id.balance_text);
         nameTextView = findViewById(R.id.profile_name);
@@ -104,9 +96,9 @@ public class MyProfile extends AppCompatActivity {
         gamesLost = findViewById(R.id.games_lost);
         winratePercent = findViewById(R.id.winrate_text);
         //now put values
-        gamesPlayed.setText("Games Played: " + played);
-        gamesWon.setText("Games Won: " + won);
-        gamesLost.setText("Games Lost: " + lost);
+        gamesPlayed.setText("Games Played: " + played.intValue());
+        gamesWon.setText("Games Won: " + won.intValue());
+        gamesLost.setText("Games Lost: " + lost.intValue());
         winratePercent.setText(winrate + "% Winrate");
 
         nameTextView.setText(currentUser.username);
@@ -348,17 +340,7 @@ public class MyProfile extends AppCompatActivity {
             }
         }
     }
-//
-//    public void sortByProfitLoss() {
-//
-//        Collections.sort(tradeList, new Comparator<Trade>() {
-//            @Override
-//            public int compare(Trade o1, Trade o2) {
-//                return Double.compare(o1.totalProfitLoss, o2.totalProfitLoss);
-//            }
-//        });
-//        adapter.notifyDataSetChanged();
-//    }
+
 
     public Double roundToTwoDecimals(Double value) {
         return (double) Math.round(value * 100) / 100;

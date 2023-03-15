@@ -15,9 +15,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -34,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +51,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends AppCompatActivity {
     //user essentials saving his data
@@ -57,12 +62,11 @@ public class MainActivity extends AppCompatActivity {
     public static String news = "";
     public static String username = "";
     public static String password = "";
-    public static int backToUsers=0;//if zero you came from homepage and if one you came from userlist
+    public static int backToUsers = 0;//if zero you came from homepage and if one you came from userlist
     public static ArrayList<Trade> trades = new ArrayList<>();
     public static ArrayList<User> users = new ArrayList<>();
     public static User currentUser;
     public static int currentUserIndex = 0;
-    public static String defaultImage;
     private FirebaseFirestore db;
     Map<String, Object> docData;
 
@@ -104,12 +108,12 @@ public class MainActivity extends AppCompatActivity {
         allNames = new String[]{
 
                 "ABNB", "ADBE"
-//                , "ADI", "ADP", "AEP", "ALGN", "AMD", "AMGN",
-//                "AMZN", "AAPL", "ATVI", "AUDNOK", "AUDPLN", "BNBUSD", "BTCUSD",
-//                "CADBRL", "CADZAR", "CHFJPY", "ETHUSD", "EURBRL", "EURUSD", "GILD",
-//                "GOOGL", "IBM", "INTC", "ILSUSD", "KO", "LTCUSD", "META",
-//                "MMM", "MSFT", "NKE", "NFLX", "NZDCZK", "NZDTRY", "PYPL", "PLNILS",
-//                "SOLUSD", "TSLA", "TRYDKK", "USDJPY", "WMT", "XRPUSD"
+                , "ADI", "ADP", "AEP", "ALGN", "AMD", "AMGN",
+                "AMZN", "AAPL", "ATVI", "AUDNOK", "AUDPLN", "BNBUSD", "BTCUSD",
+                "CADBRL", "CADZAR", "CHFJPY", "ETHUSD", "EURBRL", "EURUSD", "GILD",
+                "GOOGL", "IBM", "INTC",  "KO", "LTCUSD", "META",
+                "MMM", "MSFT", "NKE", "NFLX", "NZDCZK", "NZDTRY", "PYPL",
+                "SOLUSD", "TSLA", "TRYDKK", "USDJPY", "WMT", "XRPUSD"
         };
 
 
@@ -160,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         news = readFromFile("saveNews.txt");
-        defaultImage = readFromFile("defaultimage.txt");
         try {
             firstLoadAll();
         } catch (ExecutionException | InterruptedException | ParseException e) {
@@ -168,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (users.size() > 0)
             viewingUser = users.get(0);
-        viewingStock = stockModels.get(0);
+       // viewingStock = stockModels.get(0);
         switchIntent();
         //end of oncreate
     }
@@ -200,9 +203,38 @@ public class MainActivity extends AppCompatActivity {
 
     public void firstLoadAll() throws ExecutionException, InterruptedException, ParseException {
         // getStockModelsFromFirebase();
-        getAllStockModels("4hour");
-        // combineStockModelInfo();
-        //  uploadStockModelsFirebase();
+        long currentTime = System.currentTimeMillis();
+        long lastUpdate = 0;
+        //get lastUpdate data from firebase
+        db.collection("Trades").document("stockInfo").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+
+
+                    String uploaderTaker = (document.get("lastUpdateStocks").toString());
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                    myEdit.putString("stockLastUpdate", uploaderTaker);
+                    myEdit.apply();
+
+                }
+            }
+        });
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        String dataTaker = sharedPreferences.getString("stockLastUpdate", "5");
+        lastUpdate = Long.parseLong((dataTaker));
+        long diff = (currentTime - lastUpdate); // 1 min = 60000 ms
+        //make sure more than 1 day has passed since last call
+        if (diff == 1909600000)//more thank two weeks
+        {
+            getAllStockModels("4hour");
+            uploadStockModelsFirebase();
+        } else {
+            getStockModelsFromFirebase();
+
+        }
         updateNews();
 
 
@@ -249,24 +281,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public Task<List<User>> getUsersFromFirestore() {
-        TaskCompletionSource<List<User>> taskCompletionSource = new TaskCompletionSource<>();
-        List<User> users = new ArrayList<>();
-
-        db.collection("Trades").document("Users").collection("usersAll").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                QuerySnapshot querySnapshot = task.getResult();
-                for (com.google.firebase.firestore.DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
-                    User user = documentSnapshot.toObject(User.class);
-                    users.add(user);
-                }
-                taskCompletionSource.setResult(users);
-            }
-
-        });
-        return taskCompletionSource.getTask();
-    }
-
 
     public static void uploadUsersToFirestore() {
         for (User user : users) {
@@ -276,73 +290,59 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public void combineStockModelInfo() {
-//        //combine the info from the variable stockModels into the string called "allInfo"
-//        StringBuilder sb = new StringBuilder();
-//        for (StockModel model : stockModels) {
-//            sb.append(model.updateTime).append("<");
-//            sb.append(model.name).append("<");
-//            sb.append(model.timeInterval).append("<");
-//            sb.append(TextUtils.join("<", model.priceList)).append("<");
-//            sb.append(TextUtils.join("<", model.dateList)).append("<");
-//            sb.append(model.analysis).append("<");
-//            sb.append(model.gainLossPercent).append(";");
-//        }
-//        allInfo = sb.toString();
-//    }
-
-    public void extractStockModelInfo() {
-        //extract the string var "allInfo" into the var stockModels
-        String[] modelStrings = allInfo.split(";");
-        StockModel[] models = new StockModel[modelStrings.length];
-        for (int i = 0; i < modelStrings.length; i++) {
-            String[] modelInfo = modelStrings[i].split("<");
-            long updateTime = Long.parseLong(modelInfo[0]);
-            String name = modelInfo[1];
-            String timeInterval = modelInfo[2];
-            ArrayList<Double> priceList = new ArrayList<>(Arrays.asList(modelInfo[3].split(",")).stream().map(Double::parseDouble).collect(Collectors.toList()));
-            ArrayList<String> dateList = new ArrayList<>(Arrays.asList(modelInfo[4].split(",")));
-            String analysis = modelInfo[5];
-            double gainLossPercent = Double.parseDouble(modelInfo[6]);
-            models[i] = new StockModel(name, priceList, dateList, timeInterval);
-            models[i].updateTime = updateTime;
-            models[i].analysis = analysis;
-            models[i].gainLossPercent = gainLossPercent;
-        }
-        stockModels = (ArrayList<StockModel>) Arrays.asList(models);
-    }
 
     public void uploadStockModelsFirebase() {
-//        docData.put("infoString", allInfo);
-//        db.collection("Trades").document("stockInfo").set(docData, SetOptions.merge());
 
         for (StockModel stock : stockModels) {
 
             FirebaseFirestore db1 = FirebaseFirestore.getInstance();
             db1.collection("Trades").document("stockInfo").collection("allStocks").document(stock.name).set(stock);
         }
-
+        FirebaseFirestore db1 = FirebaseFirestore.getInstance();
+        HashMap<String, Object> updateValues = new HashMap<>();
+        updateValues.put("lastUpdateStocks", System.currentTimeMillis());
+        db1.collection("Trades").document("stockInfo").set(updateValues);
 
     }
 
     public void getStockModelsFromFirebase() {
-        //gets the current info string from firebase and puts it in allInfo and stockModels vars
-        db.collection("Trades").document("stockInfo").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+        FirebaseFirestore db2 = FirebaseFirestore.getInstance();
+        CollectionReference stockRef = db2.collection("Trades").document("stockInfo").collection("allStocks");
+
+        stockRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
                 if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    String uploaderTaker = String.valueOf(document.get("infoString"));
-                    SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                    myEdit.putString("infoString1", uploaderTaker);
-                    myEdit.apply();
+
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        StockModel stockModel = document.toObject(StockModel.class);
+                        stockModels.add(stockModel);
+
+                        SharedPreferences sharedPref = getSharedPreferences("stockPref", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(stockModels);
+                        editor.putString("stockModels", json);
+                        editor.apply();
+                    }
                 }
             }
         });
-        SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        allInfo = sharedPreferences.getString("infoString1", "");
-        extractStockModelInfo();
+
+
+        SharedPreferences sharedPref = getSharedPreferences("stockPref", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPref.getString("stockModels", null);
+        Type type = new TypeToken<ArrayList<StockModel>>() {
+        }.getType();
+        ArrayList<StockModel> stockModels = gson.fromJson(json, type);
+
+        if (stockModels == null) {
+            MainActivity.stockModels = new ArrayList<StockModel>();
+        } else
+            MainActivity.stockModels = stockModels;
 
     }
 
@@ -376,6 +376,7 @@ public class MainActivity extends AppCompatActivity {
                         stockModels.set(i, saveCurrentStockModel);
                     }
                     uploadApiIndexFirebase();
+                    uploadStockModelsFirebase();
                 }
 
             }

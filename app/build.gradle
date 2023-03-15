@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    implementation "com.androidplot:androidplot-core:1.5.10"
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
     implementation 'com.squareup.okhttp3:okhttp:4.9.2'

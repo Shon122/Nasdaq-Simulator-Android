@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -105,6 +107,14 @@ public class StockGame extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sellPositions.add((double) prices.get(currentPriceIndex));
+                int total = buyPositions.size() + sellPositions.size();
+                runOnUiThread(new Runnable() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void run() {
+                        totalPositions.setText("Total Positions: " + total);
+                    }
+                });
             }
         });
 
@@ -199,10 +209,14 @@ public class StockGame extends AppCompatActivity {
                         @SuppressLint("SetTextI18n")
                         @Override
                         public void run() {
-                            if (totalPNL > 0)
+                            if (totalPNL > 0) {
+                                totalPNLTextView1.setTextColor(Color.parseColor("#FF148A45"));
                                 totalPNLTextView1.setText("+" + roundToTwoDecimals(totalPNL) + "$");
-                            else
+                            } else {
+                                totalPNLTextView1.setTextColor(Color.parseColor("#D50000"));
                                 totalPNLTextView1.setText(roundToTwoDecimals(totalPNL) + "$");
+
+                            }
                         }
                     });
 

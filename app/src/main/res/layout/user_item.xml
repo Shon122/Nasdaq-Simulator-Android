@@ -40,7 +40,7 @@
 
             <TextView
                 android:id="@+id/nameOfUser"
-                android:layout_width="230dp"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_semibold"
                 android:minWidth="230dp"
@@ -49,24 +49,24 @@
                 android:textSize="30dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.839"
+                app:layout_constraintHorizontal_bias="0.925"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.297" />
 
             <TextView
                 android:id="@+id/balanceOfUser"
-                android:layout_width="150dp"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:fontFamily="@font/montserrat_semibold"
                 android:minWidth="150dp"
-                android:text="15315$"
+                android:text="15315.033$"
                 android:textColor="@color/lavender"
                 android:textSize="30dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.547"
+                app:layout_constraintHorizontal_bias="0.763"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.648" />
