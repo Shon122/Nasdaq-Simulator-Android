@@ -48,31 +48,46 @@ public class HomePage extends AppCompatActivity {
     public void moveToInvest(View view) {
 
         Intent intent = new Intent(this, InvestActivity.class);
+
+
         startActivity(intent);
+        finish();
     }
 
     public void moveToTrades(View view) {
 
         Intent intent = new Intent(this, TradesActivity.class);
+
+
         startActivity(intent);
+        finish();
     }
 
     public void moveToUserList(View view) {
 
         Intent intent = new Intent(this, UserList.class);
+
+
         startActivity(intent);
+        finish();
     }
 
     public void moveToStockGame(View view) {
 
         Intent intent = new Intent(this, StockGame.class);
+
+
         startActivity(intent);
+        finish();
     }
 
     public void moveToMyProfile(View view) {
         MainActivity.viewingUser = MainActivity.currentUser;
         Intent intent = new Intent(this, MyProfile.class);
+
+
         startActivity(intent);
+        finish();
     }
 
     @Override //when user wants to go back

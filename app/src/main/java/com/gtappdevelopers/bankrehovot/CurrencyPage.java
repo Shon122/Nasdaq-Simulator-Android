@@ -2,7 +2,6 @@ package com.gtappdevelopers.bankrehovot;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,9 +9,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,25 +25,17 @@ import com.anychart.enums.MarkerType;
 import com.anychart.enums.TooltipPositionMode;
 import com.anychart.graphics.vector.Stroke;
 
-import java.io.IOException;
+import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-
-
-import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
+import java.util.List;
 
 
 public class CurrencyPage extends AppCompatActivity {
-    //    EditText priceProfitEditText = findViewById(R.id.priceProfitEditText);
-//    EditText ilsProfitEditText = findViewById(R.id.ilsProfitEditText);
-//    EditText percentProfitEditText = findViewById(R.id.percentProfitEditText);
-//    EditText priceStopEditText = findViewById(R.id.priceStopEditText);
-//    EditText ilsStopEditText = findViewById(R.id.ilsStopEditText);
-//    EditText percentStopEditText = findViewById(R.id.percentStopEditText);
-//    CheckBox stopLossCheckBox = findViewById(R.id.stopLossCheckBox);
-//    CheckBox takeProfitCheckBox = findViewById(R.id.takeProfitCheckBox);
 
     ArrayList<Double> reversedPriceList = MainActivity.viewingStock.priceList;
     ArrayList<String> reversedDateList = MainActivity.viewingStock.dateList;
@@ -208,11 +196,6 @@ public class CurrencyPage extends AppCompatActivity {
             orderTradeEditText.setVisibility(View.VISIBLE);
     }
 
-    public void viewGraphIntent(View view) {
-//        Intent intent = new Intent(this, GraphActivity.class);
-//        startActivity(intent);
-
-    }
 
     public void changebuysell(View view) {
         buysell = !buysell;
@@ -265,5 +248,6 @@ public class CurrencyPage extends AppCompatActivity {
     public void goBackCurrenyPage(View view) {
         Intent intent = new Intent(this, InvestActivity.class);
         startActivity(intent);
+        finish();
     }
 }

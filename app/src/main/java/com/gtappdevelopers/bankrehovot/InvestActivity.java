@@ -1,10 +1,7 @@
 package com.gtappdevelopers.bankrehovot;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -31,6 +28,20 @@ public class InvestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_invest);
         //initialize the arraylist and adapter
         stockList = MainActivity.stockModels;
+
+        int size = stockList.size();
+        for (int i = 0; i < size - 1; i++) {
+            StockModel user = stockList.get(i);
+            for (int j = i + 1; j < size; j++) {
+                if (user.equals(stockList.get(j))) {
+                    stockList.remove(j);
+                    size--;
+                    j--;
+                }
+            }
+        }
+        MainActivity.stockModels=stockList;
+
         saveStockList = MainActivity.stockModels;
         adapter = new StockAdapter(this, stockList);
 
@@ -44,7 +55,10 @@ public class InvestActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MainActivity.viewingStock = stockList.get(position);
                 Intent intent = new Intent(InvestActivity.this, CurrencyPage.class);
+
+
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -127,7 +141,10 @@ public class InvestActivity extends AppCompatActivity {
 
     public void goBackInvestList(View view) {
         Intent intent = new Intent(this, HomePage.class);
+
+
         startActivity(intent);
+        finish();
     }
 }
 

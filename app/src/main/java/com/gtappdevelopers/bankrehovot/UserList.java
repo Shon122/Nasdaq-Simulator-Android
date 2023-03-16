@@ -1,34 +1,13 @@
 package com.gtappdevelopers.bankrehovot;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.PopupMenu;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +28,20 @@ public class UserList extends AppCompatActivity {
         setContentView(R.layout.userlist);
         MainActivity.backToUsers=1;
         //initialize the arraylist and adapter
+
         userList = MainActivity.users;
+        int size = userList.size();
+        for (int i = 0; i < size - 1; i++) {
+            User user = userList.get(i);
+            for (int j = i + 1; j < size; j++) {
+                if (user.equals(userList.get(j))) {
+                    userList.remove(j);
+                    size--;
+                    j--;
+                }
+            }
+        }
+        MainActivity.users=userList;
         saveUserList = userList;
         adapter = new UserAdapter(this, userList);
 
@@ -63,7 +55,10 @@ public class UserList extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MainActivity.viewingUser = userList.get(position);
                 Intent intent = new Intent(UserList.this, MyProfile.class);
+
+
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -139,26 +134,7 @@ public class UserList extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.user_menu, menu);
-        return true;
-    }
 
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.sort_by_name:
-                sortByName(null);
-                return true;
-            case R.id.sort_by_balance:
-                sortByBalance(null);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
 
     @Override //when user wants to go back
@@ -169,7 +145,10 @@ public class UserList extends AppCompatActivity {
 
     public void goBackUserList(View view) {
         Intent intent = new Intent(this, HomePage.class);
+
+
         startActivity(intent);
+        finish();
     }
 
 }

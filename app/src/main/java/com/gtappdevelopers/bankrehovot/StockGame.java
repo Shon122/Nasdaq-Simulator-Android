@@ -1,11 +1,8 @@
 package com.gtappdevelopers.bankrehovot;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -18,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
@@ -467,7 +466,10 @@ public class StockGame extends AppCompatActivity {
 
         } else {
             Intent intent = new Intent(this, HomePage.class);
+
+
             startActivity(intent);
+            finish();
         }
     }
 }

@@ -146,7 +146,10 @@ public class MyProfile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MyProfile.this, LoginActivity.class);
+
+
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -356,10 +359,16 @@ public class MyProfile extends AppCompatActivity {
     public void goBackProfile(View view) {
         if (MainActivity.backToUsers == 0) {
             Intent intent = new Intent(this, HomePage.class);
+
+
             startActivity(intent);
+            finish();
         } else {
             Intent intent = new Intent(this, UserList.class);
+
+
             startActivity(intent);
+            finish();
 
 
         }

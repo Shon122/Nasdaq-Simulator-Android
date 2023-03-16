@@ -9,10 +9,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.PopupMenu;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +31,20 @@ public class TradesActivity extends AppCompatActivity {
         setContentView(R.layout.trades_activity);
         //initialize the arraylist and adapter
         tradeList = MainActivity.trades;
-        saveTradeList=MainActivity.trades;
+
+        int size = tradeList.size();
+        for (int i = 0; i < size - 1; i++) {
+            Trade user = tradeList.get(i);
+            for (int j = i + 1; j < size; j++) {
+                if (user.equals(tradeList.get(j))) {
+                    tradeList.remove(j);
+                    size--;
+                    j--;
+                }
+            }
+        }
+
+        saveTradeList=tradeList;
         adapter = new TradeAdapter(this, tradeList);
 
         //initialize the ListView and set the adapter
@@ -157,7 +168,10 @@ public class TradesActivity extends AppCompatActivity {
 
     public void goBackTradesList(View view) {
         Intent intent = new Intent(this, HomePage.class);
+
+
         startActivity(intent);
+        finish();
     }
 
 }
