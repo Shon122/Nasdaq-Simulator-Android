@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -92,7 +93,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        File sharedPreferencesDirectory = new File(getApplicationInfo().dataDir + "/shared_prefs/");
+        File[] sharedPreferencesFiles = sharedPreferencesDirectory.listFiles();
 
+        if (sharedPreferencesFiles != null) {
+            for (File sharedPreferencesFile : sharedPreferencesFiles) {
+                sharedPreferencesFile.delete();
+            }
+        }
 
         users = new ArrayList<>();
         allUserInfo = "";
@@ -111,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 , "ADI", "ADP", "AEP", "ALGN", "AMD", "AMGN",
                 "AMZN", "AAPL", "ATVI", "AUDNOK", "AUDPLN", "BNBUSD", "BTCUSD",
                 "CADBRL", "CADZAR", "CHFJPY", "ETHUSD", "EURBRL", "EURUSD", "GILD",
-                "GOOGL", "IBM", "INTC",  "KO", "LTCUSD", "META",
+                "GOOGL", "IBM", "INTC", "KO", "LTCUSD", "META",
                 "MMM", "MSFT", "NKE", "NFLX", "NZDCZK", "NZDTRY", "PYPL",
                 "SOLUSD", "TSLA", "TRYDKK", "USDJPY", "WMT", "XRPUSD"
         };
@@ -171,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (users.size() > 0)
             viewingUser = users.get(0);
-       // viewingStock = stockModels.get(0);
+        // viewingStock = stockModels.get(0);
         switchIntent();
         //end of oncreate
     }
@@ -307,6 +315,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void getStockModelsFromFirebase() {
 
+        SharedPreferences sharedPref = getSharedPreferences("stockPref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("stockModels", null);
+        editor.apply();
         FirebaseFirestore db2 = FirebaseFirestore.getInstance();
         CollectionReference stockRef = db2.collection("Trades").document("stockInfo").collection("allStocks");
 
@@ -332,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        SharedPreferences sharedPref = getSharedPreferences("stockPref", Context.MODE_PRIVATE);
+        sharedPref = getSharedPreferences("stockPref", Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPref.getString("stockModels", null);
         Type type = new TypeToken<ArrayList<StockModel>>() {
