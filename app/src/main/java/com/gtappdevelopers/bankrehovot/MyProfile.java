@@ -32,6 +32,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -48,11 +55,12 @@ public class MyProfile extends AppCompatActivity {
     public Button logoutButton;
     public int mainUserIndex;
     public User currentUser;
-
+    public FusedLocationProviderClient fusedLocationClient;
+    public LocationCallback locationCallback;
     //this after location
     public ImageView imageView;
-    private static final int GALLERY_REQUEST = 1;
-    private static final int CAMERA_REQUEST = 2;
+    public static final int GALLERY_REQUEST = 1;
+    public static final int CAMERA_REQUEST = 2;
 
 
     @SuppressLint("SetTextI18n")
@@ -60,7 +68,10 @@ public class MyProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_profile);
+
+
         //find index in Mainactivity
+
         currentUser = MainActivity.viewingUser;
         for (int i = 0; i < MainActivity.users.size(); i++) {
             if (currentUser.username.equals(MainActivity.users.get(i).username)) {
@@ -108,13 +119,29 @@ public class MyProfile extends AppCompatActivity {
         balanceTextView.setText(roundToTwoDecimals(currentUser.balance) + "$");
 
         //get country
-        String country = getIntent().getStringExtra(LocationReceiver.COUNTRY_EXTRA);
-        nameTextView.setText(currentUser.username + ", " + country); // just in case
-        ActivityCompat.requestPermissions(
-                this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                0
-        );
+        if(currentUser.username.equals(MainActivity.currentUser.username)) {
+            String country = getIntent().getStringExtra(LocationReceiver.COUNTRY_EXTRA);
+            nameTextView.setText(currentUser.username + ", " + country);
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    0
+            );
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            locationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    if (locationResult == null) {
+                        return;
+                    }
+                    Location location = locationResult.getLastLocation();
+                    updateCountryName(location.getLatitude(), location.getLongitude());
+                }
+            };
+            requestSingleLocationUpdate();
+        }
+
+
         //only here after location
 
         imageView = (ImageView) findViewById(R.id.profile_image);
@@ -136,7 +163,6 @@ public class MyProfile extends AppCompatActivity {
             imageView.setBackgroundColor(Color.WHITE);
             imageView.setImageBitmap(circularBitmap);
         }
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 3);
 
         //on click logout and check if the user is the current phone's user
         if (!currentUser.username.equals(MainActivity.currentUser.username)) {
@@ -154,6 +180,50 @@ public class MyProfile extends AppCompatActivity {
         });
 
     }
+
+    // Call this method when you want to request a single location update
+    public void requestSingleLocationUpdate() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.requestLocationUpdates(createLocationRequest(), new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    if (locationResult != null && locationResult.getLastLocation() != null) {
+                        double latitude = locationResult.getLastLocation().getLatitude();
+                        double longitude = locationResult.getLastLocation().getLongitude();
+                        updateCountryName(latitude, longitude);
+                    }
+                }
+            }, null);
+        } else {
+        }
+    }
+
+    public LocationRequest createLocationRequest() {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000); // Update interval in milliseconds
+        locationRequest.setFastestInterval(5000); // Fastest update interval
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        return locationRequest;
+    }
+
+    public void updateCountryName(double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            List<android.location.Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (!addresses.isEmpty()) {
+                String countryName = addresses.get(0).getCountryName();
+                if (currentUser != null) {
+                    nameTextView.setText(currentUser.username + ", " + countryName);
+                }
+            } else {
+                nameTextView.setText("Loading...");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void selectImage() {
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
@@ -291,58 +361,58 @@ public class MyProfile extends AppCompatActivity {
         canvas.drawBitmap(bitmap, rect, rect, paint);
         return output;
     }
-
-    //location
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode,
-            @NonNull String[] permissions,
-            @NonNull int[] grantResults
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-
-        if (requestCode == 0) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                nameTextView.setText(currentUser.username + ", Israel"); // just in case
-
-                // permission was granted, proceed with your logic
-                LocationManager locationManager =
-                        (LocationManager) getSystemService(LOCATION_SERVICE);
-                if (ActivityCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED) {
-
-
-                }
-                Location location =
-                        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null) {
-                    Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                    try {
-                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),
-                                location.getLongitude(),
-                                1
-                        );
-                        if (addresses.size() > 0) {
-                            String country = addresses.get(0).getCountryName();
-                            nameTextView.setText(currentUser.username + ", " + country); // just in case
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
-                // permission was denied, handle accordingly
-                nameTextView.setText(currentUser.username + ", Israel"); // just in case
-            }
-        }
-    }
+//
+//    //location
+//    @SuppressLint("SetTextI18n")
+//    @Override
+//    public void onRequestPermissionsResult(
+//            int requestCode,
+//            @NonNull String[] permissions,
+//            @NonNull int[] grantResults
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//
+//
+//        if (requestCode == 0) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                nameTextView.setText(currentUser.username + ", Israel"); // just in case
+//
+//                // permission was granted, proceed with your logic
+//                LocationManager locationManager =
+//                        (LocationManager) getSystemService(LOCATION_SERVICE);
+//                if (ActivityCompat.checkSelfPermission(
+//                        this,
+//                        Manifest.permission.ACCESS_FINE_LOCATION
+//                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+//                        this,
+//                        Manifest.permission.ACCESS_COARSE_LOCATION
+//                ) != PackageManager.PERMISSION_GRANTED) {
+//
+//
+//                }
+//                Location location =
+//                        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//                if (location != null) {
+//                    Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+//                    try {
+//                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(),
+//                                location.getLongitude(),
+//                                1
+//                        );
+//                        if (addresses.size() > 0) {
+//                            String country = addresses.get(0).getCountryName();
+//                            nameTextView.setText(currentUser.username + ", " + country); // just in case
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            } else {
+//                // permission was denied, handle accordingly
+//                nameTextView.setText(currentUser.username + ", Israel"); // just in case
+//            }
+//        }
+//    }
 
 
     public Double roundToTwoDecimals(Double value) {

@@ -25,6 +25,7 @@ public class HomePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage_activity);
         MainActivity.backToUsers=0;
+        MainActivity.acceptedPerms=true;
 //
 //        movingTextView = findViewById(R.id.moving_text);
 //        String longString = MainActivity.news;

@@ -57,6 +57,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends AppCompatActivity {
     //user essentials saving his data
+    public static boolean acceptedPerms;
     public static StockModel viewingStock;
     public static Trade viewingTrade;
     public static User viewingUser;
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 sharedPreferencesFile.delete();
             }
         }
+        acceptedPerms=false;
 
         users = new ArrayList<>();
         allUserInfo = "";

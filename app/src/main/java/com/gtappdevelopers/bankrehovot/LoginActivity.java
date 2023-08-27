@@ -4,8 +4,10 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +31,9 @@ public class LoginActivity extends AppCompatActivity {
     public TextView loginTextView;
     public Button loginButton;
 
+    public static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    public static final int CAMERA_PERMISSION_REQUEST_CODE = 3;
+    public static final int GALLERY_PERMISSION_REQUEST_CODE = 4;
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final int REQUEST_LOCATION_PERMISSION = 2;
 
@@ -44,24 +49,38 @@ public class LoginActivity extends AppCompatActivity {
         usernameEditText = (EditText) findViewById(R.id.usernameEditText);
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
 
-        // Request camera permission
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    REQUEST_CAMERA_PERMISSION);
-        }
+//        // Request camera permission
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.CAMERA},
+//                    REQUEST_CAMERA_PERMISSION);
+//        }
+//
+//
+//        // Request location permission
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(this,
+//                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//                        REQUEST_LOCATION_PERMISSION);
+//            }
+//        }
 
-        // Request location permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        REQUEST_LOCATION_PERMISSION);
+        if (MainActivity.acceptedPerms == false) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+                }
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+                }
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, GALLERY_PERMISSION_REQUEST_CODE);
+                }
             }
         }
-
     }
 
     public void switchIntent() {
@@ -121,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
             Date date = new Date();
             String currentDate = dateFormat.format(date);
-            User newUser = new User(password, username, emptyList, 10000.00, currentDate,null, null, new ArrayList<GameStock>());
+            User newUser = new User(password, username, emptyList, 10000.00, currentDate, null, null, new ArrayList<GameStock>());
             MainActivity.users.add(newUser);
             MainActivity.uploadUsersToFirestore();
             MainActivity.password = password;
@@ -239,25 +258,129 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Check if location permissions are granted
+        if (hasLocationPermission()) {
+            // Location permissions are already granted, you can proceed with your location-related code here.
+            showToast("Location and Camera permissions granted!");
+        } else if (shouldShowPermissionRationale()) {
+            // User has denied permissions before but not selected "Don't ask again."
+            showToast("Location and Camera permissions are required for this app to work properly.");
+            requestLocationPermission();
+        } else {
+            // User has denied permissions and selected "Don't ask again."
+            showToast("Location and Camera permissions are required for this app to work properly. Please enable them in the app settings.");
+            openAppSettings();
+        }
+    }
+
+    // Check if location permissions are granted
+    private boolean hasLocationPermission() {
+        int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        return permission == PackageManager.PERMISSION_GRANTED;
+    }
+
+    // Request location permissions
+    private void requestLocationPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // User has denied permissions before, show an explanation
+            showToast("Location and Camera permissions are required for this app to work properly.");
+        }
+
+        // Request the permissions
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+    }
+
+    // Handle permission request results
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        switch (requestCode) {
-            case REQUEST_CAMERA_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Camera permission granted
-                } else {
-                    // Camera permission denied
-                }
-                break;
-            case REQUEST_LOCATION_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Location permission granted
-                } else {
-                    // Location permission denied
-                }
-                break;
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Location permissions granted
+                showToast("Location and Camera permissions granted!");
+            } else if (!shouldShowPermissionRationale()) {
+                // User has denied permissions and selected "Don't ask again."
+                showToast("Location and Camera permissions are required for this app to work properly. Please enable them in the app settings.");
+                openAppSettings();
+            } else {
+                // Location permissions denied, ask again
+                showToast("Location and Camera permissions are required for this app to work properly.");
+                requestLocationPermission();
+            }
+        } else if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Camera permission granted
+                showToast("Camera permissions granted!");
+            } else if (!shouldShowPermissionRationale()) {
+                // User has denied camera permissions and selected "Don't ask again."
+                showToast("Camera permissions are required for this app to work properly. Please enable them in the app settings.");
+                openAppSettings();
+            } else {
+                // Camera permissions denied, ask again
+                showToast("Camera permissions are required for this app to work properly.");
+                requestCameraPermission();
+            }
+        } else if (requestCode == GALLERY_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Gallery permission granted
+                showToast("Gallery permissions granted!");
+            } else if (!shouldShowPermissionRationale()) {
+                // User has denied gallery permissions and selected "Don't ask again."
+                showToast("Gallery permissions are required for this app to work properly. Please enable them in the app settings.");
+                openAppSettings();
+            } else {
+                // Gallery permissions denied, ask again
+                showToast("Gallery permissions are required for this app to work properly.");
+                requestGalleryPermission();
+            }
         }
+
     }
+
+    // Request camera permissions
+    private void requestCameraPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+            // User has denied camera permissions before, show an explanation
+            showToast("Camera permissions are required for this app to work properly.");
+        }
+
+        // Request the permissions
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+    }
+
+    // Request gallery permissions
+    private void requestGalleryPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            // User has denied gallery permissions before, show an explanation
+            showToast("Gallery permissions are required for this app to work properly.");
+        }
+
+        // Request the permissions
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, GALLERY_PERMISSION_REQUEST_CODE);
+    }
+
+    // Check if the user has denied permissions but not selected "Don't ask again"
+    private boolean shouldShowPermissionRationale() {
+        return ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION) &&
+                ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) &&
+                ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    // Open the app settings
+    private void openAppSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
 }
