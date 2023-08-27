@@ -5,7 +5,7 @@ The user can see his overall earnings, as well as information about his current 
 Users can see each others profiles, earnings and profile pictures.
 
 
-<img src="https://github.com/Shon122/Bank-Rehovot/blob/master/login.jpeg">
+<img src="https://github.com/Shon122/Bank-Rehovot/blob/master/login.jpeg" width="250" height="250">
 
 ![register](https://github.com/Shon122/Bank-Rehovot/blob/master/register.jpeg)
 
