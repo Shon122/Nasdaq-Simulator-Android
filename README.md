@@ -3,6 +3,7 @@ Android app simulating NASDAQ stock exchange with real-time updating prices for 
 The app includes a moving stock graph that allows the user to practice his graph-reading and overall investing skills.
 The user can see his overall earnings, as well as information about his current stock positions.
 Users can see each others profiles, earnings and profile pictures.
+<p></p>
 
 
 <img src="https://github.com/Shon122/Bank-Rehovot/blob/master/login.jpeg" width="250" height="500"> <img src="https://github.com/Shon122/Bank-Rehovot/blob/master/register.jpeg" width="300" height="600">
