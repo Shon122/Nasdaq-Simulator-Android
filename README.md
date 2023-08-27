@@ -7,6 +7,8 @@ Users can see each others profiles, earnings and profile pictures.
 
 ![login](https://github.com/Shon122/Bank-Rehovot/blob/master/login.jpeg)
 
+![register](https://github.com/Shon122/Bank-Rehovot/blob/master/register.jpeg)
+
 ![homepage](https://github.com/Shon122/Bank-Rehovot/blob/master/homepage.jpeg)
 
 ![users](https://github.com/Shon122/Bank-Rehovot/blob/master/users.jpeg)
@@ -17,9 +19,13 @@ Users can see each others profiles, earnings and profile pictures.
 
 ![simpage](https://github.com/Shon122/Bank-Rehovot/blob/master/simpage.jpeg)
 
-![buystock](https://github.com/Shon122/Bank-Rehovot/blob/master/buystock.jpeg)
+![endsim](https://github.com/Shon122/Bank-Rehovot/blob/master/endsim.jpeg)
 
-![register](https://github.com/Shon122/Bank-Rehovot/blob/master/register.jpeg)
+![simgame](https://github.com/Shon122/Bank-Rehovot/blob/master/simgame.jpeg)
+
+![simpage](https://github.com/Shon122/Bank-Rehovot/blob/master/simpage.jpeg)
+
+![buystock](https://github.com/Shon122/Bank-Rehovot/blob/master/buystock.jpeg)
 
 ![investlist](https://github.com/Shon122/Bank-Rehovot/blob/master/investlist.jpeg)
 
