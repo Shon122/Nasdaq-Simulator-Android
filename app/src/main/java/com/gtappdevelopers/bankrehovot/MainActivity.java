@@ -235,9 +235,9 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = mContext.getSharedPreferences("MySharedPref", MODE_PRIVATE);
         String dataTaker = sharedPreferences.getString("stockLastUpdate", "5");
         lastUpdate = Long.parseLong((dataTaker));
-        long diff = (currentTime - lastUpdate); // 1 min = 60000 ms
+        long diff = (lastUpdate - currentTime); // 1 min = 60000 ms
         //make sure more than 1 day has passed since last call
-        if (diff == 1909600000)//more thank two weeks
+        if (diff > 1909600000)//more thank two weeks
         {
             getAllStockModels("4hour");
             uploadStockModelsFirebase();
